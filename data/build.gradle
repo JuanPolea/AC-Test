@@ -8,5 +8,5 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 dependencies {
-    implementation(project(":domain"))
+    implementation(project(":domain:model"))
 }
