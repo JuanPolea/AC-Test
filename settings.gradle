@@ -10,3 +10,4 @@ rootProject.name = "AC-Test"
 include ':app'
 include ':data'
 include ':usecase'
+include ':domain'
