@@ -1,9 +1,7 @@
 object BuildConfig {
     const val baseUrl = "BASE_URL"
-    const val aihBandUrlProd = "\" \""
-    const val aihBandUrlStaging = "\" \""
-    const val aihBandUrlIntegration = "\" \""
-    const val aihBandUrlFirebase = "\" \""
+    const val baseUrlRelease = "\"https://rickandmortyapi.com/api/\""
+    const val baseUrlDebug = "\"https://rickandmortyapi.com/api/\""
 }
 
 object DefaultConfig {

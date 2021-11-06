@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("kotlin-android")
+    id(Hilt.Plugins.hilt)
     kotlin("plugin.serialization") version "1.5.10"
 }
 
@@ -22,6 +23,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildTypes {
+        debug { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlDebug) }
+        release { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlRelease) }
+    }
 
 
     kotlinOptions {
@@ -35,4 +40,11 @@ dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:repository"))
     implementation(project(":data:open"))
+    implementation(Hilt.hiltAndroid)
+    implementation(Hilt.hiltCompiler)
+    implementation(Hilt.hiltAndroidCompiler)
+    implementation(SquareApp.retrofit)
+    implementation(SquareApp.retrofitCoroutines)
+    implementation(SquareApp.retrofitGson)
+    implementation(SquareApp.loginInterceptor)
 }
