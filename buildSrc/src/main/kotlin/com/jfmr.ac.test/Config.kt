@@ -17,7 +17,7 @@ object DefaultConfig {
     const val projectMinSdkVersion = 23
     const val projectCompileSdkVersion = 31
     const val projectTargetSdkVersion = 30
-    const val buildToolsVersion = "30.0.2"
+    const val buildToolsVersion = "30.0.3"
 }
 
 object SourceDirs {
