@@ -1,4 +1,4 @@
-package com.jfmr.ac_test
+package com.jfmr.ac.test
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.jfmr.ac_test.ui.theme.ACTestTheme
+import com.jfmr.ac.test.ui.theme.ACTestTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

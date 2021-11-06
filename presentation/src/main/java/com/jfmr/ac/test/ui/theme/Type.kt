@@ -1,4 +1,4 @@
-package com.jfmr.ac_test.ui.theme
+package com.jfmr.ac.test.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
