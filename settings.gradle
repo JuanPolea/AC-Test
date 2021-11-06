@@ -7,12 +7,10 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AC-Test"
-include ':app'
+include ':presentation'
 include ':data'
 include ':usecase'
 include ':domain'
 include ':domain:model'
 include ':framework'
 include ':framework:room'
-include ':presentation'
-include ':presentation:mobile'
