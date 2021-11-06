@@ -1,6 +1,6 @@
 plugins {
-    id 'java-library'
-    id 'kotlin'
+    id("java-library")
+    id("kotlin")
 }
 
 java {
@@ -8,6 +8,5 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_7
 }
 dependencies {
-    implementation(project(":data"))
     implementation(project(":domain:model"))
 }
