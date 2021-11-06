@@ -16,6 +16,7 @@ buildscript {
         classpath(Androidx.navigationPlugin)
         classpath(Detekt.gradlePlugin)
         classpath(Hilt.gradlePlugin)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
     }
     configurations.all {
         resolutionStrategy {
