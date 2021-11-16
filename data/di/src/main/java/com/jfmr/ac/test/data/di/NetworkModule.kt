@@ -1,6 +1,7 @@
-package com.jfmr.ac.test.di
+package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.open.api.RickAndMortyService
+import com.com.jfmr.ac.test.repository.BuildConfig
+import com.jfmr.ac.test.open.api.rickandmorty.RickAndMortyService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

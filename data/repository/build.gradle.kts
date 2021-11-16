@@ -20,8 +20,8 @@ android {
         jvmTarget = JVMTarget.Versions.core
     }
     buildTypes {
-        debug { }
-        release { }
+        debug { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlDebug) }
+        release { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlRelease) }
     }
 }
 

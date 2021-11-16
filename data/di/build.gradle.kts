@@ -24,8 +24,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildTypes {
-        debug { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlDebug) }
-        release { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlRelease) }
+        debug {}
+        release { }
     }
 
 
@@ -47,4 +47,6 @@ dependencies {
     implementation(SquareApp.retrofitCoroutines)
     implementation(SquareApp.retrofitGson)
     implementation(SquareApp.loginInterceptor)
+    implementation(project(mapOf("path" to ":data:repository:implementation")))
+    implementation(project(mapOf("path" to ":data:repository:open")))
 }
