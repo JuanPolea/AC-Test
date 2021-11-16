@@ -29,7 +29,6 @@ dependencies {
     implementation(project(":data:open"))
     implementation(project(":data:di"))
     implementation(project(":domain:model"))
-    implementation(project(":usecase:implementation"))
     implementation(project(":usecase:open"))
     implementation(Kotlin.coroutinesCore)
     implementation(Hilt.hiltAndroid)
