@@ -10,16 +10,19 @@ pluginManagement {
 rootProject.name = "AC-Test"
 include(":app")
 include(":usecase")
+include(":usecase:open")
+include(":usecase:implementation")
 include(":usecase:di")
 include(":data")
-include(":data:di")
 include(":data:open")
 include(":data:repository")
 include(":data:repository:model")
 include(":data:repository:open")
 include(":data:repository:implementation")
+include(":data:di")
 include(":domain")
 include(":domain:model")
 include(":framework")
 include(":framework:room")
+
 

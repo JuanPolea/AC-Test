@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":usecase"))
+    implementation(project(":usecase:open"))
     implementation(project(":data:repository"))
     implementation(Androidx.androidxCoreKtx)
     implementation(Androidx.appCompat)
