@@ -18,11 +18,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -42,10 +37,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildTypes {
+        debug { }
+        release { }
+    }
 }
 
 dependencies {
     implementation(project(":usecase"))
+    implementation(project(":data:repository"))
     implementation(Androidx.androidxCoreKtx)
     implementation(Androidx.appCompat)
     implementation(Google.material)

@@ -20,8 +20,8 @@ android {
         jvmTarget = JVMTarget.Versions.core
     }
     buildTypes {
-        debug { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlDebug) }
-        release { buildConfigField("String", BuildConfig.baseUrl, BuildConfig.baseUrlRelease) }
+        debug { }
+        release { }
     }
 }
 
@@ -31,9 +31,14 @@ dependencies {
     implementation(project(":data:open"))
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation(project(mapOf("path" to ":data:repository:open")))
     testImplementation("junit:junit:4.13.2")
     implementation(Google.gson)
     implementation(SquareApp.retrofit)
     implementation(SquareApp.retrofitGson)
+    implementation(Hilt.hiltAndroid)
+    implementation(Hilt.hiltCompiler)
+    implementation(Hilt.hiltAndroidCompiler)
+    implementation(Kotlin.coroutinesCore)
 
 }
