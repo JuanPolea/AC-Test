@@ -1,4 +1,4 @@
-package com.jfmr.di
+package com.jfmr.ac.test.implementation
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
