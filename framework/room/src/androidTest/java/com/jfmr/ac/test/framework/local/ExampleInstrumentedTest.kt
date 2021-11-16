@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.local
+package com.jfmr.ac.test.framework.local
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
