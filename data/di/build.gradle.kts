@@ -36,8 +36,8 @@ android {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk7"))
-    implementation(project(":domain:model"))
+
+implementation(project(":domain:model"))
     implementation(project(":data:repository"))
     implementation(project(":data:open"))
     implementation(Hilt.hiltAndroid)

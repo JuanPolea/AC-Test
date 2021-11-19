@@ -5,12 +5,12 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 dependencies {
-    implementation(kotlin("stdlib-jdk7"))
-    implementation(project(":domain:model"))
+
+implementation(project(":domain:model"))
     implementation(project(":data:repository:model"))
     testImplementation("junit:junit:4.13.2")
     implementation(Google.gson)
