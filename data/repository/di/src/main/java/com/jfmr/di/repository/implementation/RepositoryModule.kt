@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.di
+package com.jfmr.di.repository.implementation
 
 import com.jfmr.ac.test.implementation.RickAndMortyRepositoryImpl
 import com.jfmr.ac.test.open.RickAndMortyRepository

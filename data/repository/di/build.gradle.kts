@@ -37,17 +37,15 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":domain:model"))
     implementation(project(mapOf("path" to ":data:open")))
-    implementation(project(mapOf("path" to ":data:repository")))
+    implementation(project(mapOf("path" to ":data:repository:model")))
     implementation(project(mapOf("path" to ":data:repository:open")))
     implementation(project(mapOf("path" to ":data:repository:implementation")))
-    implementation(Hilt.hiltAndroid)
-    implementation(Hilt.hiltCompiler)
-    implementation(Hilt.hiltAndroidCompiler)
     implementation(SquareApp.retrofit)
     implementation(SquareApp.retrofitCoroutines)
     implementation(SquareApp.retrofitGson)
     implementation(SquareApp.loginInterceptor)
+    implementation(Hilt.hiltAndroid)
+    implementation(Hilt.hiltCompiler)
+    implementation(Hilt.hiltAndroidCompiler)
 }
