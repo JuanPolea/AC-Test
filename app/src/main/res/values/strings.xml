@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AC-Test</string>
+    <string name="home_title">Rick And Morty</string>
 </resources>
