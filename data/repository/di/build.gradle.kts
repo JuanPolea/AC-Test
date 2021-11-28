@@ -33,7 +33,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
@@ -46,6 +48,6 @@ dependencies {
     implementation(SquareApp.retrofitGson)
     implementation(SquareApp.loginInterceptor)
     implementation(Hilt.hiltAndroid)
-    implementation(Hilt.hiltCompiler)
-    implementation(Hilt.hiltAndroidCompiler)
+    kapt(Hilt.hiltCompiler)
+    kapt(Hilt.hiltAndroidCompiler)
 }

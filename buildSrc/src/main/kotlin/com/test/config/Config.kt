@@ -195,6 +195,7 @@ object Google {
     const val WorkAroundKotlin5 = "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${Versions.jvm}"
 }
 
+
 //Network
 object SquareApp {
     object Versions {

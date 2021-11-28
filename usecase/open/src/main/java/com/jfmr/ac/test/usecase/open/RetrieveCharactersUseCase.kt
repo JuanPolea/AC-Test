@@ -1,4 +1,4 @@
-package com.jfmr.open
+package com.jfmr.ac.test.usecase.open
 
 import com.jfmr.ac.test.domain.model.Characters
 import kotlinx.coroutines.flow.Flow

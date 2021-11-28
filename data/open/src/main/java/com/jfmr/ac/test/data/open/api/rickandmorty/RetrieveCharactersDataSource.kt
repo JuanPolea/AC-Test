@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.open.api.rickandmorty
+package com.jfmr.ac.test.data.open.api.rickandmorty
 
 import com.jfmr.ac.test.domain.model.Characters
 

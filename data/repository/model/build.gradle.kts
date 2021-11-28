@@ -11,4 +11,9 @@ java {
 dependencies {
     implementation(project(":domain:model"))
     implementation(Kotlin.coroutinesCore)
+    implementation(Google.gson)
+    implementation(SquareApp.retrofit)
+    implementation(SquareApp.retrofitGson)
+    kapt(Hilt.hiltCompiler)
+    implementation(Kotlin.coroutinesCore)
 }

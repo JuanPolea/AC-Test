@@ -1,7 +1,7 @@
 package com.jfmr.di.repository.implementation
 
+import com.jfmr.ac.test.data.open.remote.RickAndMortyRepository
 import com.jfmr.ac.test.implementation.RickAndMortyRepositoryImpl
-import com.jfmr.ac.test.open.RickAndMortyRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -19,11 +19,9 @@ android {
             useSupportLibrary = true
         }
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = Androidx.Versions.compose
-    }
-    kotlinOptions {
-        jvmTarget = JVMTarget.Versions.core
     }
     buildFeatures {
         compose = true
@@ -39,8 +37,8 @@ android {
         debug { }
         release { }
     }
-    kapt {
-        correctErrorTypes = true
+    hilt {
+        enableExperimentalClasspathAggregation = true
     }
 }
 
@@ -48,9 +46,10 @@ dependencies {
     implementation(project(mapOf("path" to ":usecase:open")))
     implementation(project(mapOf("path" to ":usecase:di")))
     implementation(project(mapOf("path" to ":usecase:implementation")))
-    implementation(project(mapOf("path" to ":data:repository")))
-    implementation(project(mapOf("path" to ":data:di")))
     implementation(project(mapOf("path" to ":data:open")))
+    implementation(project(mapOf("path" to ":data:di")))
+    implementation(project(mapOf("path" to ":data:repository:open")))
+    implementation(project(mapOf("path" to ":data:repository:di")))
     implementation(project(mapOf("path" to ":domain:model")))
     implementation(Kotlin.coroutinesCore)
     implementation(Androidx.androidxCoreKtx)
@@ -58,8 +57,6 @@ dependencies {
     implementation(Androidx.composeUI)
     implementation(Androidx.composeCompiler)
     implementation(Androidx.composeMaterial)
-    implementation(project(mapOf("path" to ":data:repository:di")))
-    implementation(project(mapOf("path" to ":data:repository:open")))
     debugImplementation(Androidx.composeUiTooling)
     implementation(Google.material)
     implementation(Androidx.composeUiToolingPreview)
@@ -70,5 +67,8 @@ dependencies {
     kapt(Hilt.hiltAndroidCompiler)
     implementation(Hilt.hiltViewModel)
     implementation(Hilt.hiltNavigation)
-    implementation(JakeWharton.timber)
+    implementation(SquareApp.timber)
+}
+kapt {
+    correctErrorTypes = true
 }

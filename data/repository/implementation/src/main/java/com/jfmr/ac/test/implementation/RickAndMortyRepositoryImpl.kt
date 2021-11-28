@@ -1,8 +1,8 @@
 package com.jfmr.ac.test.implementation
 
+import com.jfmr.ac.test.data.open.api.rickandmorty.RetrieveCharactersDataSource
+import com.jfmr.ac.test.data.open.remote.RickAndMortyRepository
 import com.jfmr.ac.test.domain.model.Characters
-import com.jfmr.ac.test.open.RickAndMortyRepository
-import com.jfmr.ac.test.open.api.rickandmorty.RetrieveCharactersDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

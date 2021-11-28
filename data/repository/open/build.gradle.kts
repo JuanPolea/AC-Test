@@ -11,4 +11,5 @@ java {
 dependencies {
     implementation(project(":domain:model"))
     implementation(Kotlin.coroutinesCore)
+    kapt(Hilt.hiltCompiler)
 }

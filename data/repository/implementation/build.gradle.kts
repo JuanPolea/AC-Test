@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id(Hilt.Plugins.hilt)
 }
 
 android {
@@ -23,22 +24,23 @@ android {
         debug { }
         release { }
     }
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
-    implementation(project(":domain:model"))
-    implementation(project(":data:repository:model"))
-    implementation(project(":data:open"))
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation(project(mapOf("path" to ":domain:model")))
+    implementation(project(mapOf("path" to ":data:open")))
     implementation(project(mapOf("path" to ":data:repository:open")))
+    implementation(project(mapOf("path" to ":data:repository:model")))
+    implementation("androidx.core:core-ktx:1.7.0")
     testImplementation("junit:junit:4.13.2")
     implementation(Google.gson)
     implementation(SquareApp.retrofit)
     implementation(SquareApp.retrofitGson)
     implementation(Hilt.hiltAndroid)
-    implementation(Hilt.hiltCompiler)
-    implementation(Hilt.hiltAndroidCompiler)
+    kapt(Hilt.hiltCompiler)
+    kapt(Hilt.hiltAndroidCompiler)
     implementation(Kotlin.coroutinesCore)
-
 }

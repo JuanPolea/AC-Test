@@ -10,10 +10,14 @@ java {
 }
 dependencies {
 
-implementation(project(":domain:model"))
+    implementation(project(":domain:model"))
     implementation(project(":data:repository:model"))
     testImplementation("junit:junit:4.13.2")
     implementation(Google.gson)
     implementation(SquareApp.retrofit)
     implementation(SquareApp.retrofitGson)
+    kapt(Hilt.hiltCompiler)
+}
+kapt {
+    correctErrorTypes = true
 }

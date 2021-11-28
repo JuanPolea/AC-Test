@@ -33,19 +33,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
 
     implementation(project(":domain:model"))
     implementation(project(mapOf("path" to ":data:open")))
-    implementation(project(mapOf("path" to ":data:repository")))
     implementation(project(mapOf("path" to ":data:repository:open")))
     implementation(project(mapOf("path" to ":data:repository:implementation")))
     implementation(Hilt.hiltAndroid)
-    implementation(Hilt.hiltCompiler)
-    implementation(Hilt.hiltAndroidCompiler)
+    kapt(Hilt.hiltCompiler)
+    kapt(Hilt.hiltAndroidCompiler)
     implementation(SquareApp.retrofit)
     implementation(SquareApp.retrofitCoroutines)
     implementation(SquareApp.retrofitGson)

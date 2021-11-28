@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -23,6 +24,9 @@ android {
         debug { }
         release { }
     }
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
@@ -33,7 +37,7 @@ dependencies {
     implementation(project(":usecase:open"))
     implementation(Kotlin.coroutinesCore)
     implementation(Hilt.hiltAndroid)
-    implementation(Hilt.hiltCompiler)
-    implementation(Hilt.hiltAndroidCompiler)
+    kapt(Hilt.hiltCompiler)
+    kapt(Hilt.hiltAndroidCompiler)
     implementation(Kotlin.coroutinesCore)
 }

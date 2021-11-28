@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.open.api.rickandmorty.model
+package com.jfmr.ac.test.data.open.api.rickandmorty.model
 
 import com.google.gson.annotations.SerializedName
 
