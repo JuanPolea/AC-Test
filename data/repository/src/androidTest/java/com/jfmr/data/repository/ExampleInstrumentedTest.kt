@@ -1,8 +1,8 @@
-package com.jfmr.ac.test.framework.local
+package com.jfmr.data.repository
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.com.jfmr.room.test", appContext.packageName)
+        assertEquals("com.jfmr.data.repository.test", appContext.packageName)
     }
 }

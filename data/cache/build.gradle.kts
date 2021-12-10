@@ -4,7 +4,6 @@ plugins {
     kotlin("kapt")
     id("kotlin-android")
     id(Hilt.Plugins.hilt)
-    kotlin("plugin.serialization") version "1.5.10"
 }
 
 android {

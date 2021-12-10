@@ -14,7 +14,7 @@ annotation class RickAndMortyRemoteRepositoryImpl
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class ItemsRepositoryModule {
+abstract class RepositoryModule {
     @RickAndMortyRemoteRepositoryImpl
     @Singleton
     @Binds

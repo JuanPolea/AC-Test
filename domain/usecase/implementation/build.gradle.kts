@@ -33,7 +33,6 @@ dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:open"))
     implementation(project(":data:di"))
-    implementation(project(":domain:repository:di"))
     implementation(project(":domain:repository:open"))
     implementation(project(":domain:usecase:open"))
     implementation(Kotlin.coroutinesCore)

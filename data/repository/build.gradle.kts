@@ -4,7 +4,6 @@ plugins {
     kotlin("kapt")
     id("kotlin-android")
     id(Hilt.Plugins.hilt)
-    kotlin("plugin.serialization") version "1.5.10"
 }
 
 android {
@@ -32,10 +31,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:repository:open"))
     implementation(project(":domain:model"))
-    implementation(Kotlin.coroutinesCore)
+    implementation(project(":data:cache:model"))
+    implementation(project(":data:open"))
     implementation(Hilt.hiltAndroid)
+    implementation(project(mapOf("path" to ":domain:repository:open")))
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
+
+    implementation(Androidx.roomRuntime)
+    implementation(Androidx.roomKtx)
+    kapt(Androidx.roomCompiler)
+
 }

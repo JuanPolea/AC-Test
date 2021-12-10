@@ -1,6 +1,6 @@
-package com.jfmr.domain.repository.di
+package com.jfmr.ac.test.data.di
 
-import com.jfmr.domain.repository.implementation.ItemsRepositoryImpl
+import com.jfmr.data.repository.ItemsRepositoryImpl
 import com.jfmr.domain.repository.open.ItemsRepository
 import dagger.Binds
 import dagger.Module
@@ -10,13 +10,13 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Qualifier
-annotation class ItemRepositoryImpl
+annotation class QItemRepositoryImpl
 
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class ItemsRepositoryModule {
 
-    @ItemRepositoryImpl
+    @QItemRepositoryImpl
     @Singleton
     @Binds
     abstract fun bindItemRepositoryImpl(implementation: ItemsRepositoryImpl): ItemsRepository

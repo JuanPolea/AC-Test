@@ -1,6 +1,6 @@
-package com.jfmr.domain.repository.di
+package com.jfmr.ac.test.data.di
 
-import com.jfmr.domain.repository.implementation.DefaultDispatcher
+import com.jfmr.data.repository.DefaultDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.jfmr.domain.repository.implementation
+package com.jfmr.data.repository
 
 import javax.inject.Qualifier
 
