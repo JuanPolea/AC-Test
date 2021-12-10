@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    kotlin(Kotlin.Plugins.kapt)
+    id(Hilt.Plugins.hilt)
 }
 android {
     compileSdk = 31
@@ -18,15 +20,8 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
     composeOptions {
         kotlinCompilerExtensionVersion = Androidx.Versions.compose
-    }
-    kotlinOptions {
-        jvmTarget = JVMTarget.Versions.core
     }
     buildFeatures {
         compose = true
@@ -35,29 +30,43 @@ android {
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/gradle/incremental.annotation.processors"
         }
     }
     buildTypes {
         debug { }
         release { }
     }
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
 }
 
 dependencies {
-    implementation(project(":usecase:open"))
-    implementation(project(":data:repository"))
+    implementation(project(mapOf("path" to ":domain:usecase:di")))
+    implementation(project(mapOf("path" to ":domain:usecase:open")))
+    implementation(project(mapOf("path" to ":domain:usecase:implementation")))
+    implementation(project(mapOf("path" to ":data:di")))
+    implementation(project(mapOf("path" to ":data:open")))
+    implementation(project(mapOf("path" to ":domain:model")))
+    implementation(Kotlin.coroutinesCore)
     implementation(Androidx.androidxCoreKtx)
     implementation(Androidx.appCompat)
-    implementation(Google.material)
     implementation(Androidx.composeUI)
     implementation(Androidx.composeCompiler)
     implementation(Androidx.composeMaterial)
     debugImplementation(Androidx.composeUiTooling)
+    implementation(Google.material)
     implementation(Androidx.composeUiToolingPreview)
     implementation(Androidx.composeActivity)
     implementation(Androidx.lifeCycleRuntime)
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")
+    implementation(Hilt.hiltAndroid)
+    kapt(Hilt.hiltCompiler)
+    kapt(Hilt.hiltAndroidCompiler)
+    implementation(Hilt.hiltViewModel)
+    implementation(Hilt.hiltNavigation)
+    implementation(SquareApp.timber)
+}
+kapt {
+    correctErrorTypes = true
 }

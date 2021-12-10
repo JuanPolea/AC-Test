@@ -1,7 +1,6 @@
 package com.jfmr.ac.test.data.di
 
-import com.com.jfmr.ac.test.repository.BuildConfig
-import com.jfmr.ac.test.open.api.rickandmorty.RickAndMortyService
+import com.jfmr.ac.test.data.repository.open.api.rickandmorty.RickAndMortyApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,6 +49,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitService(retrofit: Retrofit): RickAndMortyService = retrofit.create(RickAndMortyService::class.java)
+    fun provideRetrofitService(retrofit: Retrofit): RickAndMortyApiService = retrofit.create(RickAndMortyApiService::class.java)
 
 }
