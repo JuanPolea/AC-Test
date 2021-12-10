@@ -233,11 +233,11 @@ object Detekt {
 
 object Hilt {
     object Versions {
-        const val gradle = "2.37"
-        const val hiltAndroid = "2.35"
+        const val gradle = "2.40"
+        const val hiltAndroid = "2.40"
         const val hiltViewModel = "1.0.0-alpha03"
         const val hiltNavigation = "1.0.0-alpha03"
-        const val hiltAndroidCompiler = "2.35"
+        const val hiltAndroidCompiler = "2.40"
         const val hiltCompiler = "1.0.0"
     }
 

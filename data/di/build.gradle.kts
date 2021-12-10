@@ -40,10 +40,10 @@ android {
 
 dependencies {
 
-    implementation(project(":domain:model"))
+    implementation(project(mapOf("path" to ":domain:model")))
     implementation(project(mapOf("path" to ":data:open")))
-    implementation(project(mapOf("path" to ":data:repository:open")))
-    implementation(project(mapOf("path" to ":data:repository:implementation")))
+    implementation(project(mapOf("path" to ":data:remote")))
+    implementation(project(mapOf("path" to ":data:remote:model")))
     implementation(Hilt.hiltAndroid)
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)

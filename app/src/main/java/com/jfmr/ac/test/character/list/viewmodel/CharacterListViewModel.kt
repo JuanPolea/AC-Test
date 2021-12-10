@@ -22,6 +22,7 @@ class CharacterListViewModel @Inject constructor(
 
     fun retrieveCharacters() {
         viewModelScope.launch {
+            retrieveCharactersUseCase.invoke()
         }
     }
 

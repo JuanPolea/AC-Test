@@ -43,13 +43,11 @@ android {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":usecase:open")))
-    implementation(project(mapOf("path" to ":usecase:di")))
-    implementation(project(mapOf("path" to ":usecase:implementation")))
-    implementation(project(mapOf("path" to ":data:open")))
+    implementation(project(mapOf("path" to ":domain:usecase:di")))
+    implementation(project(mapOf("path" to ":domain:usecase:open")))
+    implementation(project(mapOf("path" to ":domain:usecase:implementation")))
     implementation(project(mapOf("path" to ":data:di")))
-    implementation(project(mapOf("path" to ":data:repository:open")))
-    implementation(project(mapOf("path" to ":data:repository:di")))
+    implementation(project(mapOf("path" to ":data:open")))
     implementation(project(mapOf("path" to ":domain:model")))
     implementation(Kotlin.coroutinesCore)
     implementation(Androidx.androidxCoreKtx)
