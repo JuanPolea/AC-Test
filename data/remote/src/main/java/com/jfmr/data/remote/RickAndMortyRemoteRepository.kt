@@ -8,6 +8,4 @@ class RickAndMortyRemoteRepository : RetrieveCharactersDataSource {
     override suspend fun retrieveCharacters(): Flow<Characters> {
         TODO("Not yet implemented")
     }
-
-
 }
