@@ -38,4 +38,8 @@ dependencies {
     implementation(Hilt.hiltAndroid)
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
+    implementation(SquareApp.retrofit)
+    implementation(SquareApp.retrofitCoroutines)
+    implementation(SquareApp.retrofitGson)
+    implementation(SquareApp.loginInterceptor)
 }
