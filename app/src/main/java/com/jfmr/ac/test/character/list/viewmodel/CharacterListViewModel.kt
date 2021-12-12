@@ -3,6 +3,10 @@ package com.jfmr.ac.test.character.list.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.character.list.model.CharacterListState
+import com.jfmr.ac.test.character.list.model.mapper.toError
+import com.jfmr.ac.test.character.list.model.mapper.toSuccess
+import com.jfmr.ac.test.domain.model.Characters
+import com.jfmr.ac.test.domain.model.DomainError
 import com.jfmr.ac.test.usecase.di.RetrieveItemsQualifier
 import com.jfmr.ac.test.usecase.open.RetrieveCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,17 +20,24 @@ class CharacterListViewModel @Inject constructor(
     @RetrieveItemsQualifier private val retrieveCharactersUseCase: RetrieveCharactersUseCase
 ) : ViewModel() {
 
-
     private val characterMSF = MutableStateFlow<CharacterListState>(CharacterListState.Initial)
     internal val characterSF: StateFlow<CharacterListState> = characterMSF
 
+    init {
+        retrieveCharacters()
+    }
+
     private fun retrieveCharacters() {
         viewModelScope.launch {
-            retrieveCharactersUseCase.invoke()
+            retrieveCharactersUseCase.invoke(::success, ::error)
         }
     }
 
-    init {
-        retrieveCharacters()
+    private fun success(characters: Characters) {
+        characterMSF.value = characters.toSuccess()
+    }
+
+    private fun error(error: DomainError) {
+        characterMSF.value = error.toError()
     }
 }
