@@ -40,4 +40,7 @@ dependencies {
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
     implementation(Kotlin.coroutinesCore)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

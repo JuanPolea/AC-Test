@@ -17,8 +17,8 @@ class CharacterListViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    val charactersMSF = MutableStateFlow<CharacterListState>(CharacterListState.Initial)
-    val charactersSF: StateFlow<CharacterListState> = charactersMSF
+    private val characterMSF = MutableStateFlow<CharacterListState>(CharacterListState.Initial)
+    internal val characterSF: StateFlow<CharacterListState> = characterMSF
 
     private fun retrieveCharacters() {
         viewModelScope.launch {

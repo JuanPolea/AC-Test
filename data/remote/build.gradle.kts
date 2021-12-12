@@ -42,4 +42,7 @@ dependencies {
     implementation(SquareApp.retrofitCoroutines)
     implementation(SquareApp.retrofitGson)
     implementation(SquareApp.loginInterceptor)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

@@ -14,4 +14,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     implementation(Kotlin.coroutinesCore)
     kapt(Hilt.hiltCompiler)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

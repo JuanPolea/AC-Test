@@ -17,6 +17,9 @@ dependencies {
     implementation(SquareApp.retrofitGson)
     implementation(Kotlin.coroutinesCore)
     kapt(Hilt.hiltCompiler)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }
 kapt {
     correctErrorTypes = true

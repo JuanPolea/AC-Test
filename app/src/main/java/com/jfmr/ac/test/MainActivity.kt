@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,15 +40,13 @@ class MainActivity : AppCompatActivity() {
 @Composable
 private fun ItemListScreen(modifier: Modifier) {
     val characterListViewModel: CharacterListViewModel = hiltViewModel()
+    characterListViewModel.characterSF.collectAsState()
     LazyVerticalGrid(
         cells = GridCells.Adaptive(2.dp),
         contentPadding = PaddingValues(all = 150.dp),
         modifier = modifier
     ) {
 
-
-    }
-    Card() {
     }
 }
 

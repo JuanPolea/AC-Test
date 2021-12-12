@@ -1,8 +1,8 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.data.repository.open.api.rickandmorty.RetrieveCharactersDataSource
+import com.jfmr.ac.test.data.repository.open.api.rickandmorty.datasource.RetrieveCharactersDataSource
 import com.jfmr.data.remote.RetrieveRemoteCharactersDataSource
-import com.jfmr.data.repository.qualifier.RetrieveRemoteDataSource
+import com.jfmr.data.repository.qualifier.QRetrieveRemoteDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Module
 abstract class RetrieveCharactersDataSourceModule {
 
-    @RetrieveRemoteDataSource
+    @QRetrieveRemoteDataSource
     @Singleton
     @Binds
     abstract fun bindRetrieveCharactersDataSource(implementation: RetrieveRemoteCharactersDataSource): RetrieveCharactersDataSource

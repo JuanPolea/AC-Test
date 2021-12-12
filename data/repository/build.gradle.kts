@@ -43,4 +43,7 @@ dependencies {
     implementation(Androidx.roomKtx)
     kapt(Androidx.roomCompiler)
 
+    implementation(Arrow.core)
+    implementation(Arrow.sintax)
+    kapt(Arrow.meta)
 }

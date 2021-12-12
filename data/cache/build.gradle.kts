@@ -3,7 +3,6 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("kotlin-android")
-    id(Hilt.Plugins.hilt)
 }
 
 android {
@@ -25,18 +24,12 @@ android {
         debug { }
         release { }
     }
-    hilt {
-        enableExperimentalClasspathAggregation = true
-    }
 }
 
 dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:cache:model"))
     implementation(project(":data:open"))
-    implementation(Hilt.hiltAndroid)
-    kapt(Hilt.hiltCompiler)
-    kapt(Hilt.hiltAndroidCompiler)
 
     implementation(Androidx.roomRuntime)
     implementation(Androidx.roomKtx)

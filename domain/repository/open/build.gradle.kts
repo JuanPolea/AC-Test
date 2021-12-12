@@ -12,4 +12,8 @@ dependencies {
     implementation(project(":domain:model"))
     kapt(Hilt.hiltCompiler)
     implementation(Kotlin.coroutinesCore)
+
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

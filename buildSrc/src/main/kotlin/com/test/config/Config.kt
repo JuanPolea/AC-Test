@@ -266,5 +266,14 @@ object JVMTarget {
     object Versions {
         const val core = "1.8"
     }
+}
 
+object Arrow {
+    object Versions {
+        const val core = "0.11.0"
+    }
+
+    const val core = "io.arrow-kt:arrow-core:${Versions.core}"
+    const val sintax = "io.arrow-kt:arrow-syntax:${Versions.core}"
+    const val meta = "io.arrow-kt:arrow-meta:${Versions.core}"
 }
