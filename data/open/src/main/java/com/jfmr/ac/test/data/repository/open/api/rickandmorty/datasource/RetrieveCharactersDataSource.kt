@@ -1,10 +1,9 @@
 package com.jfmr.ac.test.data.repository.open.api.rickandmorty.datasource
 
-import arrow.core.Either
-import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.RemoteError
 import com.jfmr.ac.test.domain.model.Characters
+import com.jfmr.ac.test.domain.model.DomainResult
 
 
 interface RetrieveCharactersDataSource {
-    suspend fun retrieveCharacters(): Either<RemoteError, Characters?>
+    suspend fun retrieveCharacters(): DomainResult<Characters?>
 }

@@ -11,5 +11,4 @@ class RetrieveCharactersInteractor @Inject constructor(
 
     override suspend fun invoke() =
         itemsRepository.getItems()
-
 }

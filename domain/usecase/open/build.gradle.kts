@@ -10,7 +10,7 @@ java {
 }
 dependencies {
     implementation(project(":domain:model"))
-    implementation(project(":data:remote:model"))
+    implementation(project(":data:open"))
     testImplementation("junit:junit:4.13.2")
     implementation(Kotlin.coroutinesCore)
     kapt(Hilt.hiltCompiler)

@@ -33,7 +33,6 @@ android {
 dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:open"))
-    implementation(project(":data:remote:model"))
     implementation(Kotlin.coroutinesCore)
     implementation(Hilt.hiltAndroid)
     kapt(Hilt.hiltCompiler)

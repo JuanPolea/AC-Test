@@ -1,12 +1,12 @@
 package com.jfmr.data.remote
 
-import arrow.core.Either
 import com.jfmr.ac.test.data.repository.open.api.rickandmorty.datasource.RetrieveCharactersDataSource
-import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.RemoteError
+import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.CharacterResponse
+import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.Info
+import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.ResultsItem
 import com.jfmr.ac.test.data.repository.open.api.rickandmorty.network.RickAndMortyApiService
-import com.jfmr.data.remote.model.CharacterResponse
-import com.jfmr.data.remote.model.Info
-import com.jfmr.data.remote.model.ResultsItem
+import com.jfmr.ac.test.data.repository.open.error.tryCall
+import com.jfmr.ac.test.domain.model.DomainResult
 import javax.inject.Inject
 import com.jfmr.ac.test.domain.model.Characters as DomainCharacters
 import com.jfmr.ac.test.domain.model.Info as InfoDomain
@@ -17,24 +17,22 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
     private val remoteService: RickAndMortyApiService
 ) : RetrieveCharactersDataSource {
 
-    override suspend fun retrieveCharacters(): Either<RemoteError, DomainCharacters?> {
-        val response = remoteService.retrieveAllCharacters()
-        return if (response.isSuccessful) {
-            Either.right(response.body()?.toDomain())
-        } else
-            Either.left(RemoteError.Unknown("jarls"))
-    }
+    override suspend fun retrieveCharacters(): DomainResult<DomainCharacters?> =
+        tryCall {
+            val response = remoteService.retrieveAllCharacters()
+            response.body()?.toDomain()
+        }
 
-    fun CharacterResponse.toDomain() =
+    private fun CharacterResponse.toDomain() =
         DomainCharacters(
             results.toDomain(),
             info?.toDomain()
         )
 
-    fun List<ResultsItem?>?.toDomain() =
+    private fun List<ResultsItem?>?.toDomain() =
         this?.filterNotNull()?.map { it.toDomain() }
 
-    fun ResultsItem.toDomain() =
+    private fun ResultsItem.toDomain() =
         ResultItemDomain(
             image,
             gender,
@@ -42,7 +40,7 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
             created
         )
 
-    fun Info.toDomain() =
+    private fun Info.toDomain() =
         InfoDomain(
             next,
             pages,

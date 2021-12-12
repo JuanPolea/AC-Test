@@ -43,7 +43,6 @@ dependencies {
     implementation(project(mapOf("path" to ":data:open")))
     implementation(project(mapOf("path" to ":data:remote")))
     implementation(project(mapOf("path" to ":data:repository")))
-    implementation(project(mapOf("path" to ":data:remote:model")))
     implementation(Hilt.hiltAndroid)
     implementation(project(mapOf("path" to ":domain:repository:open")))
     kapt(Hilt.hiltCompiler)
