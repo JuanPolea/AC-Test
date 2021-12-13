@@ -6,7 +6,7 @@ import com.jfmr.ac.test.character.list.model.CharacterListState
 import com.jfmr.ac.test.character.list.model.mapper.toError
 import com.jfmr.ac.test.character.list.model.mapper.toSuccess
 import com.jfmr.ac.test.domain.model.Characters
-import com.jfmr.ac.test.domain.model.DomainError
+import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.usecase.di.RetrieveItemsQualifier
 import com.jfmr.ac.test.usecase.open.RetrieveCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

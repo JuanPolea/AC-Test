@@ -1,9 +1,9 @@
 package com.jfmr.domain.usecase.implementation
 
 import com.jfmr.ac.test.data.di.QItemRepositoryImpl
-import com.jfmr.ac.test.data.repository.open.error.RemoteError
 import com.jfmr.ac.test.domain.model.Characters
-import com.jfmr.ac.test.domain.model.DomainError
+import com.jfmr.ac.test.domain.model.error.DomainError
+import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.usecase.open.RetrieveCharactersUseCase
 import com.jfmr.domain.repository.open.ItemsRepository
 import javax.inject.Inject

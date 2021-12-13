@@ -45,9 +45,6 @@ android {
 dependencies {
     implementation(project(mapOf("path" to ":domain:usecase:di")))
     implementation(project(mapOf("path" to ":domain:usecase:open")))
-    implementation(project(mapOf("path" to ":domain:usecase:implementation")))
-    implementation(project(mapOf("path" to ":data:di")))
-    implementation(project(mapOf("path" to ":data:open")))
     implementation(project(mapOf("path" to ":domain:model")))
     implementation(Kotlin.coroutinesCore)
     implementation(Androidx.androidxCoreKtx)
@@ -55,6 +52,7 @@ dependencies {
     implementation(Androidx.composeUI)
     implementation(Androidx.composeCompiler)
     implementation(Androidx.composeMaterial)
+    implementation(Androidx.composeCoil)
     debugImplementation(Androidx.composeUiTooling)
     implementation(Google.material)
     implementation(Androidx.composeUiToolingPreview)

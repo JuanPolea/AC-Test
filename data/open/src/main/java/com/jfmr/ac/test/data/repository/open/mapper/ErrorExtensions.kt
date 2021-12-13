@@ -1,18 +1,11 @@
-package com.jfmr.ac.test.data.repository.open.error
+package com.jfmr.ac.test.data.repository.open.mapper
 
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.domain.model.DomainError
 import com.jfmr.ac.test.domain.model.DomainResult
+import com.jfmr.ac.test.domain.model.error.RemoteError
 import retrofit2.HttpException
 import java.io.IOException
-
-sealed class RemoteError : DomainError {
-    object Connectivity : RemoteError()
-    data class Server(val message: Int) : RemoteError()
-    data class Unknown(val message: String) : RemoteError()
-    object Null : RemoteError()
-}
 
 fun Exception.toError(): RemoteError =
     when (this) {
