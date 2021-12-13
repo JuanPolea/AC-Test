@@ -9,6 +9,7 @@ pluginManagement {
 }
 rootProject.name = "AC-Test"
 include(":app")
+include(":presentation:ui")
 include(":domain:usecase")
 include(":domain:usecase:open")
 include(":domain:usecase:implementation")
