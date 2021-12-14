@@ -17,7 +17,7 @@ buildscript {
         classpath(Detekt.gradlePlugin)
         classpath(Hilt.gradlePlugin)
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0")
-        classpath("com.android.tools.build:gradle:7.0.3")
+        classpath("com.android.tools.build:gradle:7.0.4")
     }
     configurations.all {
         resolutionStrategy {
@@ -32,5 +32,7 @@ allprojects {
         google()
         mavenCentral()
         maven(url = "https://jitpack.io")
+        maven(url = "https://dl.bintray.com/arrow-kt/arrow-kt/")
+        maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
     }
 }

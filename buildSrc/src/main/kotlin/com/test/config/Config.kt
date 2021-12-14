@@ -31,23 +31,6 @@ object SourceDirs {
 
 }
 
-object Repositories {
-    const val maven = "https://dl.bintray.com/kategory/maven"
-}
-
-object Variants {
-    const val default = "default"
-    const val release = "release"
-    const val debug = "debug"
-}
-
-object Flavors {
-    const val prod = "prod"
-    const val staging = "staging"
-    const val integration = "integration"
-    const val firebase = "firebase"
-}
-
 object Gradle {
     object Versions {
         const val gradleVersion = "7.0.0-rc01"
@@ -63,30 +46,24 @@ object Androidx {
         const val appCompat = "1.2.0"
         const val safeArgs = "2.3.5"
         const val coreKtx = "1.7.0"
-        const val constraintLayout = "1.1.3"
         const val recycler = "1.0.0"
         const val androidxLifecycle = "2.2.0"
         const val androidxLifecycleRuntime = "2.4.0"
-        const val dataBindingCompiler = "3.1.4"
-        const val androidxLegacySupport = "1.0.0"
-        const val security = "1.1.0-alpha01"
         const val nav_version = "2.3.5"
         const val junit4 = "4.12"
         const val testRunner = "1.1.0-alpha4"
         const val espresso = "3.1.0-alpha4"
         const val androidxTestArch = "2.1.0"
         const val room = "2.2.6"
-        const val deSugaring = "1.0.9"
         const val annotation = "1.1.0"
-        const val paging = "2.1.1"
         const val testCore = "1.3.0"
         const val instrumentationTest = "1.1.2"
         const val testRules = "1.3.0"
         const val activity = "1.2.3"
-        const val fragment = "1.3.4"
-        const val compose = "1.0.5"
+        const val compose = "1.1.0-beta03"
         const val activityCompose = "1.4.0"
-        const val navigation = "2.4.0-beta01"
+        const val navigation = "2.4.0-beta02"
+        const val coil = "1.4.0"
     }
 
     object Plugins {
@@ -101,29 +78,13 @@ object Androidx {
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     val dirToLibs = mapOf("dir" to "libs", "include" to listOf("*.jar"))
     const val androidxCoreKtx = "androidx.core:core-ktx:${Versions.coreKtx}"
-    const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
-    const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recycler}"
-    const val dataBinding = "com.android.databinding:compiler:${Versions.dataBindingCompiler}"
-    const val lifeCycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
-    const val lifeCycleExtension = "androidx.lifecycle:lifecycle-extensions:${Versions.androidxLifecycle}"
     const val lifeCycleCommon = "androidx.lifecycle:lifecycle-common-java8:${Versions.androidxLifecycle}"
     const val lifeCycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.androidxLifecycleRuntime}"
-    const val navigationUI = "androidx.navigation:navigation-ui-ktx:${Versions.nav_version}"
-    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.nav_version}"
     const val navigationPlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.safeArgs}"
-    const val legacySupport = "androidx.legacy:legacy-support-v4:${Versions.androidxLegacySupport}"
-    const val securityCrypto = "androidx.security:security-crypto:${Versions.security}"
     const val roomRuntime = "androidx.room:room-runtime:${Versions.room}"
     const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
-    const val roomSchemaLocation = "room.schemaLocation"
-    const val roomSchemaIncremental = "room.incremental"
-    const val roomExpandProjection = "room.expandProjection"
-    const val deSugaring = "com.android.tools:desugar_jdk_libs:${Versions.deSugaring}"
     const val annotations = "androidx.annotation:annotation:${Versions.annotation}"
-    const val paging = "androidx.paging:paging-runtime:${Versions.paging}"
-    const val activity = "androidx.activity:activity-ktx:${Versions.activity}"
-    const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
 
     //Testing
     const val testRunner = "androidx.test:runner:${Versions.testRunner}"
@@ -146,6 +107,7 @@ object Androidx {
     const val composeUiManifestTest = "androidx.compose.ui:ui-test-manifest:${Versions.compose}"
     const val composeFundation = "androidx.compose.foundation:foundation:${Versions.compose}"
     const val composeUiUtil = "androidx.compose.ui:ui-util:${Versions.compose}"
+    const val composeCoil = "io.coil-kt:coil-compose:${Versions.coil}"
 }
 
 object Kotlin {
@@ -174,25 +136,12 @@ object Kotlin {
 object Google {
     object Versions {
         const val materialComponents = "1.2.1"
-        const val daggerVersion = "2.28.3"
         const val gsonVersion = "2.8.6"
-        const val googlePlayServicesVersion = "17.0.0"
-        const val servicesPlugin = "4.3.5"
         const val jvm = "0.2.0"
     }
 
     const val material = "com.google.android.material:material:${Versions.materialComponents}"
     const val gson = "com.google.code.gson:gson:${Versions.gsonVersion}"
-
-    //Dependency Injection
-    const val dagger = "com.google.dagger:dagger:${Versions.daggerVersion}"
-    const val daggerCompiler = "com.google.dagger:dagger-compiler:${Versions.daggerVersion}"
-    const val daggerProcessor = "com.google.dagger:dagger-android-processor:${Versions.daggerVersion}"
-    const val daggerAndroid = "com.google.dagger:dagger-android:${Versions.daggerVersion}"
-    const val daggerAndroidSupport = "com.google.dagger:dagger-android-support:${Versions.daggerVersion}"
-    const val playServices = "com.google.android.gms:play-services-safetynet:${Versions.googlePlayServicesVersion}"
-    const val servicesPlugin = "com.google.gms:google-services:${Versions.servicesPlugin}"
-    const val WorkAroundKotlin5 = "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${Versions.jvm}"
 }
 
 
@@ -266,5 +215,14 @@ object JVMTarget {
     object Versions {
         const val core = "1.8"
     }
+}
 
+object Arrow {
+    object Versions {
+        const val core = "0.11.0"
+    }
+
+    const val core = "io.arrow-kt:arrow-core:${Versions.core}"
+    const val sintax = "io.arrow-kt:arrow-syntax:${Versions.core}"
+    const val meta = "io.arrow-kt:arrow-meta:${Versions.core}"
 }

@@ -43,18 +43,14 @@ android {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":domain:usecase:di")))
-    implementation(project(mapOf("path" to ":domain:usecase:open")))
-    implementation(project(mapOf("path" to ":domain:usecase:implementation")))
-    implementation(project(mapOf("path" to ":data:di")))
-    implementation(project(mapOf("path" to ":data:open")))
-    implementation(project(mapOf("path" to ":domain:model")))
+    implementation(project(mapOf("path" to ":presentation:ui")))
     implementation(Kotlin.coroutinesCore)
     implementation(Androidx.androidxCoreKtx)
     implementation(Androidx.appCompat)
     implementation(Androidx.composeUI)
     implementation(Androidx.composeCompiler)
     implementation(Androidx.composeMaterial)
+    implementation(Androidx.composeCoil)
     debugImplementation(Androidx.composeUiTooling)
     implementation(Google.material)
     implementation(Androidx.composeUiToolingPreview)
@@ -66,6 +62,9 @@ dependencies {
     implementation(Hilt.hiltViewModel)
     implementation(Hilt.hiltNavigation)
     implementation(SquareApp.timber)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }
 kapt {
     correctErrorTypes = true

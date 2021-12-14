@@ -4,7 +4,6 @@ plugins {
     kotlin("kapt")
     id("kotlin-android")
     id(Hilt.Plugins.hilt)
-    kotlin("plugin.serialization") version "1.5.10"
 }
 
 android {
@@ -43,8 +42,9 @@ dependencies {
     implementation(project(mapOf("path" to ":domain:model")))
     implementation(project(mapOf("path" to ":data:open")))
     implementation(project(mapOf("path" to ":data:remote")))
-    implementation(project(mapOf("path" to ":data:remote:model")))
+    implementation(project(mapOf("path" to ":data:repository")))
     implementation(Hilt.hiltAndroid)
+    implementation(project(mapOf("path" to ":domain:repository:open")))
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
     implementation(SquareApp.retrofit)

@@ -33,7 +33,6 @@ dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:open"))
     implementation(project(":data:di"))
-    implementation(project(":domain:repository:di"))
     implementation(project(":domain:repository:open"))
     implementation(project(":domain:usecase:open"))
     implementation(Kotlin.coroutinesCore)
@@ -41,4 +40,7 @@ dependencies {
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
     implementation(Kotlin.coroutinesCore)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

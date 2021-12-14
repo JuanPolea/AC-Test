@@ -10,4 +10,7 @@ java {
 }
 dependencies {
     kapt(Hilt.hiltCompiler)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }

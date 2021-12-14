@@ -35,8 +35,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
-    implementation("com.android.tools.build:gradle:7.0.3")
-    implementation("com.android.tools.build:gradle-api:7.0.3")
+    implementation("com.android.tools.build:gradle:7.0.4")
+    implementation("com.android.tools.build:gradle-api:7.0.4")
     implementation(group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version = "1.5.31")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
 }

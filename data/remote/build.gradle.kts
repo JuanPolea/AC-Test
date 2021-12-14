@@ -4,7 +4,6 @@ plugins {
     kotlin("kapt")
     id("kotlin-android")
     id(Hilt.Plugins.hilt)
-    kotlin("plugin.serialization") version "1.5.10"
 }
 
 android {
@@ -34,9 +33,15 @@ android {
 dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:open"))
-    implementation(project(":data:remote:model"))
     implementation(Kotlin.coroutinesCore)
     implementation(Hilt.hiltAndroid)
     kapt(Hilt.hiltCompiler)
     kapt(Hilt.hiltAndroidCompiler)
+    implementation(SquareApp.retrofit)
+    implementation(SquareApp.retrofitCoroutines)
+    implementation(SquareApp.retrofitGson)
+    implementation(SquareApp.loginInterceptor)
+    implementation(Arrow.core)
+    kapt(Arrow.meta)
+    implementation(Arrow.sintax)
 }
