@@ -50,6 +50,7 @@ dependencies {
     implementation(Google.material)
     implementation(Androidx.composeUiToolingPreview)
     implementation(Androidx.composeActivity)
+    implementation(Androidx.composeNavigation)
     implementation(Androidx.lifeCycleRuntime)
     implementation(Hilt.hiltAndroid)
     kapt(Hilt.hiltCompiler)

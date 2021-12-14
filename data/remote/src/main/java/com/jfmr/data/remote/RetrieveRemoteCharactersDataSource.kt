@@ -37,20 +37,22 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
         this?.filterNotNull()?.map { it.toDomain() }
 
     private fun ResultsItem.toDomain() =
-        DomainResultItem(
-            image,
-            gender,
-            species,
-            created,
-            origin?.toDomain(),
-            name,
-            location?.toDomain(),
-            episode,
-            id,
-            type,
-            url,
-            status
-        )
+        id?.let {
+            DomainResultItem(
+                image,
+                gender,
+                species,
+                created,
+                origin?.toDomain(),
+                name,
+                location?.toDomain(),
+                episode,
+                it,
+                type,
+                url,
+                status
+            )
+        }
 
     private fun Info.toDomain() =
         DomainInfo(

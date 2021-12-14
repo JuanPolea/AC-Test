@@ -32,7 +32,7 @@ data class ResultsItem(
     val name: String? = null,
     val location: Location? = null,
     val episode: List<String?>? = null,
-    val id: Int? = null,
+    val id: Int,
     val type: String? = null,
     val url: String? = null,
     val status: String? = null,

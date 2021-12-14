@@ -62,7 +62,7 @@ object Androidx {
         const val activity = "1.2.3"
         const val compose = "1.1.0-beta03"
         const val activityCompose = "1.4.0"
-        const val navigation = "2.4.0-beta01"
+        const val navigation = "2.4.0-beta02"
         const val coil = "1.4.0"
     }
 
