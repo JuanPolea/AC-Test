@@ -5,7 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import com.jfmr.ac.test.presentation.ui.component.MainAppBar
+import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
 

@@ -4,7 +4,10 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 
-sealed class NavItem(val baseRoute: String, private val navArgs: List<NavArg> = emptyList()) {
+sealed class NavItem(
+    val baseRoute: String,
+    private val navArgs: List<NavArg> = emptyList()
+) {
 
     val route = kotlin.run {
         val argKeys = navArgs.map { "{${it.key}}" }
@@ -18,7 +21,10 @@ sealed class NavItem(val baseRoute: String, private val navArgs: List<NavArg> = 
     }
 
     object Main : NavItem("list")
-    object Detail : NavItem("detail", listOf(NavArg.CharacterId)) {
+    object Detail : NavItem(
+        baseRoute = "detail",
+        navArgs = listOf(NavArg.CharacterId)
+    ) {
         fun createRoute(characterId: Int) = "$baseRoute/$characterId"
     }
 }

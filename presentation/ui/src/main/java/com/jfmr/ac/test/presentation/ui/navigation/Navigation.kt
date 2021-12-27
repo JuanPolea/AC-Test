@@ -7,27 +7,27 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.jfmr.ac.test.presentation.ui.character.detail.view.Detail
-import com.jfmr.ac.test.presentation.ui.character.list.view.ItemListScreen
+import com.jfmr.ac.test.presentation.ui.character.list.view.CharacterListScreen
+import com.jfmr.ac.test.presentation.ui.main.rememberAppState
 
 @ExperimentalFoundationApi
 @Composable
 internal fun Navigation() {
-    val navController = rememberNavController()
+    val appState = rememberAppState()
     NavHost(
-        navController = navController,
+        navController = appState.navController,
         startDestination = NavItem.Main.route
     ) {
         composable(NavItem.Main) {
-            ItemListScreen(modifier = Modifier) { resultsItem ->
-                navController.navigate(NavItem.Detail.createRoute(resultsItem.id))
+            CharacterListScreen(modifier = Modifier) { resultsItem ->
+                appState.navController.navigate(NavItem.Detail.createRoute(resultsItem.id))
             }
         }
         composable(NavItem.Detail) { backStackEntry ->
             Detail(
                 itemId = backStackEntry.findArgs(NavArg.CharacterId),
-                onUpClick = { navController.popBackStack() }
+                onUpClick = { appState.navController.popBackStack() }
             )
         }
     }
