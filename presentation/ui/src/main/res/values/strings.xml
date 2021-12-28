@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AC-Test</string>
     <string name="home_title">Rick And Morty</string>
+    <string name="bottom_bar_left_icon_description">Left icon button in Bottom Bar</string>
+    <string name="characters">characters</string>
+    <string name="locations">Locations</string>
 </resources>

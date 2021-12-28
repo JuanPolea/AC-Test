@@ -23,8 +23,10 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
 
     override suspend fun retrieveCharacters(): DomainResult<DomainCharacters?> =
         tryCall {
-            val response = remoteService.retrieveAllCharacters()
-            response.body()?.toDomain()
+            remoteService
+                .retrieveAllCharacters()
+                .body()
+                ?.toDomain()
         }
 
     private fun CharacterResponse.toDomain() =
