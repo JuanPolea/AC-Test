@@ -13,8 +13,8 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,40 +22,42 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import com.jfmr.ac.test.domain.model.ResultsItem
+import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.main.theme.Shapes
 
 @ExperimentalFoundationApi
 @Composable
 internal fun CharacterListScreen(
     modifier: Modifier,
-    onClick: (ResultsItem) -> Unit
+    characterListViewModel: CharacterListViewModel = hiltViewModel(),
+    onClick: (ResultsItem) -> Unit,
 ) {
-    //TODO fix scroll position on orientation changes
-    val characterListViewModel: CharacterListViewModel = hiltViewModel()
     val characterListState by characterListViewModel.characterSF.collectAsState()
     val state = rememberLazyListState()
     when (characterListState) {
-        is CharacterListState.Initial -> {}
+        is CharacterListState.Initial -> CircularProgressIndicator()
         is CharacterListState.Error -> ErrorScreen("faksjdlñ")
         is CharacterListState.Success -> {
             LazyVerticalGrid(
                 modifier = modifier
                     .fillMaxWidth(),
-                cells = GridCells.Adaptive(150.dp),
+                cells = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
                 state = state,
             ) {
                 val listItems: List<ResultsItem> =
                     (characterListState as CharacterListState.Success).characters.results?.filterNotNull() ?: emptyList()
                 items(listItems) { item ->
-                    CharacterItemList(item, onClick)
+                    CharacterListContent(item, onClick)
                 }
             }
         }
@@ -63,7 +65,7 @@ internal fun CharacterListScreen(
 }
 
 @Composable
-private fun CharacterItemList(
+private fun CharacterListContent(
     resultsItem: ResultsItem,
     onClick: (ResultsItem) -> Unit,
     modifier: Modifier = Modifier
@@ -71,14 +73,14 @@ private fun CharacterItemList(
     Card(
         modifier = modifier
             .fillMaxSize()
-            .padding(4.dp)
+            .padding(dimensionResource(id = R.dimen.character_list_padding))
             .clickable { onClick(resultsItem) },
-        shape = RoundedCornerShape(4.dp),
-        elevation = 8.dp,
+        shape = Shapes.large,
+        elevation = dimensionResource(id = R.dimen.character_list_elevation),
         backgroundColor = MaterialTheme.colors.background
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize(),
         ) {
             Column {
@@ -89,34 +91,29 @@ private fun CharacterItemList(
                             size(OriginalSize)
                         }
                     ),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth(),
                     contentDescription = resultsItem.image,
                     contentScale = ContentScale.FillWidth,
                 )
-                val padding = Modifier.padding(start = 8.dp, end = 4.dp)
-                Text(
-                    text = resultsItem.name ?: "",
-                    modifier = padding,
-                    style = MaterialTheme.typography.subtitle1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = resultsItem.origin?.name ?: "",
-                    modifier = padding,
-                    style = MaterialTheme.typography.caption,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = resultsItem.status ?: "",
-                    modifier = padding,
-                    style = MaterialTheme.typography.body2,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.padding(bottom = 8.dp))
+                resultsItem.name?.let { EclipsedText(it, MaterialTheme.typography.subtitle1) }
+                resultsItem.origin?.name?.let { EclipsedText(it, MaterialTheme.typography.caption) }
+                resultsItem.status?.let { EclipsedText(it, MaterialTheme.typography.body2) }
+                Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }
     }
+}
+
+@Composable
+private fun EclipsedText(title: String, textStyle: TextStyle) {
+    Text(
+        text = title,
+        modifier = Modifier.padding(
+            start = dimensionResource(id = R.dimen.text_start),
+            end = dimensionResource(id = R.dimen.text_end)
+        ),
+        style = textStyle,
+        maxLines = R.dimen.max_line_1,
+        overflow = TextOverflow.Ellipsis
+    )
 }

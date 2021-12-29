@@ -49,9 +49,9 @@ private fun NavGraphBuilder.charactersNav(
     ) {
 
         composable(NavCommand.ContentType(Feature.CHARACTERS)) {
-            CharacterListScreen(modifier = Modifier) { resultsItem ->
+            CharacterListScreen(modifier = Modifier, onClick = { resultsItem ->
                 appState.navController.navigate(NavCommand.ContentDetail(Feature.CHARACTERS).createRoute(resultsItem.id))
-            }
+            })
         }
         composable(NavCommand.ContentDetail(Feature.CHARACTERS)) { backStackEntry ->
             Detail(
