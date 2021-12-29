@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="corner">4dp</dimen>
+    <dimen name="character_list_elevation">8dp</dimen>
+    <dimen name="adaptative_size">150dp</dimen>
+    <dimen name="character_list_padding">4dp</dimen>
+    <dimen name="spacer_bottom">8dp</dimen>
+    <dimen name="max_line_1">1</dimen>
+    <dimen name="text_start">6dp</dimen>
+    <dimen name="text_end">4dp</dimen>
+</resources>

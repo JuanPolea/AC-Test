@@ -1,5 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.character.list.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.Characters
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
-    @RetrieveItemsQualifier private val retrieveCharactersUseCase: RetrieveCharactersUseCase
+    @RetrieveItemsQualifier private val retrieveCharactersUseCase: RetrieveCharactersUseCase,
+    val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val characterMSF = MutableStateFlow<CharacterListState>(CharacterListState.Initial)
