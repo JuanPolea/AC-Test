@@ -1,6 +1,7 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.data.repository.QDefaultDispatcher
+import com.jfmr.data.repository.qualifier.DispatcherDefault
+import com.jfmr.data.repository.qualifier.DispatcherIO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,10 @@ class DispatchersModule {
 
 
     @Provides
-    @QDefaultDispatcher
-    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    @DispatcherIO
+    fun provideDispatcherIO(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @DispatcherDefault
+    fun provideDispatcherDefault(): CoroutineDispatcher = Dispatchers.Default
 }

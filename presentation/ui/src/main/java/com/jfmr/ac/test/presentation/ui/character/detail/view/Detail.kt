@@ -11,9 +11,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
 
 @Composable
-fun Detail(itemId: String, onUpClick: () -> Unit) {
+fun Detail(
+    itemId: String,
+    onUpClick: () -> Unit,
+    detailViewModel: DetailViewModel = hiltViewModel(),
+) {
     Scaffold(
         topBar = {
             TopAppBar(

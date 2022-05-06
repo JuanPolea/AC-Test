@@ -6,21 +6,12 @@ data class Characters(
     val info: Info? = null,
 )
 
-data class Location(
-    val name: String? = null,
-    val url: String? = null,
-)
 
 data class Info(
     val next: String? = null,
     val pages: Int? = null,
     val prev: Any? = null,
     val count: Int? = null,
-)
-
-data class Origin(
-    val name: String? = null,
-    val url: String? = null,
 )
 
 data class ResultsItem(
