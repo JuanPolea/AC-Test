@@ -1,5 +1,6 @@
 package com.jfmr.data.remote
 
+import android.util.Log
 import com.jfmr.ac.test.data.repository.open.api.rickandmorty.datasource.RetrieveCharactersDataSource
 import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.CharacterDetailResponse
 import com.jfmr.ac.test.data.repository.open.api.rickandmorty.entities.CharacterResponse
@@ -33,10 +34,12 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
 
     override suspend fun retrieveCharacterDetail(characterId: Int) =
         tryCall {
-            remoteService
+            val tema = remoteService
                 .retrieveCharacterById(characterId)
                 .body()
-                .toDomain()
+            Log.e("lñkfdjds", tema.toString())
+
+            tema.toDomain()
         }
 
 

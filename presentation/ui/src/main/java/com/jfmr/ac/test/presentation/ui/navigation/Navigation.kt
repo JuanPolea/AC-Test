@@ -9,7 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jfmr.ac.test.presentation.ui.character.detail.view.Detail
+import com.jfmr.ac.test.presentation.ui.character.detail.view.CharacterDetailScreen
 import com.jfmr.ac.test.presentation.ui.character.list.view.CharacterListScreen
 import com.jfmr.ac.test.presentation.ui.main.AppState
 
@@ -41,7 +41,7 @@ fun NavGraphBuilder.locationsNav(appState: AppState) {
 
 @ExperimentalFoundationApi
 private fun NavGraphBuilder.charactersNav(
-    appState: AppState
+    appState: AppState,
 ) {
     navigation(
         startDestination = NavCommand.ContentType(Feature.CHARACTERS).route,
@@ -50,11 +50,18 @@ private fun NavGraphBuilder.charactersNav(
 
         composable(NavCommand.ContentType(Feature.CHARACTERS)) {
             CharacterListScreen(modifier = Modifier, onClick = { resultsItem ->
-                appState.navController.navigate(NavCommand.ContentDetail(Feature.CHARACTERS).createRoute(resultsItem.id))
-            })
+                appState
+                    .navController
+                    .navigate(
+                        NavCommand
+                            .ContentDetail(Feature.CHARACTERS)
+                            .createRoute(resultsItem.id)
+                    )
+            }
+            )
         }
         composable(NavCommand.ContentDetail(Feature.CHARACTERS)) { backStackEntry ->
-            Detail(
+            CharacterDetailScreen(
                 itemId = backStackEntry.findArgs(NavArg.ItemId),
                 onUpClick = { appState.navController.popBackStack() }
             )
@@ -64,7 +71,7 @@ private fun NavGraphBuilder.charactersNav(
 
 private fun NavGraphBuilder.composable(
     navItem: NavCommand,
-    content: @Composable (NavBackStackEntry) -> Unit
+    content: @Composable (NavBackStackEntry) -> Unit,
 ) {
     composable(
         route = navItem.route,

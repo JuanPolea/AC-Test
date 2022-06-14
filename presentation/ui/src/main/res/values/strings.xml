@@ -4,4 +4,7 @@
     <string name="bottom_bar_left_icon_description">Left icon button in Bottom Bar</string>
     <string name="characters">characters</string>
     <string name="locations">Locations</string>
+    <string name="retrieving_characters">Retrieving Characters</string>
+    <string name="loading">Loading</string>
+    <string name="character_detail_not_found">Character Detail no found</string>
 </resources>
