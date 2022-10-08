@@ -60,11 +60,8 @@ private fun NavGraphBuilder.charactersNav(
             }
             )
         }
-        composable(NavCommand.ContentDetail(Feature.CHARACTERS)) { backStackEntry ->
-            CharacterDetailScreen(
-                itemId = backStackEntry.findArgs(NavArg.ItemId),
-                onUpClick = { appState.navController.popBackStack() }
-            )
+        composable(NavCommand.ContentDetail(Feature.CHARACTERS)) {
+            CharacterDetailScreen(onUpClick = { appState.navController.popBackStack() })
         }
     }
 }

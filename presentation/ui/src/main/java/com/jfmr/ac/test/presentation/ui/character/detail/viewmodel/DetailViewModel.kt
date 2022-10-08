@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.presentation.ui.R
+import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailError
+import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper
-import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper.toCharacterStateError
-import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper.toCharacterStateSuccess
 import com.jfmr.ac.test.usecase.di.CharacterDetailQualifier
 import com.jfmr.ac.test.usecase.open.CharacterDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,9 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    var characterDetailState by mutableStateOf<CharacterDetailState>(CharacterDetailMapper.toCharacterStateLoading(R.string.retrieving_characters))
+    var characterDetailState by mutableStateOf<CharacterDetailState>(
+        CharacterDetailMapper.toCharacterStateLoading(R.string.retrieving_characters)
+    )
         private set
 
 
@@ -42,10 +44,23 @@ class DetailViewModel @Inject constructor(
 
     }
 
-    private fun success(characterDetail: CharacterDetail) {
-        characterDetailState = characterDetail.toCharacterStateSuccess()
+    fun onCharacterDetailEvent(characterDetailEvent: CharacterDetailEvent) {
+        characterDetailState = when (characterDetailEvent) {
+            is CharacterDetailEvent.CharacterFound ->
+                CharacterDetailState.Success(characterDetailEvent.characterDetail)
+            CharacterDetailEvent.CharacterNotFound ->
+                CharacterDetailState.Error(CharacterDetailError.CharacterNotFound)
+            CharacterDetailEvent.CharacterServerError ->
+                CharacterDetailState.Error(CharacterDetailError.ServerError)
+        }
     }
 
+    private fun success(characterDetail: CharacterDetail) =
+        onCharacterDetailEvent(CharacterDetailEvent.CharacterFound(characterDetail))
+
+
     private fun error(domainError: DomainError) =
-        domainError.toCharacterStateError()
+        onCharacterDetailEvent(CharacterDetailEvent.CharacterServerError)
+
+
 }

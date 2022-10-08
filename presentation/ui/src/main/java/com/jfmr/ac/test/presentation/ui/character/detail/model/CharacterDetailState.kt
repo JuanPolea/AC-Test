@@ -11,3 +11,13 @@ sealed interface CharacterDetailState {
 
 }
 
+sealed interface CharacterDetailError : DomainError {
+    object ServerError : CharacterDetailError
+    object CharacterNotFound : CharacterDetailError
+}
+
+sealed interface CharacterDetailEvent {
+    data class CharacterFound(val characterDetail: CharacterDetail) : CharacterDetailEvent
+    object CharacterNotFound : CharacterDetailEvent
+    object CharacterServerError : CharacterDetailEvent
+}

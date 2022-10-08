@@ -61,4 +61,7 @@ dependencies {
     implementation(Arrow.core)
     kapt(Arrow.meta)
     implementation(Arrow.sintax)
+    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation("com.google.android.material:material:1.6.1")
+
 }
