@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
 import com.jfmr.ac.test.presentation.ui.navigation.AppBottomNavigation
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
@@ -23,9 +22,6 @@ fun RickAndMortyApp() {
 
     ThemeAndSurfaceWrapper {
         Scaffold(
-            topBar = {
-                MainAppBar()
-            },
             bottomBar = {
                 AppBottomNavigation(
                     currentRoute = appState.currentRoute,

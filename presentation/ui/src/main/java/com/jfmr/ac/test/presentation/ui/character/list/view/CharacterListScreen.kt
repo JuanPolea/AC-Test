@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +34,7 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.main.theme.Shapes
 
 @ExperimentalFoundationApi
@@ -44,20 +46,30 @@ internal fun CharacterListScreen(
 ) {
     val characterListState by characterListViewModel.characterSF.collectAsState()
     val state = rememberLazyListState()
-    when (characterListState) {
-        is CharacterListState.Initial -> CircularProgressIndicator()
-        is CharacterListState.Error -> ErrorScreen("faksjdlñ")
-        is CharacterListState.Success -> {
-            LazyVerticalGrid(
-                modifier = modifier
-                    .fillMaxWidth(),
-                cells = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
-                state = state,
-            ) {
-                val listItems: List<ResultsItem> =
-                    (characterListState as CharacterListState.Success).characters.results?.filterNotNull() ?: emptyList()
-                items(listItems) { item ->
-                    CharacterListContent(item, onClick)
+
+    Scaffold(
+        topBar = {
+            MainAppBar()
+        },
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            when (characterListState) {
+                is CharacterListState.Initial -> CircularProgressIndicator()
+                is CharacterListState.Error -> ErrorScreen("faksjdlñ")
+                is CharacterListState.Success -> {
+                    LazyVerticalGrid(
+                        modifier = modifier
+                            .fillMaxWidth(),
+                        cells = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
+                        state = state,
+                    ) {
+                        val listItems: List<ResultsItem> =
+                            (characterListState as CharacterListState.Success).characters.results?.filterNotNull()
+                                ?: emptyList()
+                        items(listItems) { item ->
+                            CharacterListContent(item, onClick)
+                        }
+                    }
                 }
             }
         }
@@ -68,7 +80,7 @@ internal fun CharacterListScreen(
 private fun CharacterListContent(
     resultsItem: ResultsItem,
     onClick: (ResultsItem) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
