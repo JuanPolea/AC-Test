@@ -39,7 +39,6 @@ class RetrieveRemoteCharactersDataSource @Inject constructor(
                 .toDomain()
         }
 
-
     private fun CharacterResponse.toDomain() =
         DomainCharacters(
             results = results.toDomain(),
