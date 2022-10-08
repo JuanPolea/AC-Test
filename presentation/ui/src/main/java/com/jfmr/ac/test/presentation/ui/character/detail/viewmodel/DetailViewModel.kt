@@ -11,6 +11,8 @@ import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper
+import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper.toCharacterStateError
+import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper.toCharacterStateSuccess
 import com.jfmr.ac.test.usecase.di.CharacterDetailQualifier
 import com.jfmr.ac.test.usecase.open.CharacterDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,19 +30,22 @@ class DetailViewModel @Inject constructor(
 
 
     init {
-        viewModelScope.launch {
-            characterDetailUseCase.invoke(
-                0,
-                ::success,
-                ::error,
-            )
-        }
+        savedStateHandle.get<String>("characterId")?.let {
+            viewModelScope.launch {
+                characterDetailUseCase.invoke(
+                    it.toInt(),
+                    ::success,
+                    ::error,
+                )
+            }
+        } ?: error("Character not Found")
+
     }
 
     private fun success(characterDetail: CharacterDetail) {
-        characterDetailState = CharacterDetailMapper.toCharacterStateSuccess(characterDetail)
+        characterDetailState = characterDetail.toCharacterStateSuccess()
     }
 
     private fun error(domainError: DomainError) =
-        CharacterDetailMapper.toCharacterStateError(domainError)
+        domainError.toCharacterStateError()
 }

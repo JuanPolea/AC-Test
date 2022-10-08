@@ -6,11 +6,11 @@ import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailSt
 
 object CharacterDetailMapper {
 
-    internal fun toCharacterStateSuccess(characterDetail: CharacterDetail) =
-        CharacterDetailState.Success(characterDetail)
+    internal fun CharacterDetail.toCharacterStateSuccess() =
+        CharacterDetailState.Success(this)
 
-    internal fun toCharacterStateError(domainError: DomainError) =
-        CharacterDetailState.Error(domainError)
+    internal fun DomainError.toCharacterStateError() =
+        CharacterDetailState.Error(this)
 
     internal fun toCharacterStateLoading(messageResource: Int) = CharacterDetailState.Loading(messageResource)
 
