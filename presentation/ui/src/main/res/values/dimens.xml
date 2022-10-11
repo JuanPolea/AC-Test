@@ -8,4 +8,5 @@
     <dimen name="max_line_1">1</dimen>
     <dimen name="text_start">6dp</dimen>
     <dimen name="text_end">4dp</dimen>
+    <dimen name="character_detail_padding">16dp</dimen>
 </resources>
