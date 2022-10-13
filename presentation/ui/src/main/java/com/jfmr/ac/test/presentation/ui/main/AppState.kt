@@ -1,7 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.main
 
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -14,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 
 
 class AppState(
-    val scaffoldState: ScaffoldState,
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
 ) {
@@ -42,12 +39,10 @@ class AppState(
 
 @Composable
 fun rememberAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-) = remember(scaffoldState, navController, coroutineScope) {
+) = remember(navController, coroutineScope) {
     AppState(
-        scaffoldState = scaffoldState,
         navController = navController,
         coroutineScope = coroutineScope
     )
