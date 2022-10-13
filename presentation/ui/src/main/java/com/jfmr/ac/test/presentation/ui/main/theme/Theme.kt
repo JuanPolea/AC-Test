@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.presentation.ui.main.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 
@@ -13,8 +13,7 @@ fun ACTestTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
         LightColors
     }
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         content = content,
-        typography = RAMTypography
     )
 }

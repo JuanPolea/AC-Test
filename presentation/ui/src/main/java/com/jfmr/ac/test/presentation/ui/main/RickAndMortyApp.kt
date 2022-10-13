@@ -2,9 +2,10 @@ package com.jfmr.ac.test.presentation.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
 import com.jfmr.ac.test.presentation.ui.navigation.AppBottomNavigation
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RickAndMortyApp() {
     val appState = rememberAppState()
@@ -28,7 +30,6 @@ fun RickAndMortyApp() {
                     }
                 )
             },
-            scaffoldState = appState.scaffoldState
         ) { padding ->
             Box(modifier = Modifier.padding(padding)) {
                 Navigation(appState)
@@ -40,7 +41,7 @@ fun RickAndMortyApp() {
 @Composable
 private fun ThemeAndSurfaceWrapper(content: @Composable () -> Unit) {
     ACTestTheme {
-        Surface(color = MaterialTheme.colors.background) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             content()
         }
     }

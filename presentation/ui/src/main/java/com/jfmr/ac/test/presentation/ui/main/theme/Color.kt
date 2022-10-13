@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.presentation.ui.main.theme
 
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 private val primaryColor = Color(0xFF00d25a)
@@ -13,15 +13,12 @@ private val primaryDarkColor = Color(0xFFdd00ca)
 private val primaryVariantDarkColor = primaryColor
 private val secondaryDarkColor = Color(0xFFed8be0)
 
-val LightColors = lightColors(
+val LightColors = lightColorScheme(
     primary = primaryColor,
-    primaryVariant = primaryVariantColor,
     secondary = secondaryColor,
-    background = background,
+    background = background
 )
-
-val DarkColors = darkColors(
+val DarkColors = darkColorScheme(
     primary = primaryDarkColor,
-    primaryVariant = primaryVariantDarkColor,
     secondary = secondaryDarkColor,
 )
