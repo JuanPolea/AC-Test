@@ -39,7 +39,7 @@ import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.main.theme.Shapes
 
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CharacterListScreen(
     modifier: Modifier,

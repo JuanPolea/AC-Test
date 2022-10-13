@@ -8,13 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
+import com.jfmr.ac.test.domain.usecase.di.CharacterDetailQualifier
+import com.jfmr.ac.test.domain.usecase.open.CharacterDetailUseCase
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.model.mapper.CharacterDetailMapper
-import com.jfmr.ac.test.usecase.di.CharacterDetailQualifier
-import com.jfmr.ac.test.usecase.open.CharacterDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
