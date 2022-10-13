@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.data.repository.qualifier.DispatcherDefault
-import com.jfmr.data.repository.qualifier.DispatcherIO
+import com.jfmr.ac.test.data.repository.qualifier.DispatcherDefault
+import com.jfmr.ac.test.data.repository.qualifier.DispatcherIO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

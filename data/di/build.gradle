@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace = "com.jfmr.ac.test.data.di"
+    compileSdk 32
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 32
+        buildConfigField "String", "BASE_URL", "\"https://rickandmortyapi.com/api/\""
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+
+        }
+    }
+}
+kapt {
+    correctErrorTypes true
+}
+dependencies {
+
+    implementation(project(path: ":domain:model"))
+    implementation(project(path: ":domain:repository:open"))
+    implementation(project(path: ":data:open"))
+    implementation(project(path: ":data:remote"))
+    implementation(project(path: ":data:repository"))
+
+    implementation libs.bundles.hilt
+    kapt libs.bundles.hiltkapt
+
+    implementation libs.bundles.retrofit2
+}

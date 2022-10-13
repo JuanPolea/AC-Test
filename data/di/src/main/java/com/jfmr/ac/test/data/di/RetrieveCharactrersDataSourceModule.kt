@@ -1,8 +1,8 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.data.repository.open.api.rickandmorty.datasource.RetrieveCharactersDataSource
-import com.jfmr.data.remote.RetrieveRemoteCharactersDataSource
-import com.jfmr.data.repository.qualifier.QRetrieveRemoteDataSource
+import com.jfmr.ac.test.data.open.rickandmorty.datasource.RetrieveCharactersDataSource
+import com.jfmr.ac.test.data.remote.RetrieveRemoteCharactersDataSource
+import com.jfmr.ac.test.data.repository.qualifier.QRetrieveRemoteDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

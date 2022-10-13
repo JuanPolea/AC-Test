@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.navigation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,7 +12,6 @@ import com.jfmr.ac.test.presentation.ui.character.detail.view.CharacterDetailScr
 import com.jfmr.ac.test.presentation.ui.character.list.view.CharacterListScreen
 import com.jfmr.ac.test.presentation.ui.main.AppState
 
-@ExperimentalFoundationApi
 @Composable
 internal fun Navigation(appState: AppState) {
     NavHost(
@@ -39,7 +37,6 @@ fun NavGraphBuilder.locationsNav(appState: AppState) {
     }
 }
 
-@ExperimentalFoundationApi
 private fun NavGraphBuilder.charactersNav(
     appState: AppState,
 ) {
@@ -60,11 +57,8 @@ private fun NavGraphBuilder.charactersNav(
             }
             )
         }
-        composable(NavCommand.ContentDetail(Feature.CHARACTERS)) { backStackEntry ->
-            CharacterDetailScreen(
-                itemId = backStackEntry.findArgs(NavArg.ItemId),
-                onUpClick = { appState.navController.popBackStack() }
-            )
+        composable(NavCommand.ContentDetail(Feature.CHARACTERS)) {
+            CharacterDetailScreen(onUpClick = { appState.navController.popBackStack() })
         }
     }
 }

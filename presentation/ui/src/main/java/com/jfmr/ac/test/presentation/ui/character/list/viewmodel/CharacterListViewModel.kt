@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.Characters
 import com.jfmr.ac.test.domain.model.error.DomainError
+import com.jfmr.ac.test.domain.usecase.di.RetrieveItemsQualifier
+import com.jfmr.ac.test.domain.usecase.open.RetrieveCharactersUseCase
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
 import com.jfmr.ac.test.presentation.ui.character.list.model.mapper.toError
 import com.jfmr.ac.test.presentation.ui.character.list.model.mapper.toSuccess
-import com.jfmr.ac.test.usecase.di.RetrieveItemsQualifier
-import com.jfmr.ac.test.usecase.open.RetrieveCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

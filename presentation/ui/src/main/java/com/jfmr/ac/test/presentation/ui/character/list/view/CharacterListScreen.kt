@@ -2,6 +2,7 @@ package com.jfmr.ac.test.presentation.ui.character.list.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,12 +24,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
-import coil.size.OriginalSize
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.jfmr.ac.test.domain.model.ResultsItem
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
@@ -37,7 +39,7 @@ import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.main.theme.Shapes
 
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CharacterListScreen(
     modifier: Modifier,
@@ -93,39 +95,42 @@ private fun CharacterListContent(
     ) {
         Box(
             modifier = modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.primary.copy(alpha = 0.1f)),
         ) {
             Column {
                 Image(
-                    painter = rememberImagePainter(
-                        data = resultsItem.image,
-                        builder = {
-                            size(OriginalSize)
-                        }
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(data = resultsItem.image)
+                            .apply(
+                                block = fun ImageRequest.Builder.() {
+                                    size(Size.ORIGINAL)
+                                }
+                            )
+                            .build()
                     ),
                     modifier = modifier.fillMaxWidth(),
                     contentDescription = resultsItem.image,
                     contentScale = ContentScale.FillWidth,
                 )
-                resultsItem.name?.let { EclipsedText(it, MaterialTheme.typography.subtitle1) }
-                resultsItem.origin?.name?.let { EclipsedText(it, MaterialTheme.typography.caption) }
-                resultsItem.status?.let { EclipsedText(it, MaterialTheme.typography.body2) }
+                resultsItem.name?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = dimensionResource(id = R.dimen.text_start),
+                                end = dimensionResource(id = R.dimen.text_end)
+                            ),
+                        style = MaterialTheme.typography.subtitle1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }
     }
-}
-
-@Composable
-private fun EclipsedText(title: String, textStyle: TextStyle) {
-    Text(
-        text = title,
-        modifier = Modifier.padding(
-            start = dimensionResource(id = R.dimen.text_start),
-            end = dimensionResource(id = R.dimen.text_end)
-        ),
-        style = textStyle,
-        maxLines = R.dimen.max_line_1,
-        overflow = TextOverflow.Ellipsis
-    )
 }

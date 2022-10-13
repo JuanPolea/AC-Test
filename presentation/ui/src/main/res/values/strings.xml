@@ -7,4 +7,8 @@
     <string name="retrieving_characters">Retrieving Characters</string>
     <string name="loading">Loading</string>
     <string name="character_detail_not_found">Character Detail no found</string>
+    <string name="image_detail_description">image Detail description</string>
+    <string name="name">"Name: "</string>
+    <string name="status">"Status: "</string>
+    <string name="location">"Location: "</string>
 </resources>

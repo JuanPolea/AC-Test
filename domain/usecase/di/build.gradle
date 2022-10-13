@@ -1,0 +1,36 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace = "com.jfmr.ac.test.domain.usecase.di"
+    compileSdk 32
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 32
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+
+        }
+    }
+}
+kapt {
+    correctErrorTypes true
+}
+
+dependencies {
+    implementation(project(":data:open"))
+    implementation(project(":data:di"))
+    implementation(project(":domain:model"))
+    implementation(project(":domain::usecase:implementation"))
+    implementation(project(":domain:usecase:open"))
+
+    implementation libs.bundles.hilt
+    kapt libs.bundles.hiltkapt
+
+}

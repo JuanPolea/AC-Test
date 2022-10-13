@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.main
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -14,7 +13,6 @@ import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
 import com.jfmr.ac.test.presentation.ui.navigation.AppBottomNavigation
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
 
-@ExperimentalFoundationApi
 @Composable
 fun RickAndMortyApp() {
     val appState = rememberAppState()
@@ -39,7 +37,6 @@ fun RickAndMortyApp() {
     }
 }
 
-@ExperimentalFoundationApi
 @Composable
 private fun ThemeAndSurfaceWrapper(content: @Composable () -> Unit) {
     ACTestTheme {
