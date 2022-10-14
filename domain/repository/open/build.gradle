@@ -22,4 +22,6 @@ android {
 
 dependencies {
     implementation(project(path: ":domain:model"))
+    implementation libs.kotlin.coroutines
+
 }

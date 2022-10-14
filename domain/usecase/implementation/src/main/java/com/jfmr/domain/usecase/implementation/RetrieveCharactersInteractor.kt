@@ -9,18 +9,21 @@ import com.jfmr.ac.test.domain.usecase.open.RetrieveCharactersUseCase
 import javax.inject.Inject
 
 class RetrieveCharactersInteractor @Inject constructor(
-    @QItemRepositoryImpl private val itemsRepository: ItemsRepository
+    @QItemRepositoryImpl private val itemsRepository: ItemsRepository,
 ) : RetrieveCharactersUseCase {
 
     override suspend fun invoke(success: (Characters) -> Unit, error: (DomainError) -> Unit) =
-        itemsRepository.getItems().fold(
-            {
-                error(it)
-            },
-            {
-                it?.let {
-                    success(it)
-                } ?: error(RemoteError.Null)
-            }
-        )
+        itemsRepository.getItems().collect { domainResult ->
+            domainResult.fold(
+                {
+                    error(it)
+                },
+                {
+                    it?.let {
+                        success(it)
+                    } ?: kotlin.error(RemoteError.Null)
+                }
+            )
+        }
+
 }

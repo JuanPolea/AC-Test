@@ -10,7 +10,7 @@ class ItemsRepositoryImpl @Inject constructor(
     @QRetrieveRemoteDataSource private val retrieveCharactersDataSource: RetrieveCharactersDataSource,
 ) : ItemsRepository {
 
-    override suspend fun getItems() =
+    override fun getItems() =
         retrieveCharactersDataSource.retrieveCharacters()
 
 

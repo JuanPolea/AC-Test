@@ -30,6 +30,8 @@ dependencies {
     implementation(project(":domain:repository:open"))
     implementation(project(":domain:usecase:open"))
 
+    implementation libs.kotlin.coroutines
+
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 

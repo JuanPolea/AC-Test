@@ -38,4 +38,6 @@ dependencies {
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
+    implementation libs.material
+
 }
