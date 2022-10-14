@@ -1,5 +1,7 @@
 package com.jfmr.ac.test.presentation.ui.character.list.view
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,22 +25,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.jfmr.ac.test.domain.model.ResultsItem
+import com.jfmr.ac.test.domain.model.DomainCharacter
 import com.jfmr.ac.test.presentation.ui.R
-import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
-import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,64 +48,85 @@ import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 internal fun CharacterListScreen(
     modifier: Modifier,
     characterListViewModel: CharacterListViewModel = hiltViewModel(),
-    onClick: (ResultsItem) -> Unit,
+    onClick: (DomainCharacter) -> Unit,
 ) {
-    val characterListState by characterListViewModel.characterSF.collectAsState()
     val state = rememberLazyGridState()
-
+    val tema = characterListViewModel.pager.collectAsLazyPagingItems()
     Scaffold(
         topBar = {
             MainAppBar()
         },
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
-            when (characterListState) {
-                is CharacterListState.Initial -> CircularProgressIndicator()
-                is CharacterListState.Error -> ErrorScreen("faksjdlñ")
-                is CharacterListState.Success -> {
-                    LazyVerticalGrid(
-                        modifier = modifier
-                            .fillMaxWidth(),
-                        columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
+            when (tema.itemCount) {
+                0 -> CircularProgressIndicator()
+                else -> {
+                    CharacterListContent(
+                        modifier = modifier,
                         state = state,
-                    ) {
-                        val listItems: List<ResultsItem> =
-                            (characterListState as CharacterListState.Success).characters.results?.filterNotNull()
-                                ?: emptyList()
-                        items(listItems) { item ->
-                            CharacterListContent(item, onClick)
-                        }
-                    }
+                        onClick = onClick,
+                        items = tema,
+                    )
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterListContent(
-    resultsItem: ResultsItem,
-    onClick: (ResultsItem) -> Unit,
+    modifier: Modifier,
+    state: LazyGridState,
+    onClick: (DomainCharacter) -> Unit,
+    items: LazyPagingItems<DomainCharacter>,
+) {
+    LazyVerticalGrid(
+        modifier = modifier
+            .fillMaxWidth(),
+        columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
+        state = state,
+    ) {
+        gridItems(
+            items = items,
+            key = {
+                it.id
+            },
+            itemContent = { domainCharacter ->
+                if (domainCharacter != null)
+                    CharacterItemListContent(domainCharacter = { domainCharacter }, onClick)
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CharacterItemListContent(
+    domainCharacter: () -> DomainCharacter,
+    onClick: (DomainCharacter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
     Card(
         modifier = modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.character_list_padding))
-            .clickable { onClick(resultsItem) },
+            .clickable { onClick(domainCharacter()) },
+        shape = CutCornerShape(size = 12.dp),
     ) {
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
         ) {
             Column {
                 Image(
                     painter = rememberAsyncImagePainter(
                         ImageRequest
                             .Builder(LocalContext.current)
-                            .data(data = resultsItem.image)
+                            .data(data = domainCharacter().image)
+                            .placeholder(R.drawable.ic_placeholder)
+                            .crossfade(true)
                             .apply(
                                 block = fun ImageRequest.Builder.() {
                                     size(Size.ORIGINAL)
@@ -109,19 +135,17 @@ private fun CharacterListContent(
                             .build()
                     ),
                     modifier = modifier.fillMaxWidth(),
-                    contentDescription = resultsItem.image,
+                    contentDescription = domainCharacter().image,
                     contentScale = ContentScale.FillWidth,
                 )
-                resultsItem.name?.let {
+                domainCharacter().name?.let {
                     Text(
                         text = it,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                start = dimensionResource(id = R.dimen.text_start),
-                                end = dimensionResource(id = R.dimen.text_end)
-                            ),
+                            .padding(dimensionResource(id = R.dimen.text)),
                         style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -129,5 +153,46 @@ private fun CharacterListContent(
                 Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }
+    }
+}
+
+fun <T : Any> LazyGridScope.gridItems(
+    items: LazyPagingItems<T>,
+    key: ((item: T) -> Any)? = null,
+    itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit,
+) {
+    items(
+        count = items.itemCount,
+        key = if (key == null) null else { index ->
+            val item = items.peek(index)
+            if (item == null) {
+                PagingPlaceholderKey(index)
+            } else {
+                key(item)
+            }
+        }
+    ) { index ->
+        itemContent(items[index])
+    }
+}
+
+private data class PagingPlaceholderKey(private val index: Int) : Parcelable {
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(index)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<PagingPlaceholderKey> =
+            object : Parcelable.Creator<PagingPlaceholderKey> {
+                override fun createFromParcel(parcel: Parcel) =
+                    PagingPlaceholderKey(parcel.readInt())
+
+                override fun newArray(size: Int) = arrayOfNulls<PagingPlaceholderKey?>(size)
+            }
     }
 }

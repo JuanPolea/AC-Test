@@ -1,19 +1,17 @@
 package com.jfmr.ac.test.presentation.ui.character.list.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jfmr.ac.test.domain.model.Characters
-import com.jfmr.ac.test.domain.model.error.DomainError
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.jfmr.ac.test.domain.usecase.di.RetrieveItemsQualifier
 import com.jfmr.ac.test.domain.usecase.open.RetrieveCharactersUseCase
-import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListState
-import com.jfmr.ac.test.presentation.ui.character.list.model.mapper.toError
-import com.jfmr.ac.test.presentation.ui.character.list.model.mapper.toSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,24 +20,12 @@ class CharacterListViewModel @Inject constructor(
     val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val characterMSF = MutableStateFlow<CharacterListState>(CharacterListState.Initial)
-    internal val characterSF: StateFlow<CharacterListState> = characterMSF
+    var charLoading: Boolean by mutableStateOf(true)
 
-    init {
-        retrieveCharacters()
-    }
-
-    private fun retrieveCharacters() {
-        viewModelScope.launch {
-            retrieveCharactersUseCase.invoke(::success, ::error)
+    var pager =
+        Pager(PagingConfig(50)) {
+            retrieveCharactersUseCase.characters()
         }
-    }
-
-    private fun success(characters: Characters) {
-        characterMSF.value = characters.toSuccess()
-    }
-
-    private fun error(error: DomainError) {
-        characterMSF.value = error.toError()
-    }
+            .flow
+            .cachedIn(viewModelScope)
 }

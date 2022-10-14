@@ -2,10 +2,10 @@ package com.jfmr.ac.test.data.open.rickandmorty.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class CharacterResponse(
+data class CharactersResponse(
 
     @field:SerializedName("results")
-    val results: List<ResultsItem?>? = null,
+    val results: List<Character?>? = null,
 
     @field:SerializedName("info")
     val info: Info? = null,
@@ -26,7 +26,7 @@ data class Info(
     val count: Int? = null,
 )
 
-data class ResultsItem(
+data class Character(
 
     @field:SerializedName("image")
     val image: String? = null,

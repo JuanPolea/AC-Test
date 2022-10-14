@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.cache"
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
     }
     buildTypes {
         release {

@@ -1,8 +1,8 @@
 package com.jfmr.ac.test.domain.model
 
 
-data class Characters(
-    val results: List<ResultsItem?>? = null,
+data class DomainCharacters(
+    val results: List<DomainCharacter?>? = null,
     val info: Info? = null,
 )
 
@@ -10,11 +10,11 @@ data class Characters(
 data class Info(
     val next: String? = null,
     val pages: Int? = null,
-    val prev: Any? = null,
+    val prev: String? = null,
     val count: Int? = null,
 )
 
-data class ResultsItem(
+data class DomainCharacter(
     val image: String? = null,
     val gender: String? = null,
     val species: String? = null,

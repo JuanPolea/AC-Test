@@ -6,7 +6,6 @@
     <dimen name="character_list_padding">4dp</dimen>
     <dimen name="spacer_bottom">8dp</dimen>
     <dimen name="max_line_1">1</dimen>
-    <dimen name="text_start">6dp</dimen>
-    <dimen name="text_end">4dp</dimen>
+    <dimen name="text">8dp</dimen>
     <dimen name="character_detail_padding">16dp</dimen>
 </resources>

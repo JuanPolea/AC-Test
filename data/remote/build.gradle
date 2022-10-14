@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.remote"
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
     }
     buildTypes {
         release {
@@ -34,4 +34,10 @@ dependencies {
 
     implementation libs.bundles.retrofit2
 
+    def paging_version = "3.1.1"
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // alternatively - without Android dependencies for tests
+    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
 }
