@@ -2,8 +2,8 @@ package com.jfmr.ac.test.domain.usecase.di
 
 import com.jfmr.ac.test.domain.usecase.open.CharacterDetailUseCase
 import com.jfmr.ac.test.domain.usecase.open.RetrieveCharactersUseCase
-import com.jfmr.domain.usecase.implementation.CharacterDetailInteractor
-import com.jfmr.domain.usecase.implementation.RetrieveCharactersInteractor
+import com.jfmr.domain.usecase.implementation.character.detail.CharacterDetailInteractor
+import com.jfmr.domain.usecase.implementation.character.list.RetrieveCharactersInteractor
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.presentation.ui"
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
     }
     buildTypes {
         release {
@@ -39,5 +39,8 @@ dependencies {
     kapt libs.bundles.hiltkapt
 
     implementation libs.material
+    // optional - Jetpack Compose integration
+    implementation "androidx.paging:paging-compose:1.0.0-alpha16"
+
 
 }

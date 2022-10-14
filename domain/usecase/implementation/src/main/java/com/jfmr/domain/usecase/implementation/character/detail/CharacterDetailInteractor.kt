@@ -1,4 +1,4 @@
-package com.jfmr.domain.usecase.implementation
+package com.jfmr.domain.usecase.implementation.character.detail
 
 import com.jfmr.ac.test.data.di.QItemRepositoryImpl
 import com.jfmr.ac.test.domain.model.CharacterDetail

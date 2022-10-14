@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.open"
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
     }
     buildTypes {
         release {
@@ -29,4 +29,6 @@ dependencies {
     kapt libs.arrow.kapt
 
     implementation libs.kotlin.coroutines
+    def paging_version = "3.1.1"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }
