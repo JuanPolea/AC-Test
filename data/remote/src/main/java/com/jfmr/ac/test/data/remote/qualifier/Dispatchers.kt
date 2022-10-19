@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.repository.qualifier
+package com.jfmr.ac.test.data.remote.qualifier
 
 import javax.inject.Qualifier
 

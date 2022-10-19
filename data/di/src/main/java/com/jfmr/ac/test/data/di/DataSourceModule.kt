@@ -4,8 +4,8 @@ import com.jfmr.ac.test.data.open.rickandmorty.character.datasource.CharactersDa
 import com.jfmr.ac.test.data.open.rickandmorty.episode.datasource.EpisodesDataSource
 import com.jfmr.ac.test.data.remote.character.RemoteCharactersDataSource
 import com.jfmr.ac.test.data.remote.episode.RemoteEpisodesDataSource
-import com.jfmr.ac.test.data.repository.qualifier.QCharactersDataSource
-import com.jfmr.ac.test.data.repository.qualifier.QEpisodesDataSource
+import com.jfmr.ac.test.data.remote.qualifier.QCharactersDataSource
+import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
