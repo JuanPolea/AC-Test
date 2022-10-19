@@ -10,13 +10,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.jfmr.ac.test.domain.usecase.di.RetrieveItemsQualifier
-import com.jfmr.ac.test.domain.usecase.open.RetrieveCharactersUseCase
+import com.jfmr.ac.test.domain.usecase.open.character.CharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
-    @RetrieveItemsQualifier private val retrieveCharactersUseCase: RetrieveCharactersUseCase,
+    @RetrieveItemsQualifier private val charactersUseCase: CharactersUseCase,
     val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -24,7 +24,7 @@ class CharacterListViewModel @Inject constructor(
 
     var pager =
         Pager(PagingConfig(50)) {
-            retrieveCharactersUseCase.characters()
+            charactersUseCase.characters()
         }
             .flow
             .cachedIn(viewModelScope)
