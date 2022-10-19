@@ -1,10 +1,9 @@
 package com.jfmr.ac.test.domain.repository.open.episode
 
-import androidx.paging.PagingSource
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
+import kotlinx.coroutines.flow.Flow
 
 interface EpisodeRepository {
 
-    fun episodes(): PagingSource<Int, DomainEpisode>
-    suspend fun episodes(episodesList: List<String>): List<DomainEpisode>
+    fun episodes(episodesList: List<String>): Flow<List<DomainEpisode>>
 }

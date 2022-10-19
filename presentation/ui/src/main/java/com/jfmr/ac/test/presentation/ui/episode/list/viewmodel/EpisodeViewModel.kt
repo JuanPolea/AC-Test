@@ -22,8 +22,10 @@ class EpisodeViewModel @Inject constructor(
 
     internal fun episodes(episodesList: List<String>) {
         viewModelScope.launch {
-            _episodes.update {
-                episodesUseCase.episodes(episodesList)
+            episodesUseCase.episodes(episodesList).collect { episodesList ->
+                _episodes.update {
+                    episodesList
+                }
             }
         }
     }

@@ -1,9 +1,8 @@
 package com.jfmr.ac.test.data.open.rickandmorty.episode.datasource
 
-import androidx.paging.PagingSource
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
+import kotlinx.coroutines.flow.Flow
 
 interface EpisodesDataSource {
-    fun retrieveEpisodes(): PagingSource<Int, DomainEpisode>
-    suspend fun retrieveEpisodes(episodesList: List<String>): List<DomainEpisode>
+    fun retrieveEpisodes(episodesList: List<String>): Flow<List<DomainEpisode>>
 }
