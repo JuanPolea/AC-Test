@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.model
 
-import com.jfmr.ac.test.domain.model.CharacterDetail
+import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.presentation.ui.R
 

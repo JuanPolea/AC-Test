@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.character.list.model
 
-import com.jfmr.ac.test.domain.model.DomainCharacters
+import com.jfmr.ac.test.domain.model.character.DomainCharacters
 import com.jfmr.ac.test.domain.model.error.DomainError
 
 sealed class CharacterListState {

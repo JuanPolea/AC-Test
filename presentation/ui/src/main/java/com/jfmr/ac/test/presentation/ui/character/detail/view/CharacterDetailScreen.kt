@@ -1,12 +1,16 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,19 +24,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.jfmr.ac.test.domain.model.CharacterDetail
+import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
+import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
 import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
 
@@ -52,8 +57,8 @@ fun CharacterDetailScreen(
             }
         },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                scrolledContainerColor = MaterialTheme.colorScheme.secondary,
-                containerColor = MaterialTheme.colorScheme.primary,
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.background,
             ))
     }) {
         when (characterDetailState) {
@@ -71,13 +76,15 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
     var scrolledY = 0f
     var previousOffset = 0
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             item {
                 AsyncImage(model =
                 ImageRequest
                     .Builder(LocalContext.current)
                     .data(characterDetail.image)
-                    .crossfade(true)
                     .placeholder(R.drawable.ic_placeholder)
                     .crossfade(true)
                     .build(),
@@ -89,9 +96,18 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
                             translationY = scrolledY * 0.5f
                             previousOffset = lazyListState.firstVisibleItemScrollOffset
                         }
-                        .height(240.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+            item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = dimensionResource(id = R.dimen.row_padding)),
+                    text = stringResource(id = R.string.character),
+                    style = MaterialTheme.typography.titleLarge,
+                )
             }
             item {
                 DetailRow(R.string.name, characterDetail.name)
@@ -100,7 +116,7 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
                 DetailRow(R.string.status, characterDetail.status)
             }
             item {
-                DetailRow(R.string.location, characterDetail.location?.name ?: "")
+                DetailRow(R.string.location, characterDetail.location?.name ?: stringResource(id = R.string.unknow))
             }
             item {
                 DetailRow(R.string.gender, characterDetail.gender)
@@ -111,10 +127,11 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
             item {
                 DetailRow(R.string.origin, characterDetail.origin?.name ?: stringResource(id = R.string.unknow))
             }
-            characterDetail.episode.forEach {
-                item {
-                    DetailRow(R.string.episode, it)
-                }
+            item {
+                Spacer(modifier = Modifier.height(IntrinsicSize.Max))
+            }
+            item {
+                EpisodesScreen(episodes = characterDetail.episode)
             }
 
         }
@@ -127,14 +144,15 @@ private fun DetailRow(nameResource: Int, value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = dimensionResource(id = R.dimen.character_detail_padding),
                 start = dimensionResource(id = R.dimen.character_detail_padding),
-                end = dimensionResource(id = R.dimen.character_list_padding),
+                end = dimensionResource(id = R.dimen.character_detail_padding),
+                bottom = dimensionResource(id = R.dimen.character_detail_padding),
             ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(id = nameResource),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleMedium,
         )
         Text(
             text = value,

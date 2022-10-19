@@ -2,7 +2,7 @@ package com.jfmr.ac.test.data.open.mapper
 
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.domain.model.DomainResult
+import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import retrofit2.HttpException
 import java.io.IOException

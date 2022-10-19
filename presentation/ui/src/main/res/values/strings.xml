@@ -16,4 +16,7 @@
     <string name="unknow">Unknow</string>
     <string name="origin">"Origin: "</string>
     <string name="episode">"Episode: "</string>
+    <string name="scroll_to_top">Scroll to Top</string>
+    <string name="episodes">Episodes</string>
+    <string name="character">Character</string>
 </resources>

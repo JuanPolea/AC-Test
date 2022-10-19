@@ -2,6 +2,9 @@ package com.jfmr.ac.test.presentation.ui.character.list.view
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,10 +29,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,10 +48,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.jfmr.ac.test.domain.model.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,21 +62,23 @@ internal fun CharacterListScreen(
     onClick: (DomainCharacter) -> Unit,
 ) {
     val state = rememberLazyGridState()
-    val tema = characterListViewModel.pager.collectAsLazyPagingItems()
+    val lazyPagingItems = characterListViewModel.pager.collectAsLazyPagingItems()
     Scaffold(
         topBar = {
             MainAppBar()
         },
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (tema.itemCount) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding), contentAlignment = Alignment.Center) {
+            when (lazyPagingItems.itemCount) {
                 0 -> CircularProgressIndicator()
                 else -> {
                     CharacterListContent(
                         modifier = modifier,
                         state = state,
                         onClick = onClick,
-                        items = tema,
+                        items = lazyPagingItems,
                     )
                 }
             }
@@ -80,6 +93,11 @@ private fun CharacterListContent(
     onClick: (DomainCharacter) -> Unit,
     items: LazyPagingItems<DomainCharacter>,
 ) {
+    val showScrollToTopButton = remember {
+        derivedStateOf {
+            state.firstVisibleItemIndex > 0
+        }
+    }
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxWidth(),
@@ -96,6 +114,41 @@ private fun CharacterListContent(
                     CharacterItemListContent(domainCharacter = { domainCharacter }, onClick)
             }
         )
+    }
+
+    ScrollToTopButton(showScrollToTopButton, state)
+}
+
+@Composable
+private fun ScrollToTopButton(
+    showButton: State<Boolean>,
+    state: LazyGridState,
+) {
+    val scope = rememberCoroutineScope()
+
+    AnimatedVisibility(
+        visible = showButton.value,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd,
+        )
+        {
+            Button(
+                onClick = {
+                    scope.launch {
+                        state.animateScrollToItem(0)
+                    }
+                },
+            ) {
+                Text(
+                    text = stringResource(id = R.string.scroll_to_top),
+                )
+            }
+        }
+
     }
 }
 
