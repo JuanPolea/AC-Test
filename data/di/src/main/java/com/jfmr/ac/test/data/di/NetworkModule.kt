@@ -51,4 +51,5 @@ object NetworkModule {
     @Singleton
     fun provideRetrofitService(retrofit: Retrofit): RickAndMortyApiService = retrofit.create(RickAndMortyApiService::class.java)
 
+
 }
