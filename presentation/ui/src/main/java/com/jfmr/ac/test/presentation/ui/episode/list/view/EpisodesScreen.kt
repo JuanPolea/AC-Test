@@ -40,7 +40,6 @@ fun EpisodesScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun EpisodesRowContent(episodes: List<DomainEpisode>) {
-
     Text(
         modifier = Modifier
             .fillMaxWidth()

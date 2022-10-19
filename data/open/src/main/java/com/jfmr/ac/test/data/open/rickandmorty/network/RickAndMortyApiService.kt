@@ -27,6 +27,6 @@ interface RickAndMortyApiService {
     suspend fun episodes(@Query("page") page: Int): EpisodesResponse
 
     @GET(EPISODES_URL)
-    suspend fun episodes(@Path("ids") page: List<Int>): Response<List<ResultsItem>>
+    fun episodes(@Path("ids") page: List<Int>): kotlinx.coroutines.flow.Flow<Response<List<ResultsItem>>>
 
 }
