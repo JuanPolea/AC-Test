@@ -6,33 +6,33 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.jfmr.ac.test.domain.model.character.CharacterEntity
+import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCharacterEntity(characterEntity: CharacterEntity): Long
+    suspend fun insertDomainCharacter(DomainCharacter: DomainCharacter): Long
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllCharactersEntity(characterEntity: List<CharacterEntity>): List<Long>
+    suspend fun insertAllCharactersEntity(DomainCharacter: List<DomainCharacter>): List<Long>
 
 
     @Query("SELECT * FROM characters")
-    fun getCharacterEntity(): Flow<CharacterEntity>
+    fun getDomainCharacter(): Flow<DomainCharacter>
 
     @Query("SELECT * FROM characters")
-    fun getPaginatedCharacterEntity(): PagingSource<Int, CharacterEntity>
+    fun getPaginatedDomainCharacter(): PagingSource<Int, DomainCharacter>
 
     @Transaction
-    suspend fun updateCharacterEntity(CharacterEntity: CharacterEntity): Long {
-        CharacterEntity.let {
-            deleteCharacterEntity()
-            return insertCharacterEntity(it)
+    suspend fun updateDomainCharacter(DomainCharacter: DomainCharacter): Long {
+        DomainCharacter.let {
+            deleteDomainCharacter()
+            return insertDomainCharacter(it)
         }
     }
 
     @Query("DELETE FROM characters")
-    suspend fun deleteCharacterEntity()
+    suspend fun deleteDomainCharacter()
 }

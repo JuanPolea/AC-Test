@@ -19,14 +19,11 @@ import com.jfmr.ac.test.data.open.rickandmorty.character.entities.CharactersResp
 import com.jfmr.ac.test.data.open.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.domain.model.character.CharacterDetail
-import com.jfmr.ac.test.domain.model.character.CharacterEntity
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.DomainCharacters
 import com.jfmr.ac.test.domain.model.character.Info
 import com.jfmr.ac.test.domain.model.character.Location
-import com.jfmr.ac.test.domain.model.character.LocationEntity
 import com.jfmr.ac.test.domain.model.character.Origin
-import com.jfmr.ac.test.domain.model.character.OriginEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -46,7 +43,7 @@ class RemoteCharactersDataSource @Inject constructor(
                     val list: List<DomainCharacter> = response.results?.filterNotNull() ?: emptyList()
                     if (list.isNotEmpty()) {
                         list.map {
-                            Log.e("Characters", characterDao.insertCharacterEntity(it.toEntity()).toString())
+                            Log.e("Characters", characterDao.insertDomainCharacter(it).toString())
                         }
                     }
                     var nextPageNumber: Int? = null
@@ -79,7 +76,7 @@ class RemoteCharactersDataSource @Inject constructor(
         }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun fetchCharacters(): Flow<PagingData<CharacterEntity>> {
+    override fun fetchCharacters(): Flow<PagingData<DomainCharacter>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 50,
@@ -88,7 +85,7 @@ class RemoteCharactersDataSource @Inject constructor(
                 initialLoadSize = 25,
             ),
             remoteMediator = RickAndMortyRemoteMediator(rickAndMortyDB, remoteService),
-            pagingSourceFactory = { rickAndMortyDB.characterDao().getPaginatedCharacterEntity() }
+            pagingSourceFactory = { rickAndMortyDB.characterDao().getPaginatedDomainCharacter() }
         ).flow
     }
 
@@ -97,7 +94,7 @@ class RemoteCharactersDataSource @Inject constructor(
     }
 
 
-    private fun CharactersResponse.toDomain() = DomainCharacters(results = results.toDomain(), info = info?.toDomain())
+    private fun CharactersResponse.toDomain(): DomainCharacters = DomainCharacters(results = results.toDomain(), info = info?.toDomain())
 
     private fun List<Character?>?.toDomain() = this?.filterNotNull()?.map { it.toDomain() }
 
@@ -116,7 +113,7 @@ class RemoteCharactersDataSource @Inject constructor(
             status = status)
     }
 
-    private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Info.toDomain() =
+    private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Info.toDomain(): Info =
         Info(next = next, pages = pages, prev = prev, count = count)
 
     private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Origin?.toDomain() = Origin(
@@ -141,59 +138,5 @@ class RemoteCharactersDataSource @Inject constructor(
         type = this?.type.orEmpty(),
         url = this?.url.orEmpty(),
         status = this?.status.orEmpty())
-
-    private fun DomainCharacter.toEntity() =
-        CharacterEntity(
-            id = id,
-            image = image.orEmpty(),
-            gender = gender.orEmpty(),
-            species = species.orEmpty(),
-            created = created.orEmpty(),
-            origin = origin?.toEntity() ?: OriginEntity(),
-            name = name.orEmpty(),
-            location = location?.toEntity() ?: LocationEntity(),
-            episode = (episode ?: emptyList()) as List<String>,
-            type = type.orEmpty(),
-            url = url.orEmpty(),
-            status = status.orEmpty(),
-        )
-
-    private fun Origin.toEntity() =
-        OriginEntity(
-            name = name.orEmpty(),
-            url = url.orEmpty(),
-        )
-
-    private fun Location.toEntity() =
-        LocationEntity(
-            name = name.orEmpty(),
-            url = url.orEmpty(),
-        )
-
-
-    private fun CharacterEntity.toDomain() = id.let {
-        DomainCharacter(image = image,
-            gender = gender,
-            species = species,
-            created = created,
-            origin = origin.toDomain(),
-            name = name,
-            location = location.toDomain(),
-            episode = episode,
-            id = it,
-            type = type,
-            url = url,
-            status = status)
-    }
-
-    private fun OriginEntity.toDomain() = Origin(
-        name = this.name,
-        url = this.url,
-    )
-
-    private fun LocationEntity.toDomain() = Location(
-        name = this.name,
-        url = this.url,
-    )
 
 }

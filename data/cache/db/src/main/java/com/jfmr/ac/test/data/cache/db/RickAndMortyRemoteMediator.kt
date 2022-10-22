@@ -2,7 +2,6 @@ package com.jfmr.ac.test.data.cache.db
 
 import android.net.Uri
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -13,14 +12,11 @@ import com.jfmr.ac.test.data.open.rickandmorty.character.entities.CharactersResp
 import com.jfmr.ac.test.data.open.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.domain.model.character.CharacterDetail
-import com.jfmr.ac.test.domain.model.character.CharacterEntity
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.DomainCharacters
 import com.jfmr.ac.test.domain.model.character.Info
 import com.jfmr.ac.test.domain.model.character.Location
-import com.jfmr.ac.test.domain.model.character.LocationEntity
 import com.jfmr.ac.test.domain.model.character.Origin
-import com.jfmr.ac.test.domain.model.character.OriginEntity
 import com.jfmr.ac.test.domain.model.character.RemoteKeys
 import javax.inject.Inject
 
@@ -28,11 +24,11 @@ import javax.inject.Inject
 class RickAndMortyRemoteMediator @Inject constructor(
     private val database: RickAndMortyDB,
     private val networkService: RickAndMortyApiService,
-) : RemoteMediator<Int, CharacterEntity>() {
+) : RemoteMediator<Int, DomainCharacter>() {
 
     val characterDao = database.characterDao()
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, CharacterEntity>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, DomainCharacter>): MediatorResult {
 
         // The network load method takes an optional `after=<user.id>` parameter. For every
         // page after the first, we pass the last user ID to let it continue from where it
@@ -63,15 +59,13 @@ class RickAndMortyRemoteMediator @Inject constructor(
         // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine CallAdapter
         // dispatches on a worker thread.
         try {
-            val response = page.let { networkService.characters(it).toDomain() }
+            val response: DomainCharacters = page.let { networkService.characters(it).toDomain() }
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     database.remoteKeysDao().clearRemoteKeys()
-                    characterDao.deleteCharacterEntity()
+                    characterDao.deleteDomainCharacter()
                 }
-                val prevKey = if (page == 1) null else page - 1
-                val nextKey = if (endOfPaginationReached) null else page + 1
                 val keys = response.results?.filterNotNull()?.map {
                     RemoteKeys(it.id.toLong(), response.info?.prev.orEmpty(), response.info?.next.orEmpty())
                 }
@@ -80,7 +74,8 @@ class RickAndMortyRemoteMediator @Inject constructor(
                 }
                 // Insert new users into database, which invalidates the current
                 // PagingData, allowing Paging to present the updates in the DB.
-                characterDao.insertAllCharactersEntity(response.results.toEntity())
+                response.results?.filterNotNull()?.let { characterDao.insertAllCharactersEntity(it) }
+
             }
 
             return MediatorResult.Success(endOfPaginationReached = response.info?.next == null)
@@ -91,6 +86,16 @@ class RickAndMortyRemoteMediator @Inject constructor(
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, DomainCharacter>): RemoteKeys? {
+        // Get the last page that was retrieved, that contained items.
+        // From that last page, get the last item
+        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
+            ?.let { repo ->
+                // Get the remote keys of the last item retrieved
+                database.remoteKeysDao().remoteKeysRepoId(repo.id.toLong())
+            }
     }
 
     private fun CharactersResponse.toDomain() = DomainCharacters(results = results.toDomain(), info = info?.toDomain())
@@ -138,64 +143,4 @@ class RickAndMortyRemoteMediator @Inject constructor(
         url = this?.url.orEmpty(),
         status = this?.status.orEmpty())
 
-    private fun DomainCharacter.toEntity() = CharacterEntity(
-        id = id,
-        image = image.orEmpty(),
-        gender = gender.orEmpty(),
-        species = species.orEmpty(),
-        created = created.orEmpty(),
-        origin = origin?.toEntity() ?: OriginEntity(),
-        name = name.orEmpty(),
-        location = location?.toEntity() ?: LocationEntity(),
-        episode = (episode ?: emptyList()) as List<String>,
-        type = type.orEmpty(),
-        url = url.orEmpty(),
-        status = status.orEmpty(),
-    )
-
-    private fun Origin.toEntity() = OriginEntity(
-        name = name.orEmpty(),
-        url = url.orEmpty(),
-    )
-
-    private fun Location.toEntity() = LocationEntity(
-        name = name.orEmpty(),
-        url = url.orEmpty(),
-    )
-
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, CharacterEntity>): RemoteKeys? {
-        // Get the last page that was retrieved, that contained items.
-        // From that last page, get the last item
-        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
-            ?.let { repo ->
-                // Get the remote keys of the last item retrieved
-                database.remoteKeysDao().remoteKeysRepoId(repo.id.toLong())
-            }
-    }
 }
-
-private fun List<DomainCharacter?>?.toEntity(): List<CharacterEntity> = this?.filterNotNull()?.map {
-    CharacterEntity(id = it.id,
-        image = it.image.orEmpty(),
-        it.gender.orEmpty(),
-        it.species.orEmpty(),
-        it.created.orEmpty(),
-        it.origin?.toEntity() ?: OriginEntity(),
-        it.name.orEmpty(),
-        it.location?.toEntity() ?: LocationEntity(),
-        it.episode?.map { e -> e.orEmpty() } ?: emptyList(),
-        it.type.orEmpty(),
-        it.url.orEmpty(),
-        it.status.orEmpty(),
-        isFavorite = false)
-} ?: emptyList()
-
-private fun Origin.toEntity() = OriginEntity(
-    name = name.orEmpty(),
-    url = url.orEmpty(),
-)
-
-private fun Location.toEntity() = LocationEntity(
-    name = name.orEmpty(),
-    url = url.orEmpty(),
-)

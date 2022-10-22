@@ -2,48 +2,48 @@ package entities
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.jfmr.ac.test.domain.model.character.CharacterEntity
-import com.jfmr.ac.test.domain.model.character.LocationEntity
-import com.jfmr.ac.test.domain.model.character.OriginEntity
+import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Location
+import com.jfmr.ac.test.domain.model.character.Origin
 
-class CharacterEntityConverter {
+class DomainCharacterConverter {
     @TypeConverter
-    fun characterEntityToJson(characterEntity: CharacterEntity): String =
-        Gson().toJson(characterEntity)
-
-    @TypeConverter
-    fun jsonToCharacter(string: String): CharacterEntity =
-        Gson().fromJson(string, CharacterEntity::class.java)
+    fun domainCharacterToJson(DomainCharacter: DomainCharacter): String =
+        Gson().toJson(DomainCharacter)
 
     @TypeConverter
-    fun originEntityToJson(originEntity: OriginEntity): String =
-        Gson().toJson(originEntity)
+    fun jsonToCharacter(string: String): DomainCharacter =
+        Gson().fromJson(string, DomainCharacter::class.java)
 
     @TypeConverter
-    fun jsonToOriginEntity(string: String): OriginEntity =
-        Gson().fromJson(string, OriginEntity::class.java)
+    fun originToJson(Origin: Origin): String =
+        Gson().toJson(Origin)
 
     @TypeConverter
-    fun locationEntityToJson(locationEntity: LocationEntity): String =
-        Gson().toJson(locationEntity)
+    fun jsonToOrigin(string: String): Origin =
+        Gson().fromJson(string, Origin::class.java)
 
     @TypeConverter
-    fun jsonToLocationEntity(string: String): LocationEntity =
-        Gson().fromJson(string, LocationEntity::class.java)
+    fun locationToJson(Location: Location): String =
+        Gson().toJson(Location)
 
     @TypeConverter
-    fun listToJson(stringList: List<String>): String =
+    fun jsonToLocation(string: String): Location =
+        Gson().fromJson(string, Location::class.java)
+
+    @TypeConverter
+    fun listStringToJson(stringList: List<String>): String =
         Gson().toJson(stringList)
 
     @TypeConverter
-    fun jsonToList(string: String): List<String> =
+    fun jsonToListString(string: String): List<String> =
         Gson().fromJson(string, Array<String>::class.java).toList()
 
     @TypeConverter
-    fun entityListToJson(stringList: List<CharacterEntity>): String =
+    fun characterListToJson(stringList: List<DomainCharacter>): String =
         Gson().toJson(stringList)
 
     @TypeConverter
-    fun jsonToEntityList(string: String): List<CharacterEntity> =
-        Gson().fromJson(string, Array<CharacterEntity>::class.java).toMutableList()
+    fun jsonToCharacterList(string: String): List<DomainCharacter> =
+        Gson().fromJson(string, Array<DomainCharacter>::class.java).toMutableList()
 }

@@ -7,19 +7,19 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
-import com.jfmr.ac.test.domain.model.character.CharacterEntity
+import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.RemoteKeys
-import entities.CharacterEntityConverter
+import entities.DomainCharacterConverter
 
 private const val DBNAME = "rick_and_morty_database"
 
 @Database(
-    entities = [CharacterEntity::class, RemoteKeys::class],
+    entities = [DomainCharacter::class, RemoteKeys::class],
     version = 1,
 )
 
 @TypeConverters(
-    CharacterEntityConverter::class
+    DomainCharacterConverter::class
 )
 abstract class RickAndMortyDB : RoomDatabase() {
     abstract fun characterDao(): CharacterDao

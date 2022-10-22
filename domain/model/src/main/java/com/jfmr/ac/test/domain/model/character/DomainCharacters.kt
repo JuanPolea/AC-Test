@@ -1,5 +1,11 @@
 package com.jfmr.ac.test.domain.model.character
 
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
+
 
 data class DomainCharacters(
     val results: List<DomainCharacter?>? = null,
@@ -14,7 +20,11 @@ data class Info(
     val count: Int? = null,
 )
 
+@Parcelize
+@Serializable
+@Entity(tableName = "characters")
 data class DomainCharacter(
+    @PrimaryKey
     val id: Int,
     val image: String? = null,
     val gender: String? = null,
@@ -27,4 +37,18 @@ data class DomainCharacter(
     val type: String? = null,
     val url: String? = null,
     val status: String? = null,
-)
+) : Parcelable
+
+@Parcelize
+@Serializable
+data class Origin(
+    val name: String? = null,
+    val url: String? = null,
+) : Parcelable
+
+@Parcelize
+@Serializable
+data class Location(
+    val name: String? = "",
+    val url: String? = "",
+) : Parcelable
