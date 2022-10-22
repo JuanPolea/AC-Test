@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.goldenspear.android.aihealth.band.medical.dao'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 32
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    api(project(path: ":data:cache:model"))
+    implementation project(path: ':domain:model')
+    api libs.bundles.room
+    kapt libs.room.compiler
+    implementation libs.kotlin.coroutines
+
+    implementation 'androidx.paging:paging-common-ktx:3.1.1'
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
+}

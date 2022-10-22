@@ -14,7 +14,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-
         }
     }
 }
@@ -22,4 +21,8 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
+    implementation(project(path: ":domain:model"))
+    implementation libs.bundles.room
+    kapt libs.room.compiler
+    implementation 'com.google.code.gson:gson:2.9.0'
 }

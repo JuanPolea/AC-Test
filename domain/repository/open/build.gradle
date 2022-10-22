@@ -22,6 +22,7 @@ android {
 
 dependencies {
     implementation(project(path: ":domain:model"))
+    implementation(project(path: ":data:cache:db"))
     implementation libs.kotlin.coroutines
     def paging_version = "3.1.1"
 

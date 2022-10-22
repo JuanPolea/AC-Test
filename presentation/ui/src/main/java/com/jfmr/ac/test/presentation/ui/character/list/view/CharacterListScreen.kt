@@ -48,7 +48,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.CharacterEntity
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 internal fun CharacterListScreen(
     modifier: Modifier,
     characterListViewModel: CharacterListViewModel = hiltViewModel(),
-    onClick: (DomainCharacter) -> Unit,
+    onClick: (CharacterEntity) -> Unit,
 ) {
     val state = rememberLazyGridState()
     val lazyPagingItems = characterListViewModel.pager.collectAsLazyPagingItems()
@@ -90,8 +90,8 @@ internal fun CharacterListScreen(
 private fun CharacterListContent(
     modifier: Modifier,
     state: LazyGridState,
-    onClick: (DomainCharacter) -> Unit,
-    items: LazyPagingItems<DomainCharacter>,
+    onClick: (CharacterEntity) -> Unit,
+    items: LazyPagingItems<CharacterEntity>,
 ) {
     val showScrollToTopButton = remember {
         derivedStateOf {
@@ -155,8 +155,8 @@ private fun ScrollToTopButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterItemListContent(
-    domainCharacter: () -> DomainCharacter,
-    onClick: (DomainCharacter) -> Unit,
+    domainCharacter: () -> CharacterEntity,
+    onClick: (CharacterEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -191,7 +191,7 @@ private fun CharacterItemListContent(
                     contentDescription = domainCharacter().image,
                     contentScale = ContentScale.FillWidth,
                 )
-                domainCharacter().name?.let {
+                domainCharacter().name.let {
                     Text(
                         text = it,
                         modifier = Modifier

@@ -15,6 +15,7 @@ data class Info(
 )
 
 data class DomainCharacter(
+    val id: Int,
     val image: String? = null,
     val gender: String? = null,
     val species: String? = null,
@@ -23,7 +24,6 @@ data class DomainCharacter(
     val name: String? = null,
     val location: Location? = null,
     val episode: List<String?>? = null,
-    val id: Int,
     val type: String? = null,
     val url: String? = null,
     val status: String? = null,
