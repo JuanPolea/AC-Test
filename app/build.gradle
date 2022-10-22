@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    implementation(project("path": ":presentation:ui"))
+    api(project("path": ":presentation:ui"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

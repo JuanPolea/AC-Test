@@ -9,7 +9,6 @@ import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.RemoteKeys
-import entities.DomainCharacterConverter
 
 private const val DBNAME = "rick_and_morty_database"
 

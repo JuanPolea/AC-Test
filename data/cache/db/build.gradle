@@ -40,14 +40,14 @@ android {
 
 dependencies {
     api(project(path: ":data:cache:dao"))
-    implementation(project(path: ":data:cache:model"))
-    implementation(project(path: ":data:open"))
-    implementation project(path: ':domain:model')
-    implementation libs.bundles.room
-    implementation 'androidx.paging:paging-common-ktx:3.1.1'
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
-    implementation "androidx.room:room-paging:2.4.3"
-    kapt libs.room.compiler
+    api(project(path: ":data:open"))
+    api project(path: ':domain:model')
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
+    implementation libs.bundles.room
+    kapt libs.room.compiler
+    implementation libs.bundles.paging
+    implementation libs.paging.room
+    implementation libs.google.gson
+
 }

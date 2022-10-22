@@ -29,6 +29,5 @@ dependencies {
     kapt libs.arrow.kapt
 
     implementation libs.kotlin.coroutines
-    def paging_version = "3.1.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation libs.paging.runtime
 }

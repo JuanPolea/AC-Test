@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id "kotlin-parcelize"
+    id "org.jetbrains.kotlin.plugin.serialization"
     id 'kotlin-kapt'
 }
 
@@ -24,5 +26,6 @@ dependencies {
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
     implementation libs.bundles.room
-
+    implementation libs.retrofit2.converter.gson
+    implementation libs.kotlin.serialization
 }

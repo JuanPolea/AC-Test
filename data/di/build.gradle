@@ -25,11 +25,11 @@ kapt {
 }
 dependencies {
 
-    implementation(project(path: ":domain:model"))
-    implementation(project(path: ":domain:repository:open"))
-    implementation(project(path: ":data:open"))
-    implementation(project(path: ":data:remote"))
-    implementation(project(path: ":data:repository"))
+    api(project(path: ":domain:model"))
+    api(project(path: ":domain:repository:open"))
+    api(project(path: ":data:open"))
+    api(project(path: ":data:remote"))
+    api(project(path: ":data:repository"))
     api(project(path: ":data:cache:db"))
     api(project(path: ":data:cache:dao"))
 
@@ -40,6 +40,5 @@ dependencies {
 
     implementation libs.bundles.room
     kapt libs.room.compiler
-    implementation 'androidx.paging:paging-common-ktx:3.1.1'
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+    implementation libs.bundles.paging
 }

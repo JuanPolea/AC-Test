@@ -1,8 +1,8 @@
-package com.jfmr.ac.test.data.open.rickandmorty.character.entities
+package com.jfmr.ac.test.data.open.rickandmorty.character.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Origin(
+data class Location(
 
     @field:SerializedName("name")
     val name: String? = null,

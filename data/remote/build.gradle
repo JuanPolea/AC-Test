@@ -23,10 +23,10 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
-    implementation(project(path: ":domain:model"))
-    implementation(project(path: ":data:open"))
-    implementation(project(path: ":data:cache:dao"))
-    implementation(project(path: ":data:cache:db"))
+    api(project(path: ":domain:model"))
+    api(project(path: ":data:open"))
+    api(project(path: ":data:cache:dao"))
+    api(project(path: ":data:cache:db"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
@@ -36,12 +36,7 @@ dependencies {
 
     implementation libs.bundles.retrofit2
 
-    def paging_version = "3.1.1"
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-
-    // alternatively - without Android dependencies for tests
-    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
-    implementation "androidx.room:room-paging:2.4.3"
+    implementation libs.bundles.paging
+    implementation libs.paging.room
 
 }

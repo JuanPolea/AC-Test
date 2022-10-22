@@ -13,9 +13,9 @@ import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
 import com.jfmr.ac.test.data.cache.db.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.open.mapper.tryCall
 import com.jfmr.ac.test.data.open.rickandmorty.character.datasource.CharactersDataSource
-import com.jfmr.ac.test.data.open.rickandmorty.character.entities.Character
-import com.jfmr.ac.test.data.open.rickandmorty.character.entities.CharacterDetailResponse
-import com.jfmr.ac.test.data.open.rickandmorty.character.entities.CharactersResponse
+import com.jfmr.ac.test.data.open.rickandmorty.character.model.Character
+import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharacterDetailResponse
+import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharactersResponse
 import com.jfmr.ac.test.data.open.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.domain.model.character.CharacterDetail
@@ -113,15 +113,15 @@ class RemoteCharactersDataSource @Inject constructor(
             status = status)
     }
 
-    private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Info.toDomain(): Info =
+    private fun com.jfmr.ac.test.data.open.rickandmorty.character.model.Info.toDomain(): Info =
         Info(next = next, pages = pages, prev = prev, count = count)
 
-    private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Origin?.toDomain() = Origin(
+    private fun com.jfmr.ac.test.data.open.rickandmorty.character.model.Origin?.toDomain() = Origin(
         name = this?.name.orEmpty(),
         url = this?.url.orEmpty(),
     )
 
-    private fun com.jfmr.ac.test.data.open.rickandmorty.character.entities.Location?.toDomain() = Location(
+    private fun com.jfmr.ac.test.data.open.rickandmorty.character.model.Location?.toDomain() = Location(
         name = this?.name,
         url = this?.url,
     )

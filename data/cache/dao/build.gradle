@@ -32,13 +32,11 @@ android {
 }
 
 dependencies {
-    api(project(path: ":data:cache:model"))
     implementation project(path: ':domain:model')
     api libs.bundles.room
     kapt libs.room.compiler
     implementation libs.kotlin.coroutines
 
-    implementation 'androidx.paging:paging-common-ktx:3.1.1'
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+    implementation libs.bundles.paging
 
 }

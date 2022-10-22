@@ -23,10 +23,10 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
-    implementation(project("path": ":domain:model"))
-    implementation(project("path": ":domain:repository:open"))
-    implementation(project(path: ":data:remote"))
-    implementation(project(path: ":data:open"))
+    api(project("path": ":domain:model"))
+    api(project("path": ":domain:repository:open"))
+    api(project(path: ":data:remote"))
+    api(project(path: ":data:open"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
@@ -38,7 +38,5 @@ dependencies {
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
 
-    def paging_version = "3.1.1"
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation libs.paging.runtime
 }
