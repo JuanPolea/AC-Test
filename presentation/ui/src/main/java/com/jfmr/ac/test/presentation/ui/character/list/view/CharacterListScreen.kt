@@ -31,8 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -90,7 +90,7 @@ private fun CharacterListContent(
     items: () -> LazyPagingItems<DomainCharacter>,
 ) {
     val state = rememberLazyGridState()
-    val showScrollToTopButton = rememberSaveable {
+    val showScrollToTopButton = remember {
         derivedStateOf {
             state.firstVisibleItemIndex > 0
         }
