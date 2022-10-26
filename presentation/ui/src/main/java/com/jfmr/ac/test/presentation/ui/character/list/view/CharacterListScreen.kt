@@ -23,8 +23,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
@@ -53,6 +54,7 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,13 +72,23 @@ internal fun CharacterListScreen(
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(padding), contentAlignment = Alignment.Center) {
-            when (lazyPagingItems.itemCount) {
-                0 -> CircularProgressIndicator()
+            //Timber.wtf("STATE ${lazyPagingItems.loadState}")
+            when {
+                lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemSnapshotList.isEmpty() -> {
+                    Text(text = "No data found")
+                }
+                lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemSnapshotList.isEmpty() -> {
+                    Text(text = "No tu puta madre found")
+                }
+                lazyPagingItems.loadState.append is LoadState.Error -> {
+                    Text(text = "${(lazyPagingItems.loadState.append as LoadState.Error).error.message}")
+                }
                 else -> {
                     CharacterListContent(
                         modifier = modifier,
                         onClick = onClick,
-                    ) { lazyPagingItems }
+                        items = { lazyPagingItems }
+                    )
                 }
             }
         }
@@ -115,6 +127,21 @@ private fun CharacterListContent(
     }
 
     ScrollToTopButton(showScrollToTopButton, state)
+    Timber.wtf("${items().loadState}")
+
+    if (
+        items().loadState.source.refresh is LoadState.Loading ||
+        items().loadState.append is LoadState.Loading ||
+        items().loadState.refresh is LoadState.Loading
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd,
+        )
+        {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+    }
 }
 
 @Composable
@@ -190,18 +217,16 @@ private fun CharacterItemListContent(
                     contentDescription = domainCharacter().image,
                     contentScale = ContentScale.FillWidth,
                 )
-                domainCharacter().name.let {
-                    Text(
-                        text = it ?: stringResource(id = R.string.unknow),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(id = R.dimen.text)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Text(
+                    text = domainCharacter().name ?: stringResource(id = R.string.unknow),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(id = R.dimen.text)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }
