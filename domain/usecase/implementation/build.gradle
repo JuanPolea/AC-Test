@@ -31,13 +31,9 @@ dependencies {
     api(project(":domain:usecase:open"))
     api(project(path: ":data:cache:db"))
 
-    implementation libs.kotlin.coroutines
-
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-
-    implementation libs.paging.runtime
 }

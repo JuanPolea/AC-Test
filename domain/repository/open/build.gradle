@@ -23,7 +23,4 @@ android {
 dependencies {
     api(project(path: ":domain:model"))
     implementation(project(path: ":data:cache:db"))
-    implementation libs.kotlin.coroutines
-
-    implementation libs.paging.runtime
 }

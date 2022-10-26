@@ -23,20 +23,15 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
-    api(project("path": ":domain:model"))
-    api(project("path": ":domain:repository:open"))
-    api(project(path: ":data:remote"))
-    api(project(path: ":data:open"))
+    implementation(project("path": ":domain:model"))
+    implementation(project("path": ":domain:repository:open"))
+    implementation(project(path: ":data:remote"))
+    implementation(project(path: ":data:open"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
-    implementation libs.kotlin.coroutines
-
-    implementation libs.bundles.retrofit2
-
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
 
-    implementation libs.paging.runtime
 }

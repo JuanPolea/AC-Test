@@ -56,13 +56,10 @@ android {
 }
 
 dependencies {
-    api(project("path": ":presentation:ui"))
+    implementation(project("path": ":presentation:ui"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
-
-    implementation libs.timber
-    implementation libs.material
 }
 kapt {
     correctErrorTypes = true

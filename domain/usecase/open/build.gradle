@@ -26,6 +26,4 @@ dependencies {
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-
-    implementation libs.paging.runtime
 }

@@ -21,13 +21,13 @@ android {
 }
 
 dependencies {
-    api(project(path: ":domain:model"))
+    implementation(project(path: ":domain:model"))
 
-    implementation libs.bundles.retrofit2
+    api libs.bundles.retrofit2
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
 
-    implementation libs.kotlin.coroutines
-    implementation libs.paging.runtime
+    api libs.kotlin.coroutines
+    api libs.paging.runtime
 }

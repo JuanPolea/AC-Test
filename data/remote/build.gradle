@@ -23,20 +23,14 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
-    api(project(path: ":domain:model"))
-    api(project(path: ":data:open"))
-    api(project(path: ":data:cache:dao"))
-    api(project(path: ":data:cache:db"))
+    implementation(project(path: ":domain:model"))
+    implementation(project(path: ":data:open"))
+    implementation(project(path: ":data:cache:dao"))
+    implementation(project(path: ":data:cache:db"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-
-    implementation libs.bundles.retrofit2
-
-    implementation libs.bundles.paging
-    implementation libs.paging.room
-
 }

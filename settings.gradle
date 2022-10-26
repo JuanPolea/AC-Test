@@ -20,13 +20,16 @@ dependencyResolutionManagement {
         libs {
             library('material', 'com.google.android.material:material:1.6.1')
 
+
             version('compose', '1.2.1')
             library('compose-ui', 'androidx.compose.ui', 'ui').versionRef('compose')
             library('compose-tooling-preview', 'androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
             library('compose-navigation', 'androidx.navigation:navigation-compose:2.5.2')
             library('compose-coil', 'io.coil-kt:coil-compose:2.2.2')
+            library('compose-fundation', 'androidx.compose.foundation', 'foundation').versionRef('compose')
             library('material-compose', 'androidx.compose.material3:material3:1.0.0-alpha09')
-            bundle('compose', ['compose-ui', 'material-compose', 'compose-tooling-preview', 'compose-navigation', 'compose-coil'])
+            bundle('compose', ['compose-ui', 'material-compose', 'compose-tooling-preview', 'compose-navigation',
+                               'compose-coil', 'compose-fundation'])
 
 
             library('hilt-android', 'com.google.dagger:hilt-android:2.44')
@@ -64,6 +67,7 @@ dependencyResolutionManagement {
             library('paging-common', 'androidx.paging', 'paging-common-ktx').versionRef('paging')
             library('paging-runtime', 'androidx.paging', 'paging-runtime-ktx').versionRef('paging')
             library('paging-room', 'androidx.room:room-paging:2.4.3')
+            library('paging-compose', 'androidx.paging', 'paging-compose').version('1.0.0-alpha16')
             bundle('paging', ['paging-common', 'paging-runtime'])
 
             //-- Test ------------------------------------------------------------------------------

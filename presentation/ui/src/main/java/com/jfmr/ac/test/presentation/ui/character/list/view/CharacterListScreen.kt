@@ -31,8 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -61,7 +61,6 @@ internal fun CharacterListScreen(
     characterListViewModel: CharacterListViewModel = hiltViewModel(),
     onClick: (DomainCharacter) -> Unit,
 ) {
-    val state = rememberLazyGridState()
     val lazyPagingItems = characterListViewModel.pager.collectAsLazyPagingItems()
     Scaffold(
         topBar = {
@@ -76,10 +75,8 @@ internal fun CharacterListScreen(
                 else -> {
                     CharacterListContent(
                         modifier = modifier,
-                        state = state,
                         onClick = onClick,
-                        items = lazyPagingItems,
-                    )
+                    ) { lazyPagingItems }
                 }
             }
         }
@@ -89,15 +86,16 @@ internal fun CharacterListScreen(
 @Composable
 private fun CharacterListContent(
     modifier: Modifier,
-    state: LazyGridState,
     onClick: (DomainCharacter) -> Unit,
-    items: LazyPagingItems<DomainCharacter>,
+    items: () -> LazyPagingItems<DomainCharacter>,
 ) {
-    val showScrollToTopButton = remember {
+    val state = rememberLazyGridState()
+    val showScrollToTopButton = rememberSaveable {
         derivedStateOf {
             state.firstVisibleItemIndex > 0
         }
     }
+
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxWidth(),
@@ -105,7 +103,7 @@ private fun CharacterListContent(
         state = state,
     ) {
         gridItems(
-            items = items,
+            items = items(),
             key = {
                 it.id
             },
@@ -185,6 +183,7 @@ private fun CharacterItemListContent(
                                     size(Size.ORIGINAL)
                                 }
                             )
+                            .error(R.drawable.ic_placeholder)
                             .build()
                     ),
                     modifier = modifier.fillMaxWidth(),

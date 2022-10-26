@@ -23,9 +23,9 @@ android {
 }
 
 dependencies {
-    implementation libs.bundles.arrow
+    api libs.bundles.arrow
     kapt libs.arrow.kapt
-    implementation libs.bundles.room
+    api libs.bundles.room
     implementation libs.retrofit2.converter.gson
-    implementation libs.kotlin.serialization
+    api libs.kotlin.serialization
 }

@@ -33,10 +33,10 @@ android {
 
 dependencies {
     implementation project(path: ':domain:model')
-    api libs.bundles.room
     kapt libs.room.compiler
-    implementation libs.kotlin.coroutines
 
-    implementation libs.bundles.paging
+    api libs.kotlin.coroutines
+
+    api libs.bundles.paging
 
 }

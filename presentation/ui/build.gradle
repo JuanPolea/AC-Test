@@ -33,15 +33,11 @@ dependencies {
 
     implementation libs.bundles.compose
 
-    implementation libs.timber
+    api libs.timber
+    api libs.material
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
-    implementation libs.material
-    // optional - Jetpack Compose integration
-    implementation "androidx.paging:paging-compose:1.0.0-alpha16"
-    implementation "androidx.compose.foundation:foundation:1.2.1"
-
-
+    implementation libs.paging.compose
 }
