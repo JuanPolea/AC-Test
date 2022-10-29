@@ -41,7 +41,7 @@ object DBModule {
         database: RickAndMortyDB,
         networkService: RickAndMortyApiService,
     ) = RickAndMortyRemoteMediator(
-        database = database,
+        localDB = database,
         networkService = networkService
     )
 }

@@ -1,6 +1,7 @@
 package com.jfmr.ac.test.data.cache.db
 
 import android.net.Uri
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -22,11 +23,9 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class RickAndMortyRemoteMediator @Inject constructor(
-    private val database: RickAndMortyDB,
+    private val localDB: RickAndMortyDB,
     private val networkService: RickAndMortyApiService,
 ) : RemoteMediator<Int, DomainCharacter>() {
-
-    val characterDao = database.characterDao()
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DomainCharacter>): MediatorResult {
 
@@ -35,7 +34,7 @@ class RickAndMortyRemoteMediator @Inject constructor(
         // left off. For REFRESH, pass `null` to load the first page.
         val page = when (loadType) {
             LoadType.REFRESH -> {
-                0
+                1
             }
             // In this example, we never need to prepend, since REFRESH will always load the
             // first page in the list. Immediately return, reporting end of pagination.
@@ -43,7 +42,7 @@ class RickAndMortyRemoteMediator @Inject constructor(
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
             LoadType.APPEND -> {
-                val remoteKeys = getRemoteKeyForLastItem(state)
+                val remoteKeys: RemoteKeys? = getRemoteKeyForLastItem(state)
                 // We must explicitly check if the last item is `null` when appending,
                 // since passing `null` to networkService is only valid for initial load.
                 // If lastItem is `null` it means no items were loaded after the initial
@@ -59,26 +58,24 @@ class RickAndMortyRemoteMediator @Inject constructor(
         // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine CallAdapter
         // dispatches on a worker thread.
         try {
-            val response: DomainCharacters = page.let { networkService.characters(it).toDomain() }
+            val domainCharacters: DomainCharacters = page.let { networkService.characters(it).toDomain() }
 
-            database.withTransaction {
+            localDB.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    database.remoteKeysDao().clearRemoteKeys()
-                    characterDao.deleteDomainCharacter()
+                    localDB.remoteKeysDao().clearRemoteKeys()
+                    localDB.characterDao().deleteDomainCharacter()
                 }
-                val keys = response.results?.filterNotNull()?.map {
-                    RemoteKeys(it.id.toLong(), response.info?.prev.orEmpty(), response.info?.next.orEmpty())
+                val keys = domainCharacters.results?.filterNotNull()?.map {
+                    RemoteKeys(it.id.toLong(), domainCharacters.info?.prev.orEmpty(), domainCharacters.info?.next.orEmpty())
                 }
-                if (keys != null) {
-                    database.remoteKeysDao().insertAll(keys)
+                keys?.map {
+                    if (it.nextKey.isNotEmpty()) {
+                        localDB.remoteKeysDao().insertAll(keys)
+                    }
                 }
-                // Insert new users into database, which invalidates the current
-                // PagingData, allowing Paging to present the updates in the DB.
-                response.results?.filterNotNull()?.let { characterDao.insertAllCharactersEntity(it) }
-
             }
-
-            return MediatorResult.Success(endOfPaginationReached = response.info?.next == null)
+            domainCharacters.results?.filterNotNull()?.let { localDB.characterDao().insertCharacters(it) }
+            return MediatorResult.Success(endOfPaginationReached = domainCharacters.results?.isEmpty() == true)
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }
@@ -88,13 +85,15 @@ class RickAndMortyRemoteMediator @Inject constructor(
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
+
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, DomainCharacter>): RemoteKeys? {
         // Get the last page that was retrieved, that contained items.
         // From that last page, get the last item
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
                 // Get the remote keys of the last item retrieved
-                database.remoteKeysDao().remoteKeysRepoId(repo.id.toLong())
+                Log.e("GetRemoteKey", repo.id.toString())
+                localDB.remoteKeysDao().remoteKeysRepoId(repo.id.toLong())
             }
     }
 
