@@ -30,13 +30,11 @@ dependencies {
     implementation(project(path: ":data:open"))
     implementation(project(path: ":data:remote"))
     implementation(project(path: ":data:repository"))
+    implementation(project(path: ":data:cache:db"))
+    implementation(project(path: ":data:cache:dao"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
-    implementation libs.bundles.retrofit2
-
-    def paging_version = "3.1.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-
+    kapt libs.room.compiler
 }

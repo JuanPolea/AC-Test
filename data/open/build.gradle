@@ -23,12 +23,11 @@ android {
 dependencies {
     implementation(project(path: ":domain:model"))
 
-    implementation libs.bundles.retrofit2
+    api libs.bundles.retrofit2
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
 
-    implementation libs.kotlin.coroutines
-    def paging_version = "3.1.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    api libs.kotlin.coroutines
+    api libs.paging.runtime
 }

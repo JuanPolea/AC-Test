@@ -20,7 +20,7 @@ class AppState(
     }
 
     val currentRoute: String
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route ?: ""
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route.orEmpty()
 
     val showUpNavigation: Boolean
         @Composable get() = currentRoute !in NavItem.values().map { it.navCommand.route }

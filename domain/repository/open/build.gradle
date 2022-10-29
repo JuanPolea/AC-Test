@@ -21,9 +21,6 @@ android {
 }
 
 dependencies {
-    implementation(project(path: ":domain:model"))
-    implementation libs.kotlin.coroutines
-    def paging_version = "3.1.1"
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    api(project(path: ":domain:model"))
+    implementation(project(path: ":data:cache:db"))
 }

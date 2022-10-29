@@ -24,11 +24,11 @@ kapt {
 }
 
 dependencies {
-    implementation(project(":data:open"))
-    implementation(project(":data:di"))
-    implementation(project(":domain:model"))
-    implementation(project(":domain::usecase:implementation"))
-    implementation(project(":domain:usecase:open"))
+    api(project(":data:open"))
+    api(project(":data:di"))
+    api(project(":domain:model"))
+    api(project(":domain::usecase:implementation"))
+    api(project(":domain:usecase:open"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

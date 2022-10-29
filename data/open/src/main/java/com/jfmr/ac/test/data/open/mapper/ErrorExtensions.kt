@@ -11,7 +11,7 @@ fun Exception.toError(): RemoteError =
     when (this) {
         is IOException -> RemoteError.Connectivity
         is HttpException -> RemoteError.Server(code())
-        else -> RemoteError.Unknown(message ?: "")
+        else -> RemoteError.Unknown(message.orEmpty())
     }
 
 inline fun <T> tryCall(action: () -> T): DomainResult<T> =

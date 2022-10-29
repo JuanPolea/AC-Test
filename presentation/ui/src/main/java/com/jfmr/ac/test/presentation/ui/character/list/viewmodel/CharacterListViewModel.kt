@@ -3,8 +3,6 @@ package com.jfmr.ac.test.presentation.ui.character.list.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.jfmr.ac.test.domain.usecase.di.RetrieveItemsQualifier
 import com.jfmr.ac.test.domain.usecase.open.character.CharactersUseCase
@@ -18,9 +16,6 @@ class CharacterListViewModel @Inject constructor(
 ) : ViewModel() {
 
     var pager =
-        Pager(PagingConfig(50)) {
             charactersUseCase.characters()
-        }
-            .flow
             .cachedIn(viewModelScope)
 }

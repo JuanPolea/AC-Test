@@ -19,4 +19,6 @@
     <string name="scroll_to_top">Scroll to Top</string>
     <string name="episodes">Episodes</string>
     <string name="character">Character</string>
+    <string name="something_was_wrong">Something was wrong</string>
+    <string name="retry">Retry</string>
 </resources>

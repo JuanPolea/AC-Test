@@ -21,12 +21,9 @@ android {
 }
 
 dependencies {
-    implementation(project(path: ":domain:model"))
-    implementation(project(path: ":data:open"))
+    api(project(path: ":domain:model"))
+    api(project(path: ":data:open"))
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-    def paging_version = "3.1.1"
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

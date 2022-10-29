@@ -17,19 +17,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,11 +46,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
@@ -61,27 +67,33 @@ internal fun CharacterListScreen(
     characterListViewModel: CharacterListViewModel = hiltViewModel(),
     onClick: (DomainCharacter) -> Unit,
 ) {
-    val state = rememberLazyGridState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val lazyPagingItems = characterListViewModel.pager.collectAsLazyPagingItems()
-    Scaffold(
-        topBar = {
-            MainAppBar()
-        },
-    ) { padding ->
+    val retryMessage = stringResource(id = R.string.retry)
+    Scaffold(topBar = {
+        MainAppBar()
+    }, snackbarHost = {
+        SnackbarHost(snackbarHostState) {
+            Snackbar(
+                snackbarData = it,
+            )
+        }
+    }) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(padding), contentAlignment = Alignment.Center) {
-            when (lazyPagingItems.itemCount) {
-                0 -> CircularProgressIndicator()
-                else -> {
-                    CharacterListContent(
-                        modifier = modifier,
-                        state = state,
-                        onClick = onClick,
-                        items = lazyPagingItems,
-                    )
-                }
-            }
+            CharacterListContent(modifier = modifier,
+                onClick = onClick,
+                onRefresh = { lazyPagingItems.refresh() },
+                isRefreshing = { lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0 },
+                items = { lazyPagingItems },
+                showSnackbar = { message ->
+                    snackbarHostState.showSnackbar(message = message, actionLabel = retryMessage).apply {
+                        if (this == SnackbarResult.ActionPerformed) {
+                            lazyPagingItems.refresh()
+                        }
+                    }
+                })
         }
     }
 }
@@ -89,58 +101,74 @@ internal fun CharacterListScreen(
 @Composable
 private fun CharacterListContent(
     modifier: Modifier,
-    state: LazyGridState,
     onClick: (DomainCharacter) -> Unit,
-    items: LazyPagingItems<DomainCharacter>,
+    onRefresh: () -> Unit,
+    isRefreshing: () -> Boolean,
+    items: () -> LazyPagingItems<DomainCharacter>,
+    showSnackbar: suspend (String) -> SnackbarResult,
 ) {
+    val state = rememberLazyGridState()
     val showScrollToTopButton = remember {
         derivedStateOf {
             state.firstVisibleItemIndex > 0
         }
     }
-    LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxWidth(),
-        columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
-        state = state,
-    ) {
-        gridItems(
-            items = items,
-            key = {
+    val swipeState = rememberSwipeRefreshState(isRefreshing = isRefreshing())
+    val scope = rememberCoroutineScope()
+
+    SwipeRefresh(state = swipeState, onRefresh = { onRefresh() }) {
+        LazyVerticalGrid(
+            modifier = modifier.fillMaxWidth(),
+            columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
+            state = state,
+        ) {
+            gridItems(items = items(), key = {
                 it.id
-            },
-            itemContent = { domainCharacter ->
-                if (domainCharacter != null)
-                    CharacterItemListContent(domainCharacter = { domainCharacter }, onClick)
-            }
-        )
+            }, itemContent = { domainCharacter ->
+                if (domainCharacter != null) CharacterItemListContent(domainCharacter = { domainCharacter }, onClick)
+            })
+        }
     }
 
-    ScrollToTopButton(showScrollToTopButton, state)
+    ScrollToTopButton(showButton = { showScrollToTopButton.value }) {
+        scope.launch {
+            state.scrollToItem(0)
+        }
+    }
+
+    if (items().loadState.source.refresh is LoadState.Loading || items().loadState.append is LoadState.Loading || items().loadState.refresh is LoadState.Loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd,
+        ) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+    }
+
+    if (items().loadState.mediator?.refresh is LoadState.Error) {
+        val defaultErrorMessage = stringResource(id = R.string.something_was_wrong)
+        LaunchedEffect(Unit) {
+            scope.launch {
+                showSnackbar((items().loadState.mediator?.refresh as LoadState.Error).error.message ?: defaultErrorMessage)
+            }
+        }
+    }
 }
 
 @Composable
 private fun ScrollToTopButton(
-    showButton: State<Boolean>,
-    state: LazyGridState,
+    showButton: () -> Boolean,
+    scrollToTop: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
 
-    AnimatedVisibility(
-        visible = showButton.value,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
+    AnimatedVisibility(visible = showButton(), enter = fadeIn(), exit = fadeOut()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd,
-        )
-        {
+        ) {
             Button(
                 onClick = {
-                    scope.launch {
-                        state.animateScrollToItem(0)
-                    }
+                    scrollToTop()
                 },
             ) {
                 Text(
@@ -174,35 +202,22 @@ private fun CharacterItemListContent(
         ) {
             Column {
                 Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(data = domainCharacter().image)
-                            .placeholder(R.drawable.ic_placeholder)
-                            .crossfade(true)
-                            .apply(
-                                block = fun ImageRequest.Builder.() {
-                                    size(Size.ORIGINAL)
-                                }
-                            )
-                            .build()
-                    ),
+                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
+                        .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
+                            size(Size.ORIGINAL)
+                        }).error(R.drawable.ic_placeholder).build()),
                     modifier = modifier.fillMaxWidth(),
                     contentDescription = domainCharacter().image,
                     contentScale = ContentScale.FillWidth,
                 )
-                domainCharacter().name?.let {
-                    Text(
-                        text = it,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(id = R.dimen.text)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(id = R.dimen.text)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }
@@ -214,17 +229,11 @@ fun <T : Any> LazyGridScope.gridItems(
     key: ((item: T) -> Any)? = null,
     itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit,
 ) {
-    items(
-        count = items.itemCount,
-        key = if (key == null) null else { index ->
-            val item = items.peek(index)
-            if (item == null) {
-                PagingPlaceholderKey(index)
-            } else {
-                key(item)
-            }
-        }
-    ) { index ->
+    items(count = items.itemCount, key = if (key != null) { index ->
+        items[index]?.let(key) ?: PagingPlaceholderKey(index)
+    } else {
+        null
+    }) { index ->
         itemContent(items[index])
     }
 }
@@ -240,12 +249,10 @@ private data class PagingPlaceholderKey(private val index: Int) : Parcelable {
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<PagingPlaceholderKey> =
-            object : Parcelable.Creator<PagingPlaceholderKey> {
-                override fun createFromParcel(parcel: Parcel) =
-                    PagingPlaceholderKey(parcel.readInt())
+        val CREATOR: Parcelable.Creator<PagingPlaceholderKey> = object : Parcelable.Creator<PagingPlaceholderKey> {
+            override fun createFromParcel(parcel: Parcel) = PagingPlaceholderKey(parcel.readInt())
 
-                override fun newArray(size: Int) = arrayOfNulls<PagingPlaceholderKey?>(size)
-            }
+            override fun newArray(size: Int) = arrayOfNulls<PagingPlaceholderKey?>(size)
+        }
     }
 }

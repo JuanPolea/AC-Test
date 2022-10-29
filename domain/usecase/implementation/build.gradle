@@ -24,20 +24,16 @@ kapt {
 }
 
 dependencies {
-    implementation(project(":domain:model"))
-    implementation(project(":data:open"))
-    implementation(project(":data:di"))
-    implementation(project(":domain:repository:open"))
-    implementation(project(":domain:usecase:open"))
-
-    implementation libs.kotlin.coroutines
+    api(project(":domain:model"))
+    api(project(":data:open"))
+    api(project(":data:di"))
+    api(project(":domain:repository:open"))
+    api(project(":domain:usecase:open"))
+    api(project(path: ":data:cache:db"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-    def paging_version = "3.1.1"
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

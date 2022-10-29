@@ -18,8 +18,10 @@ android {
 
         }
     }
-
+    buildToolsVersion '33.0.0'
 }
 
 dependencies {
+    api(project(path: ":domain:model"))
+
 }
