@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -115,26 +116,7 @@ private fun CharacterDetailContent(
                         text = stringResource(id = R.string.character),
                         style = MaterialTheme.typography.titleLarge,
                     )
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(
-                                if (character.isFavorite == true) {
-                                    R.drawable.ic_favorite_filled
-                                } else {
-                                    R.drawable.ic_favorite_border
-                                }
-                            )
-                            .size(Size.ORIGINAL)
-                            .crossfade(true)
-                            .build(),
-                        modifier = Modifier
-                            .padding(end = dimensionResource(id = R.dimen.row_padding))
-                            .clickable {
-                                action(character.copy(isFavorite = !character.isFavorite!!))
-                            },
-                        contentScale = ContentScale.Crop,
-                        contentDescription = stringResource(id = R.string.fav_description)
-                    )
+                    FavoriteButton(character, action)
                 }
             }
             item {
@@ -163,6 +145,36 @@ private fun CharacterDetailContent(
             }
 
         }
+    }
+}
+
+@Composable
+internal fun FavoriteButton(
+    character: DomainCharacter,
+    action: (DomainCharacter) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier.fillMaxSize())
+    {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(
+                    if (character.isFavorite == true) {
+                        R.drawable.ic_favorite_filled
+                    } else {
+                        R.drawable.ic_favorite_border
+                    }
+                )
+                .size(Size.ORIGINAL)
+                .crossfade(true)
+                .build(),
+            modifier = modifier
+                .clickable {
+                    action(character.copy(isFavorite = !character.isFavorite!!))
+                },
+            contentScale = ContentScale.Crop,
+            contentDescription = stringResource(id = R.string.fav_description)
+        )
     }
 }
 
