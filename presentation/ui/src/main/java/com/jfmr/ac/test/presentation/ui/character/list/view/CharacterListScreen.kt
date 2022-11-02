@@ -3,20 +3,17 @@ package com.jfmr.ac.test.presentation.ui.character.list.view
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -24,13 +21,9 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,8 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -68,8 +59,10 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.main.component.HeartButton
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,7 +133,12 @@ private fun CharacterListContent(
         }
     }
 
-    if (items().loadState.source.refresh is LoadState.Loading || items().loadState.append is LoadState.Loading || items().loadState.refresh is LoadState.Loading) {
+    Timber.wtf(items().loadState.toString())
+    if (
+        items().loadState.source.refresh is LoadState.Loading
+        || items().loadState.append is LoadState.Loading
+        || items().loadState.refresh is LoadState.Loading
+    ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd,
@@ -212,13 +210,6 @@ private fun CharacterItemListContent(
     addToFavorites: (DomainCharacter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val interactionSource = MutableInteractionSource()
-
-    val coroutineScope = rememberCoroutineScope()
-    val scale = remember {
-        androidx.compose.animation.core.Animatable(1f)
-    }
-
     Card(
         modifier = modifier
             .fillMaxSize()
@@ -242,32 +233,14 @@ private fun CharacterItemListContent(
                         contentDescription = domainCharacter().image,
                         contentScale = ContentScale.FillWidth,
                     )
-                    Icon(
-                        imageVector = if (domainCharacter().isFavorite == true) {
-                            Icons.Outlined.Favorite
-                        } else {
-                            Icons.Default.FavoriteBorder
+                    HeartButton(
+                        character = domainCharacter(),
+                        action = {
+                            addToFavorites(
+                                domainCharacter().copy(isFavorite = it.isFavorite)
+                            )
                         },
-                        contentDescription = stringResource(id = R.string.fav_description),
-                        tint = Color.Red,
-                        modifier = modifier
-                            .scale(scale = scale.value)
-                            .size(size = dimensionResource(id = R.dimen.favorite_size))
-                            .align(Alignment.TopEnd)
-                            .padding(dimensionResource(id = R.dimen.character_list_padding))
-                            .clickable(interactionSource = interactionSource, indication = null) {
-                                coroutineScope.launch {
-                                    scale.animateTo(
-                                        0.8f,
-                                        animationSpec = tween(100),
-                                    )
-                                    scale.animateTo(
-                                        1f,
-                                        animationSpec = tween(100),
-                                    )
-                                }
-                                addToFavorites(domainCharacter().copy(isFavorite = !domainCharacter().isFavorite!!))
-                            }
+                        alignment = Alignment.TopEnd
                     )
                 }
                 Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
