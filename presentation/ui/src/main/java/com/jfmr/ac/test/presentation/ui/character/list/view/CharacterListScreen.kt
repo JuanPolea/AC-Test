@@ -59,8 +59,10 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.main.component.HeartButton
 import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +92,10 @@ internal fun CharacterListScreen(
                 onClick = onClick,
                 onRefresh = { lazyPagingItems.refresh() },
                 isRefreshing = { lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0 },
-                items = { lazyPagingItems }
+                items = { lazyPagingItems },
+                addToFavorites = {
+                    characterListViewModel.addToFavorite(it)
+                },
             )
         }
     }
@@ -103,6 +108,7 @@ private fun CharacterListContent(
     onRefresh: () -> Unit,
     isRefreshing: () -> Boolean,
     items: () -> LazyPagingItems<DomainCharacter>,
+    addToFavorites: (DomainCharacter) -> Unit,
 ) {
     val lazyGridState = rememberLazyGridState()
     val showScrollToTopButton = remember {
@@ -118,18 +124,21 @@ private fun CharacterListContent(
         when (items().loadState.mediator?.refresh) {
             is LoadState.Loading -> CircularProgressBar()
             is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
-            else ->
-                CharacterListSuccessContent(
-                    modifier = modifier,
-                    state = { lazyGridState },
-                    items = items,
-                    onClick = onClick,
-                    showScrollToTopButton = { showScrollToTopButton },
-                )
+            else -> CharacterListSuccessContent(modifier = modifier,
+                state = { lazyGridState },
+                items = items,
+                onClick = onClick,
+                showScrollToTopButton = { showScrollToTopButton },
+                addToFavorites = addToFavorites)
         }
     }
 
-    if (items().loadState.source.refresh is LoadState.Loading || items().loadState.append is LoadState.Loading || items().loadState.refresh is LoadState.Loading) {
+    Timber.wtf(items().loadState.toString())
+    if (
+        items().loadState.source.refresh is LoadState.Loading
+        || items().loadState.append is LoadState.Loading
+        || items().loadState.refresh is LoadState.Loading
+    ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd,
@@ -146,6 +155,7 @@ private fun CharacterListSuccessContent(
     items: () -> LazyPagingItems<DomainCharacter>,
     onClick: (DomainCharacter) -> Unit,
     showScrollToTopButton: () -> State<Boolean>,
+    addToFavorites: (DomainCharacter) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -154,16 +164,13 @@ private fun CharacterListSuccessContent(
         columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
         state = state(),
     ) {
-        gridItems(
-            items = items(),
-            key = {
-                it.id
-            }, itemContent = { domainCharacter ->
-                domainCharacter?.let {
-                    CharacterItemListContent(domainCharacter = { it }, onClick)
-                }
+        gridItems(items = items(), key = {
+            it.id
+        }, itemContent = { domainCharacter ->
+            domainCharacter?.let {
+                CharacterItemListContent(domainCharacter = { it }, onClick = onClick, addToFavorites = addToFavorites)
             }
-        )
+        })
     }
     ScrollToTopButton(showButton = { showScrollToTopButton().value }) {
         scope.launch {
@@ -188,10 +195,7 @@ private fun ScrollToTopButton(
                     scrollToTop()
                 },
             ) {
-                Text(
-                    text = stringResource(id = R.string.scroll_to_top),
-                    style = MaterialTheme.typography.labelMedium
-                )
+                Text(text = stringResource(id = R.string.scroll_to_top), style = MaterialTheme.typography.labelMedium)
             }
         }
 
@@ -203,6 +207,7 @@ private fun ScrollToTopButton(
 private fun CharacterItemListContent(
     domainCharacter: () -> DomainCharacter,
     onClick: (DomainCharacter) -> Unit,
+    addToFavorites: (DomainCharacter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -217,25 +222,37 @@ private fun CharacterItemListContent(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
         ) {
-            Column {
-                Image(
-                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
-                        .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
-                            size(Size.ORIGINAL)
-                        }).error(R.drawable.ic_placeholder)
-                        .build()),
-                    modifier = modifier.fillMaxWidth(),
-                    contentDescription = domainCharacter().image,
-                    contentScale = ContentScale.FillWidth,
-                )
+            Column(modifier = modifier) {
+                Box {
+                    Image(
+                        painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
+                            .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
+                                size(Size.ORIGINAL)
+                            }).error(R.drawable.ic_placeholder).build()),
+                        modifier = modifier.fillMaxWidth(),
+                        contentDescription = domainCharacter().image,
+                        contentScale = ContentScale.FillWidth,
+                    )
+                    HeartButton(
+                        character = domainCharacter(),
+                        action = {
+                            addToFavorites(
+                                domainCharacter().copy(isFavorite = it.isFavorite)
+                            )
+                        },
+                        alignment = Alignment.TopEnd
+                    )
+                }
                 Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.text)),
+                    modifier = Modifier.padding(
+                        start = dimensionResource(id = R.dimen.text),
+                        end = dimensionResource(id = R.dimen.text),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
+
                 Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
             }
         }

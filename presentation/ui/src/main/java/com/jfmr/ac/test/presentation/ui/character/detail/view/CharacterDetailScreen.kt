@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -30,11 +29,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Size
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
@@ -42,6 +41,7 @@ import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewMod
 import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
 import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.main.component.HeartButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +83,7 @@ private fun CharacterDetailContent(
     val lazyListState = rememberLazyListState()
     var scrolledY = 0f
     var previousOffset = 0
+
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween) {
             item {
@@ -101,7 +102,9 @@ private fun CharacterDetailContent(
                             previousOffset = lazyListState.firstVisibleItemScrollOffset
                         }
                         .clip(CircleShape),
-                    contentScale = ContentScale.FillWidth)
+                    contentScale = ContentScale.FillWidth,
+                    error = painterResource(id = R.drawable.ic_placeholder)
+                )
             }
             item {
                 Row(
@@ -109,32 +112,15 @@ private fun CharacterDetailContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(start = dimensionResource(id = R.dimen.row_padding)),
-                        text = stringResource(id = R.string.character),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(
-                                if (character.isFavorite == true) {
-                                    R.drawable.ic_favorite_filled
-                                } else {
-                                    R.drawable.ic_favorite_border
-                                }
-                            )
-                            .size(Size.ORIGINAL)
-                            .crossfade(true)
-                            .build(),
-                        modifier = Modifier
-                            .padding(end = dimensionResource(id = R.dimen.row_padding))
-                            .clickable {
-                                action(character.copy(isFavorite = !character.isFavorite!!))
-                            },
-                        contentScale = ContentScale.Crop,
-                        contentDescription = stringResource(id = R.string.fav_description)
-                    )
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = dimensionResource(id = R.dimen.row_padding)),
+                            text = stringResource(id = R.string.character),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        HeartButton(character, action, Alignment.TopEnd)
+                    }
                 }
             }
             item {
@@ -165,6 +151,7 @@ private fun CharacterDetailContent(
         }
     }
 }
+
 
 @Composable
 private fun DetailRow(nameResource: Int, value: String) {
