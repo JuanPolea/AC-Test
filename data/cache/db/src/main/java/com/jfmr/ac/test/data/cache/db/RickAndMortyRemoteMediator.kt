@@ -1,3 +1,4 @@
+@file:Suppress("ReturnCount")
 package com.jfmr.ac.test.data.cache.db
 
 import android.net.Uri

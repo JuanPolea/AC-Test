@@ -1,23 +1,13 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-kapt'
+
 }
 
 android {
     namespace = "com.jfmr.ac.test.data.di"
-    compileSdk 33
-
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
         buildConfigField "String", "BASE_URL", "\"https://rickandmortyapi.com/api/\""
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-
-        }
     }
 }
 kapt {

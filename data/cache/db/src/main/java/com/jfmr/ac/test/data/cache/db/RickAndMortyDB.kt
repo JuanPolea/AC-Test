@@ -18,7 +18,7 @@ private const val DBNAME = "rick_and_morty_database"
 )
 
 @TypeConverters(
-    DomainCharacterConverter::class
+    CharacterConverter::class
 )
 abstract class RickAndMortyDB : RoomDatabase() {
     abstract fun characterDao(): CharacterDao
