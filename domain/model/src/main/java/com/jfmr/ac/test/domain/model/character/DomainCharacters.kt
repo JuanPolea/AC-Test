@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 
 data class DomainCharacters(
@@ -24,8 +25,7 @@ data class Info(
 @Serializable
 @Entity(tableName = "characters")
 data class DomainCharacter(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey val id: Int,
     val image: String? = null,
     val gender: String? = null,
     val species: String? = null,
@@ -37,6 +37,7 @@ data class DomainCharacter(
     val type: String? = null,
     val url: String? = null,
     val status: String? = null,
+    @Transient val isFavorite: Boolean? = false,
 ) : Parcelable
 
 @Parcelize

@@ -2,9 +2,11 @@ package com.jfmr.ac.test.domain.usecase.di
 
 import com.jfmr.ac.test.domain.usecase.open.character.CharacterDetailUseCase
 import com.jfmr.ac.test.domain.usecase.open.character.CharactersUseCase
+import com.jfmr.ac.test.domain.usecase.open.character.UpdateCharacterUseCase
 import com.jfmr.ac.test.domain.usecase.open.episode.EpisodesUseCase
 import com.jfmr.domain.usecase.implementation.character.CharacterDetailInteractor
 import com.jfmr.domain.usecase.implementation.character.CharactersInteractor
+import com.jfmr.domain.usecase.implementation.character.UpdateCharacterInteractor
 import com.jfmr.domain.usecase.implementation.episode.EpisodesInteractor
 import dagger.Binds
 import dagger.Module
@@ -20,6 +22,10 @@ annotation class RetrieveItemsQualifier
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
 annotation class CharacterDetailQualifier
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class UpdateCharacterQualifier
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
@@ -43,5 +49,10 @@ abstract class UseCaseModule {
     @Singleton
     @Binds
     abstract fun bindEpisodesUseCase(implementation: EpisodesInteractor): EpisodesUseCase
+
+    @UpdateCharacterQualifier
+    @Singleton
+    @Binds
+    abstract fun bindUpdateCharacterUseCase(implementation: UpdateCharacterInteractor): UpdateCharacterUseCase
 
 }
