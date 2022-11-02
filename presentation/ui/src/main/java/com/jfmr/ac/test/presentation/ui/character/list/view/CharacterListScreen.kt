@@ -124,7 +124,10 @@ private fun CharacterListContent(
         }
     }
     val swipeState = rememberSwipeRefreshState(isRefreshing = isRefreshing())
-    SwipeRefresh(state = swipeState, onRefresh = { onRefresh() }) {
+    SwipeRefresh(
+        state = swipeState,
+        onRefresh = { onRefresh() }
+    ) {
         when (items().loadState.mediator?.refresh) {
             is LoadState.Loading -> CircularProgressBar()
             is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
@@ -264,7 +267,8 @@ private fun CharacterItemListContent(
                                     )
                                 }
                                 addToFavorites(domainCharacter().copy(isFavorite = !domainCharacter().isFavorite!!))
-                            })
+                            }
+                    )
                 }
                 Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
                     modifier = Modifier.padding(
