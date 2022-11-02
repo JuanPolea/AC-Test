@@ -7,7 +7,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.usecase.di.CharacterDetailQualifier
 import com.jfmr.ac.test.domain.usecase.di.UpdateCharacterQualifier
 import com.jfmr.ac.test.domain.usecase.open.character.CharacterDetailUseCase
@@ -43,7 +42,7 @@ class DetailViewModel @Inject constructor(
                     ::error,
                 )
             }
-        } ?: error(CharacterDetailError.CharacterNotFound)
+        } ?: error()
 
     }
 
@@ -60,7 +59,7 @@ class DetailViewModel @Inject constructor(
 
     private fun success(character: DomainCharacter) = onCharacterDetailEvent(CharacterDetailEvent.CharacterFound(character))
 
-    private fun error(domainError: DomainError) = onCharacterDetailEvent(CharacterDetailEvent.CharacterServerError)
+    private fun error() = onCharacterDetailEvent(CharacterDetailEvent.CharacterServerError)
 
     internal fun updateCharacter(character: DomainCharacter) {
         viewModelScope.launch {

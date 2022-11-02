@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -81,75 +85,106 @@ private fun CharacterDetailContent(
     action: (DomainCharacter) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    var scrolledY = 0f
-    var previousOffset = 0
 
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(dimensionResource(id = R.dimen.character_detail_padding)), contentAlignment = Alignment.Center) {
         LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween) {
             item {
-                AsyncImage(
-                    model = ImageRequest
-                        .Builder(LocalContext.current)
-                        .data(character.image)
-                        .placeholder(R.drawable.ic_placeholder)
-                        .crossfade(true).build(),
-                    contentDescription = stringResource(id = R.string.image_detail_description),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .graphicsLayer {
-                            scrolledY += lazyListState.firstVisibleItemScrollOffset - previousOffset
-                            translationY = scrolledY * 0.5f
-                            previousOffset = lazyListState.firstVisibleItemScrollOffset
-                        }
-                        .clip(CircleShape),
-                    contentScale = ContentScale.FillWidth,
-                    error = painterResource(id = R.drawable.ic_placeholder)
+                DetailHeader(
+                    character = character,
+                    lazyListState = lazyListState
                 )
             }
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            modifier = Modifier
-                                .padding(start = dimensionResource(id = R.dimen.row_padding)),
-                            text = stringResource(id = R.string.character),
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        HeartButton(character, action, Alignment.TopEnd)
-                    }
-                }
+                CharacterDetailBody(
+                    character = character,
+                    action = action
+                )
             }
             item {
-                DetailRow(R.string.name, character.name ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                DetailRow(R.string.status, character.status ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                DetailRow(R.string.location, character.location?.name ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                DetailRow(R.string.gender, character.gender ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                DetailRow(R.string.species, character.species ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                DetailRow(R.string.origin, character.origin?.name ?: stringResource(id = R.string.unknow))
-            }
-            item {
-                Spacer(modifier = Modifier.height(IntrinsicSize.Max))
+                Spacer(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Max)
+                        .padding(
+                            top = dimensionResource(id = R.dimen.character_list_padding)),
+                )
             }
             item {
                 character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
             }
-
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CharacterDetailBody(
+    character: DomainCharacter,
+    action: (DomainCharacter) -> Unit,
+) {
+    HeartButton(character, action, Alignment.TopEnd)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            dimensionResource(id = R.dimen.row_padding),
+                        ),
+                    text = stringResource(id = R.string.character),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
+        Divider()
+        DetailRow(R.string.name, character.name ?: stringResource(id = R.string.unknow))
+        DetailRow(R.string.status, character.status ?: stringResource(id = R.string.unknow))
+        DetailRow(R.string.location, character.location?.name ?: stringResource(id = R.string.unknow))
+        DetailRow(R.string.gender, character.gender ?: stringResource(id = R.string.unknow))
+        DetailRow(R.string.species, character.species ?: stringResource(id = R.string.unknow))
+        DetailRow(R.string.origin, character.origin?.name ?: stringResource(id = R.string.unknow))
+    }
+}
+
+@Composable
+private fun DetailHeader(
+    character: DomainCharacter,
+    lazyListState: LazyListState,
+) {
+    var scrolledY = 0f
+    var previousOffset = 0
+    AsyncImage(
+        model = ImageRequest
+            .Builder(LocalContext.current)
+            .data(character.image)
+            .placeholder(R.drawable.ic_placeholder)
+            .crossfade(true).build(),
+        contentDescription = stringResource(id = R.string.image_detail_description),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.character_detail_image_elevation),
+                shape = CircleShape,
+                spotColor = MaterialTheme.colorScheme.primary
+            )
+            .graphicsLayer {
+                scrolledY += lazyListState.firstVisibleItemScrollOffset - previousOffset
+                translationY = scrolledY * 0.5f
+                previousOffset = lazyListState.firstVisibleItemScrollOffset
+            },
+        contentScale = ContentScale.FillWidth,
+        error = painterResource(id = R.drawable.ic_placeholder)
+    )
 }
 
 

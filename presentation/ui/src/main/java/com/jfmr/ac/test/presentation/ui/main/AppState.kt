@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 
 class AppState(
     val navController: NavHostController,
-    val coroutineScope: CoroutineScope,
 ) {
     companion object {
         val BOTTOM_NAV_OPTIONS: List<NavItem> = listOf(NavItem.CHARACTERS, NavItem.LOCATIONS)
@@ -43,7 +42,6 @@ fun rememberAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ) = remember(navController, coroutineScope) {
     AppState(
-        navController = navController,
-        coroutineScope = coroutineScope
+        navController = navController
     )
 }
