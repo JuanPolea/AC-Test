@@ -1,5 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -33,7 +34,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.jfmr.ac.test.domain.model.character.CharacterDetail
+import coil.size.Size
+import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
@@ -51,11 +53,12 @@ fun CharacterDetailScreen(
     Scaffold(topBar = {
         SmallTopAppBar(title = {
             Text(text = "Detail")
-        }, navigationIcon = {
-            IconButton(onClick = { onUpClick.invoke() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-            }
         },
+            navigationIcon = {
+                IconButton(onClick = { onUpClick.invoke() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                }
+            },
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.primary,
                 containerColor = MaterialTheme.colorScheme.background,
@@ -63,31 +66,32 @@ fun CharacterDetailScreen(
     }) {
         when (characterDetailState) {
             is CharacterDetailState.Loading -> CircularProgressBar(stringResource(id = characterDetailState.messageResource))
-            is CharacterDetailState.Error -> ErrorScreen(text = stringResource(id = R.string.character_detail_not_found))
-            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail)
+            is CharacterDetailState.Error -> ErrorScreen(messageResource = R.string.character_detail_not_found) {}
+            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail) {
+                detailViewModel.updateCharacter(it)
+            }
         }
     }
 
 }
 
 @Composable
-private fun CharacterDetailContent(characterDetail: CharacterDetail) {
+private fun CharacterDetailContent(
+    character: DomainCharacter,
+    action: (DomainCharacter) -> Unit,
+) {
     val lazyListState = rememberLazyListState()
     var scrolledY = 0f
     var previousOffset = 0
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween) {
             item {
-                AsyncImage(model =
-                ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(characterDetail.image)
-                    .placeholder(R.drawable.ic_placeholder)
-                    .crossfade(true)
-                    .build(),
+                AsyncImage(
+                    model = ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(character.image)
+                        .placeholder(R.drawable.ic_placeholder)
+                        .crossfade(true).build(),
                     contentDescription = stringResource(id = R.string.image_detail_description),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -97,41 +101,65 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
                             previousOffset = lazyListState.firstVisibleItemScrollOffset
                         }
                         .clip(CircleShape),
-                    contentScale = ContentScale.FillWidth
-                )
+                    contentScale = ContentScale.FillWidth)
             }
             item {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = dimensionResource(id = R.dimen.row_padding)),
-                    text = stringResource(id = R.string.character),
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = dimensionResource(id = R.dimen.row_padding)),
+                        text = stringResource(id = R.string.character),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(
+                                if (character.isFavorite == true) {
+                                    R.drawable.ic_favorite_filled
+                                } else {
+                                    R.drawable.ic_favorite_border
+                                }
+                            )
+                            .size(Size.ORIGINAL)
+                            .crossfade(true)
+                            .build(),
+                        modifier = Modifier
+                            .padding(end = dimensionResource(id = R.dimen.row_padding))
+                            .clickable {
+                                action(character.copy(isFavorite = !character.isFavorite!!))
+                            },
+                        contentScale = ContentScale.Crop,
+                        contentDescription = stringResource(id = R.string.fav_description)
+                    )
+                }
             }
             item {
-                DetailRow(R.string.name, characterDetail.name)
+                DetailRow(R.string.name, character.name ?: stringResource(id = R.string.unknow))
             }
             item {
-                DetailRow(R.string.status, characterDetail.status)
+                DetailRow(R.string.status, character.status ?: stringResource(id = R.string.unknow))
             }
             item {
-                DetailRow(R.string.location, characterDetail.location?.name ?: stringResource(id = R.string.unknow))
+                DetailRow(R.string.location, character.location?.name ?: stringResource(id = R.string.unknow))
             }
             item {
-                DetailRow(R.string.gender, characterDetail.gender)
+                DetailRow(R.string.gender, character.gender ?: stringResource(id = R.string.unknow))
             }
             item {
-                DetailRow(R.string.species, characterDetail.species)
+                DetailRow(R.string.species, character.species ?: stringResource(id = R.string.unknow))
             }
             item {
-                DetailRow(R.string.origin, characterDetail.origin?.name ?: stringResource(id = R.string.unknow))
+                DetailRow(R.string.origin, character.origin?.name ?: stringResource(id = R.string.unknow))
             }
             item {
                 Spacer(modifier = Modifier.height(IntrinsicSize.Max))
             }
             item {
-                EpisodesScreen(episodes = characterDetail.episode)
+                character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
             }
 
         }
@@ -140,16 +168,13 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
 
 @Composable
 private fun DetailRow(nameResource: Int, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = dimensionResource(id = R.dimen.character_detail_padding),
-                end = dimensionResource(id = R.dimen.character_detail_padding),
-                bottom = dimensionResource(id = R.dimen.character_detail_padding),
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            start = dimensionResource(id = R.dimen.character_detail_padding),
+            end = dimensionResource(id = R.dimen.character_detail_padding),
+            bottom = dimensionResource(id = R.dimen.character_detail_padding),
+        ), verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = stringResource(id = nameResource),
             style = MaterialTheme.typography.titleMedium,

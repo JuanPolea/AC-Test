@@ -1,18 +1,15 @@
 package com.jfmr.ac.test.data.cache.db
 
 import android.net.Uri
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.Character
-import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharacterDetailResponse
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharactersResponse
 import com.jfmr.ac.test.data.open.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
-import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.DomainCharacters
 import com.jfmr.ac.test.domain.model.character.Info
@@ -29,24 +26,11 @@ class RickAndMortyRemoteMediator @Inject constructor(
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DomainCharacter>): MediatorResult {
 
-        // The network load method takes an optional `after=<user.id>` parameter. For every
-        // page after the first, we pass the last user ID to let it continue from where it
-        // left off. For REFRESH, pass `null` to load the first page.
         val page = when (loadType) {
-            LoadType.REFRESH -> {
-                1
-            }
-            // In this example, we never need to prepend, since REFRESH will always load the
-            // first page in the list. Immediately return, reporting end of pagination.
-            LoadType.PREPEND -> {
-                return MediatorResult.Success(endOfPaginationReached = true)
-            }
+            LoadType.REFRESH -> 1
+            LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeys: RemoteKeys? = getRemoteKeyForLastItem(state)
-                // We must explicitly check if the last item is `null` when appending,
-                // since passing `null` to networkService is only valid for initial load.
-                // If lastItem is `null` it means no items were loaded after the initial
-                // REFRESH and there are no more items to load.
                 val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 val uri = Uri.parse(nextKey)
                 val nextPageQuery = uri.getQueryParameter(API_PAGE)
@@ -54,17 +38,9 @@ class RickAndMortyRemoteMediator @Inject constructor(
             }
         }
 
-        // Suspending network load via Retrofit. This doesn't need to be wrapped in a
-        // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine CallAdapter
-        // dispatches on a worker thread.
         try {
             val domainCharacters: DomainCharacters = page.let { networkService.characters(it).toDomain() }
-
             localDB.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    localDB.remoteKeysDao().clearRemoteKeys()
-                    localDB.characterDao().deleteDomainCharacter()
-                }
                 val keys = domainCharacters.results?.filterNotNull()?.map {
                     RemoteKeys(it.id.toLong(), domainCharacters.info?.prev.orEmpty(), domainCharacters.info?.next.orEmpty())
                 }
@@ -74,7 +50,23 @@ class RickAndMortyRemoteMediator @Inject constructor(
                     }
                 }
             }
-            domainCharacters.results?.filterNotNull()?.let { localDB.characterDao().insertCharacters(it) }
+            domainCharacters
+                .results
+                ?.filterNotNull()
+                ?.map { domainCharacter ->
+                    val tema: DomainCharacter = localDB
+                        .characterDao()
+                        .getCharacterById(domainCharacter.id)
+                        ?.let {
+                            domainCharacter.copy(isFavorite = it.isFavorite)
+                        } ?: domainCharacter
+                    tema
+                }
+                .apply {
+                    if (this?.isNotEmpty() == true) {
+                        localDB.characterDao().insertCharacters(this)
+                    }
+                }
             return MediatorResult.Success(endOfPaginationReached = domainCharacters.results?.isEmpty() == true)
         } catch (e: Exception) {
             return MediatorResult.Error(e)
@@ -87,12 +79,8 @@ class RickAndMortyRemoteMediator @Inject constructor(
 
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, DomainCharacter>): RemoteKeys? {
-        // Get the last page that was retrieved, that contained items.
-        // From that last page, get the last item
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
-                // Get the remote keys of the last item retrieved
-                Log.e("GetRemoteKey", repo.id.toString())
                 localDB.remoteKeysDao().remoteKeysRepoId(repo.id.toLong())
             }
     }
@@ -128,18 +116,4 @@ class RickAndMortyRemoteMediator @Inject constructor(
         name = this?.name,
         url = this?.url,
     )
-
-    private fun CharacterDetailResponse?.toDomain() = CharacterDetail(image = this?.image.orEmpty(),
-        gender = this?.gender.orEmpty(),
-        species = this?.species.orEmpty(),
-        created = this?.created.orEmpty(),
-        origin = this?.origin?.toDomain(),
-        name = this?.name.orEmpty(),
-        location = this?.location?.toDomain(),
-        episode = this?.episode.orEmpty() as List<String>,
-        id = this?.id ?: -1,
-        type = this?.type.orEmpty(),
-        url = this?.url.orEmpty(),
-        status = this?.status.orEmpty())
-
 }

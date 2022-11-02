@@ -4,21 +4,22 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import arrow.core.left
+import arrow.core.right
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
 import com.jfmr.ac.test.data.cache.db.RickAndMortyRemoteMediator
-import com.jfmr.ac.test.data.open.mapper.tryCall
 import com.jfmr.ac.test.data.open.rickandmorty.character.datasource.CharactersDataSource
-import com.jfmr.ac.test.data.open.rickandmorty.character.model.Character
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharacterDetailResponse
-import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharactersResponse
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
-import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.model.character.DomainCharacters
-import com.jfmr.ac.test.domain.model.character.Info
+import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.character.Location
 import com.jfmr.ac.test.domain.model.character.Origin
+import com.jfmr.ac.test.domain.model.error.RemoteError
 import kotlinx.coroutines.flow.Flow
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -29,41 +30,38 @@ class RemoteCharactersDataSource @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun fetchCharacters(): Flow<PagingData<DomainCharacter>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-            ),
+        return Pager(config = PagingConfig(pageSize = 10),
             remoteMediator = RickAndMortyRemoteMediator(rickAndMortyDB, remoteService),
-            pagingSourceFactory = { rickAndMortyDB.characterDao().characters() }
-        ).flow
+            pagingSourceFactory = { rickAndMortyDB.characterDao().characters() }).flow
     }
 
-    override suspend fun retrieveCharacterDetail(characterId: Int) = tryCall {
-        remoteService.retrieveCharacterById(characterId).body().toDomain()
+    override suspend fun retrieveCharacterDetail(characterId: Int): DomainResult<DomainCharacter> {
+        try {
+            val response: Response<CharacterDetailResponse> = remoteService.retrieveCharacterById(characterId)
+            if (response.isSuccessful) {
+                val remote: DomainCharacter = response.body().toDomain()
+                val local = rickAndMortyDB.characterDao().getCharacterById(characterId)
+                if (local != null) {
+                    rickAndMortyDB.characterDao().updateCharacter(remote.copy(isFavorite = local.isFavorite))
+                } else {
+                    rickAndMortyDB.characterDao().insert(remote)
+                }
+            }
+            return rickAndMortyDB.characterDao().getCharacterById(characterId)?.right() ?: RemoteError.Connectivity.left()
+        } catch (e: Exception) {
+            val error = when (e) {
+                is IOException -> RemoteError.Connectivity
+                is HttpException -> RemoteError.Server(e.code())
+                else -> RemoteError.Unknown(e.message.orEmpty())
+            }
+            return rickAndMortyDB.characterDao().getCharacterById(characterId)?.right() ?: error.left()
+        }
     }
 
-
-    private fun CharactersResponse.toDomain(): DomainCharacters = DomainCharacters(results = results.toDomain(), info = info?.toDomain())
-
-    private fun List<Character?>?.toDomain() = this?.filterNotNull()?.map { it.toDomain() }
-
-    private fun Character.toDomain() = id?.let {
-        DomainCharacter(image = image,
-            gender = gender,
-            species = species,
-            created = created,
-            origin = origin?.toDomain(),
-            name = name,
-            location = location?.toDomain(),
-            episode = episode,
-            id = it,
-            type = type,
-            url = url,
-            status = status)
+    override suspend fun updateCharacter(character: DomainCharacter): DomainCharacter {
+        rickAndMortyDB.characterDao().updateCharacter(character)
+        return rickAndMortyDB.characterDao().getCharacterById(character.id) ?: character
     }
-
-    private fun com.jfmr.ac.test.data.open.rickandmorty.character.model.Info.toDomain(): Info =
-        Info(next = next, pages = pages, prev = prev, count = count)
 
     private fun com.jfmr.ac.test.data.open.rickandmorty.character.model.Origin?.toDomain() = Origin(
         name = this?.name.orEmpty(),
@@ -75,7 +73,9 @@ class RemoteCharactersDataSource @Inject constructor(
         url = this?.url,
     )
 
-    private fun CharacterDetailResponse?.toDomain() = CharacterDetail(image = this?.image.orEmpty(),
+    private fun CharacterDetailResponse?.toDomain() = DomainCharacter(
+        id = this?.id ?: -1,
+        image = this?.image.orEmpty(),
         gender = this?.gender.orEmpty(),
         species = this?.species.orEmpty(),
         created = this?.created.orEmpty(),
@@ -83,9 +83,9 @@ class RemoteCharactersDataSource @Inject constructor(
         name = this?.name.orEmpty(),
         location = this?.location?.toDomain(),
         episode = this?.episode.orEmpty() as List<String>,
-        id = this?.id ?: -1,
         type = this?.type.orEmpty(),
         url = this?.url.orEmpty(),
-        status = this?.status.orEmpty())
+        status = this?.status.orEmpty(),
+    )
 
 }
