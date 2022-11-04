@@ -3,11 +3,11 @@ package com.jfmr.ac.test.domain.usecase.di
 import com.jfmr.ac.test.domain.usecase.open.character.CharacterDetailUseCase
 import com.jfmr.ac.test.domain.usecase.open.character.CharactersUseCase
 import com.jfmr.ac.test.domain.usecase.open.character.UpdateCharacterUseCase
-import com.jfmr.ac.test.domain.usecase.open.episode.EpisodesUseCase
+import com.jfmr.ac.test.domain.usecase.open.episode.GetEpisodesUseCase
 import com.jfmr.domain.usecase.implementation.character.CharacterDetailInteractor
 import com.jfmr.domain.usecase.implementation.character.CharactersInteractor
 import com.jfmr.domain.usecase.implementation.character.UpdateCharacterInteractor
-import com.jfmr.domain.usecase.implementation.episode.EpisodesInteractor
+import com.jfmr.domain.usecase.implementation.episode.GetEpisodesInteractor
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,42 +15,43 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class RetrieveItemsQualifier
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class CharacterDetailQualifier
+annotation class GetCharacters
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class UpdateCharacterQualifier
+annotation class CharacterDetail
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class QEpisodes
+annotation class UpdateCharacter
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class GetEpisode
 
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class UseCaseModule {
 
-    @RetrieveItemsQualifier
+    @GetCharacters
     @Singleton
     @Binds
     abstract fun bindCharacters(implementation: CharactersInteractor): CharactersUseCase
 
-    @CharacterDetailQualifier
+    @CharacterDetail
     @Singleton
     @Binds
     abstract fun bindCharacterDetail(implementation: CharacterDetailInteractor): CharacterDetailUseCase
 
-    @QEpisodes
+    @GetEpisode
     @Singleton
     @Binds
-    abstract fun bindEpisodesUseCase(implementation: EpisodesInteractor): EpisodesUseCase
+    abstract fun bindEpisodesUseCase(implementation: GetEpisodesInteractor): GetEpisodesUseCase
 
-    @UpdateCharacterQualifier
+    @UpdateCharacter
     @Singleton
     @Binds
     abstract fun bindUpdateCharacterUseCase(implementation: UpdateCharacterInteractor): UpdateCharacterUseCase

@@ -8,10 +8,10 @@ data class CharactersResponse(
     val results: List<Character?>? = null,
 
     @field:SerializedName("info")
-    val info: Info? = null,
+    val characterInfo: CharacterInfo? = null,
 )
 
-data class Info(
+data class CharacterInfo(
 
     @field:SerializedName("next")
     val next: String? = null,

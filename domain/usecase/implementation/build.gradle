@@ -15,9 +15,9 @@ dependencies {
     api(project(":domain:model"))
     api(project(":data:open"))
     api(project(":data:di"))
-    api(project(":domain:repository:open"))
+    api(project(":domain:repository"))
     api(project(":domain:usecase:open"))
-    api(project(path: ":data:cache:db"))
+    api(project(path: ":data:cache"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

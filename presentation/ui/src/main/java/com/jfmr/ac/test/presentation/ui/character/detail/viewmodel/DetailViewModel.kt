@@ -7,8 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.usecase.di.CharacterDetailQualifier
-import com.jfmr.ac.test.domain.usecase.di.UpdateCharacterQualifier
+import com.jfmr.ac.test.domain.usecase.di.CharacterDetail
+import com.jfmr.ac.test.domain.usecase.di.UpdateCharacter
 import com.jfmr.ac.test.domain.usecase.open.character.CharacterDetailUseCase
 import com.jfmr.ac.test.domain.usecase.open.character.UpdateCharacterUseCase
 import com.jfmr.ac.test.presentation.ui.R
@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    @CharacterDetailQualifier private val characterDetailUseCase: CharacterDetailUseCase,
-    @UpdateCharacterQualifier private val updateCharacterUseCase: UpdateCharacterUseCase,
+    @CharacterDetail private val characterDetailUseCase: CharacterDetailUseCase,
+    @UpdateCharacter private val updateCharacterUseCase: UpdateCharacterUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

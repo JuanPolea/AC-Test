@@ -10,5 +10,17 @@ android {
 
 dependencies {
     api(project(path: ":domain:model"))
+    implementation(project(path: ":data:open"))
 
+    kapt libs.room.compiler
+
+    api libs.paging.room
+
+    implementation libs.google.gson
+    implementation libs.bundles.hilt
+    kapt libs.bundles.hiltkapt
+
+    api libs.kotlin.coroutines
+
+    api libs.bundles.paging
 }

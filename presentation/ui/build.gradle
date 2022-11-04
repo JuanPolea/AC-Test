@@ -16,8 +16,6 @@ android {
 
 dependencies {
     implementation(project("path": ":domain:usecase:di"))
-    implementation(project("path": ":domain:usecase:open"))
-    implementation(project("path": ":domain:model"))
 
     implementation libs.bundles.compose
 

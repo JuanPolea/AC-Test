@@ -3,7 +3,7 @@ package com.jfmr.ac.test.data.repository.character
 import com.jfmr.ac.test.data.open.rickandmorty.character.datasource.CharactersDataSource
 import com.jfmr.ac.test.data.remote.qualifier.QCharactersDataSource
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.repository.open.character.CharacterRepository
+import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import javax.inject.Inject
 
 

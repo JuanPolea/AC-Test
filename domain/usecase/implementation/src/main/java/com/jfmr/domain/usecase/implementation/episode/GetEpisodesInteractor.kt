@@ -3,7 +3,7 @@ package com.jfmr.domain.usecase.implementation.episode
 import com.jfmr.ac.test.data.di.QEpisodesRepository
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
 import com.jfmr.ac.test.domain.model.error.DomainError
-import com.jfmr.ac.test.domain.repository.open.episode.EpisodeRepository
+import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import com.jfmr.ac.test.domain.usecase.open.episode.GetEpisodesUseCase
 import javax.inject.Inject
 

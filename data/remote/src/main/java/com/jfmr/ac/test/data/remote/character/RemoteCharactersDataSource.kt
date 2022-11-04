@@ -7,10 +7,10 @@ import androidx.paging.PagingData
 import arrow.core.left
 import arrow.core.right
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
-import com.jfmr.ac.test.data.cache.db.character.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.open.rickandmorty.character.datasource.CharactersDataSource
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharacterDetailResponse
-import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.paging.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.character.Location
