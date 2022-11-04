@@ -13,4 +13,7 @@ dependencies {
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
+
+    implementation libs.bundles.hilt
+    kapt libs.bundles.hiltkapt
 }

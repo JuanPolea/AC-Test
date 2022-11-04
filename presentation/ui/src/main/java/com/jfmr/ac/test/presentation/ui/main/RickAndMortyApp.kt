@@ -1,7 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.main
 
 import android.net.ConnectivityManager
-import android.os.Build
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,13 +19,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.getSystemService
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.connectivity.model.InternetConnectivityState
 import com.jfmr.ac.test.presentation.ui.connectivity.viewmodel.InternetConnectivityViewModel
 import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
-import com.jfmr.ac.test.presentation.ui.navigation.AppBottomNavigation
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
 import kotlinx.coroutines.launch
 
@@ -43,14 +40,9 @@ fun RickAndMortyApp(
     val internetConnectionError = stringResource(id = R.string.connection_lost)
     val internetConnectionSuccess = stringResource(id = R.string.connection_established)
 
-    val connectivityManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        LocalContext.current.getSystemService(ConnectivityManager::class
-            .java) as
-                ConnectivityManager
-    } else {
-        LocalContext.current.getSystemService()
-    }
-    connectivityManager?.requestNetwork(internetConnectivityViewModel.networkRequest, internetConnectivityViewModel.networkCallback)
+    val connectivityManager =
+        LocalContext.current.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+    connectivityManager.requestNetwork(internetConnectivityViewModel.networkRequest, internetConnectivityViewModel.networkCallback)
 
     if (internetState is InternetConnectivityState.Disconnected) {
         ShowSnackBar(
@@ -65,14 +57,6 @@ fun RickAndMortyApp(
     }
     ThemeAndSurfaceWrapper {
         Scaffold(
-            bottomBar = {
-                AppBottomNavigation(
-                    currentRoute = appState.currentRoute,
-                    onNavItemClick = {
-                        appState.onNavItemClick(it.navCommand.route)
-                    }
-                )
-            },
             snackbarHost = {
                 SnackbarHost(snackbarHostState) {
                     Snackbar(

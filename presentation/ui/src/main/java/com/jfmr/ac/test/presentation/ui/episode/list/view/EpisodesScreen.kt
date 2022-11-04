@@ -39,32 +39,34 @@ fun EpisodesScreen(
 
 @Composable
 private fun EpisodesRowContent(episodes: List<DomainEpisode>) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = dimensionResource(id = R.dimen.row_padding)),
-        text = stringResource(id = R.string.episodes),
-        style = MaterialTheme.typography.titleLarge,
-    )
-    Spacer(modifier = Modifier.height(IntrinsicSize.Min))
-    val state = rememberLazyListState()
-    LazyRow(
-        state = state,
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        content = {
-            items(
-                count = episodes.size,
-                key = {
-                    it
-                },
-                itemContent = { index ->
-                    EpisodeItemContent(episodes, index)
-                }
-            )
-        }
-    )
+    if (episodes.isNotEmpty()) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = dimensionResource(id = R.dimen.row_padding)),
+            text = stringResource(id = R.string.episodes),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.height(IntrinsicSize.Min))
+        val state = rememberLazyListState()
+        LazyRow(
+            state = state,
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            content = {
+                items(
+                    count = episodes.size,
+                    key = {
+                        it
+                    },
+                    itemContent = { index ->
+                        EpisodeItemContent(episodes, index)
+                    }
+                )
+            }
+        )
+    }
 }
 
 @Composable

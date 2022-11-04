@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.cache.db
+package com.jfmr.ac.test.data.cache.db.character
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
