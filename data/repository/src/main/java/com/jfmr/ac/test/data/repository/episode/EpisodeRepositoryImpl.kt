@@ -5,7 +5,7 @@ import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource
 import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
 import com.jfmr.ac.test.domain.model.episode.Episodes
-import com.jfmr.ac.test.domain.repository.open.episode.EpisodeRepository
+import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

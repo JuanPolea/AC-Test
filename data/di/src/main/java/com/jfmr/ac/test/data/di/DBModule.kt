@@ -6,8 +6,8 @@ import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
-import com.jfmr.ac.test.data.cache.db.character.RickAndMortyRemoteMediator
-import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.paging.RickAndMortyRemoteMediator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

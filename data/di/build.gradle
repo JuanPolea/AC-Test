@@ -16,12 +16,11 @@ kapt {
 dependencies {
 
     implementation(project(path: ":domain:model"))
-    implementation(project(path: ":domain:repository:open"))
+    implementation(project(path: ":domain:repository"))
     implementation(project(path: ":data:open"))
     implementation(project(path: ":data:remote"))
     implementation(project(path: ":data:repository"))
-    implementation(project(path: ":data:cache:db"))
-    implementation(project(path: ":data:cache:dao"))
+    implementation(project(path: ":data:cache"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

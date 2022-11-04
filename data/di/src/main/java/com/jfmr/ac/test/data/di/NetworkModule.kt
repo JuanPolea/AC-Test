@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

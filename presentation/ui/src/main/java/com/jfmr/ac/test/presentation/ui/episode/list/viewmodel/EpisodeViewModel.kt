@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
 import com.jfmr.ac.test.domain.model.error.DomainError
+import com.jfmr.ac.test.domain.usecase.di.GetEpisode
 import com.jfmr.ac.test.domain.usecase.open.episode.GetEpisodesUseCase
-import com.jfmr.ac.test.domain.usecase.open.episode.qualifiers.EpisodeQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeViewModel @Inject constructor(
-    @EpisodeQualifier.GetEpisode private val getEpisodesUseCase: GetEpisodesUseCase,
+    @GetEpisode private val getEpisodesUseCase: GetEpisodesUseCase,
 ) : ViewModel() {
 
     private val _episodes = MutableStateFlow<List<DomainEpisode>>(emptyList())

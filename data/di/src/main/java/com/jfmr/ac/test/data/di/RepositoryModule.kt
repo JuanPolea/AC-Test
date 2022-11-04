@@ -2,8 +2,8 @@ package com.jfmr.ac.test.data.di
 
 import com.jfmr.ac.test.data.repository.character.CharacterRepositoryImpl
 import com.jfmr.ac.test.data.repository.episode.EpisodeRepositoryImpl
-import com.jfmr.ac.test.domain.repository.open.character.CharacterRepository
-import com.jfmr.ac.test.domain.repository.open.episode.EpisodeRepository
+import com.jfmr.ac.test.domain.repository.character.CharacterRepository
+import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -6,7 +6,7 @@ import arrow.core.left
 import arrow.core.right
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
 import com.jfmr.ac.test.data.open.rickandmorty.episode.datasource.EpisodesDataSource
-import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
 import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.episode.DomainEpisode
 import com.jfmr.ac.test.domain.model.episode.Episodes
@@ -34,7 +34,7 @@ class RemoteEpisodesDataSource @Inject constructor(
                         ?.let { episodes ->
                             episodes
                                 .filterNotNull()
-                                ?.let { list ->
+                                .let { list ->
                                     val tema = localDB.episodesDao().insertEpisodes(list)
                                     Log.e("JAJFSDAS", tema.toString())
                                 }
