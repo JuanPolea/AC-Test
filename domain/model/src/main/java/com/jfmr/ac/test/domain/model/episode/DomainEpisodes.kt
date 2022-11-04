@@ -1,24 +1,42 @@
 package com.jfmr.ac.test.domain.model.episode
 
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
+@Parcelize
+@Serializable
 data class Episodes(
     val results: List<DomainEpisode?>? = null,
-    val domainInfo: DomainInfo? = null,
-)
+) : Parcelable
 
+@Parcelize
+@Serializable
+@Entity(tableName = "episodes")
 data class DomainEpisode(
-    val airDate: String? = null,
-    val characters: List<String?>? = null,
-    val created: String? = null,
-    val name: String? = null,
-    val episode: String? = null,
-    val id: Int? = null,
-    val url: String? = null,
-)
 
-data class DomainInfo(
-    val next: String? = null,
-    val pages: Int? = null,
-    val prev: String? = null,
-    val count: Int? = null,
-)
+    @PrimaryKey
+    @field:SerializedName("id")
+    val id: Int? = null,
+
+    @field:SerializedName("air_date")
+    val airDate: String? = null,
+
+    @field:SerializedName("characters")
+    val characters: List<String?>? = null,
+
+    @field:SerializedName("created")
+    val created: String? = null,
+
+    @field:SerializedName("name")
+    val name: String? = null,
+
+    @field:SerializedName("episode")
+    val episode: String? = null,
+
+    @field:SerializedName("url")
+    val url: String? = null,
+) : Parcelable

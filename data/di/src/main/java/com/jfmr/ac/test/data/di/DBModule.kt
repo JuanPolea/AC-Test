@@ -4,8 +4,9 @@ package com.jfmr.ac.test.data.di
 import android.content.Context
 import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
+import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
-import com.jfmr.ac.test.data.cache.db.RickAndMortyRemoteMediator
+import com.jfmr.ac.test.data.cache.db.character.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.open.rickandmorty.network.RickAndMortyApiService
 import dagger.Module
 import dagger.Provides
@@ -44,4 +45,10 @@ object DBModule {
         localDB = database,
         networkService = networkService
     )
+
+    @Provides
+    @Singleton
+    fun provideEpisodesDao(database: RickAndMortyDB): EpisodeDao {
+        return database.episodesDao()
+    }
 }

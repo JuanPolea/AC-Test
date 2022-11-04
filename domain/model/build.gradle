@@ -3,23 +3,11 @@ plugins {
     id 'kotlin-android'
     id "kotlin-parcelize"
     id "org.jetbrains.kotlin.plugin.serialization"
-    id 'kotlin-kapt'
+
 }
 
 android {
     namespace = "com.jfmr.ac.test.domain.model"
-    compileSdk 33
-
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-
-        }
-    }
 }
 
 dependencies {

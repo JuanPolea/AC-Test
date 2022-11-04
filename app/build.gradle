@@ -1,19 +1,13 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 }
 android {
-    compileSdk 33
     namespace = "com.jfmr.ac.test.app"
 
     defaultConfig {
         applicationId "com.jfmr.ac.test.app"
-        minSdk 23
-        targetSdk 32
-        versionCode 1
-        versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -21,19 +15,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
     buildFeatures {
         compose true
     }

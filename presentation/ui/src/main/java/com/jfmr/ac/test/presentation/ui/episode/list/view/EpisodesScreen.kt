@@ -38,67 +38,74 @@ fun EpisodesScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun EpisodesRowContent(episodes: List<DomainEpisode>) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = dimensionResource(id = R.dimen.row_padding)),
-        text = stringResource(id = R.string.episodes),
-        style = MaterialTheme.typography.titleLarge,
-    )
-    Spacer(modifier = Modifier.height(IntrinsicSize.Min))
-    val state = rememberLazyListState()
-    LazyRow(
-        state = state,
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        content = {
-            items(
-                count = episodes.size,
-                key = {
-                    it
-                },
-                itemContent = { index ->
-                    Card(
-                        Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
-                        shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
-                        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
-                        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
-                    ) {
-                        Text(
-                            text = episodes[index].name ?: stringResource(id = R.string.unknow),
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    top = dimensionResource(id = R.dimen.corner_shape),
-                                    start = dimensionResource(id = R.dimen.corner_shape),
-                                    end = dimensionResource(id = R.dimen.corner_shape),
-                                )
-                        )
-                        Text(
-                            text = episodes[index].episode ?: stringResource(id = R.string.unknow),
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    top = dimensionResource(id = R.dimen.corner_shape),
-                                    start = dimensionResource(id = R.dimen.corner_shape),
-                                    end = dimensionResource(id = R.dimen.corner_shape),
-                                )
-                        )
-                        Text(
-                            text = episodes[index].airDate ?: stringResource(id = R.string.unknow),
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(dimensionResource(id = R.dimen.corner_shape))
-                        )
+    if (episodes.isNotEmpty()) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = dimensionResource(id = R.dimen.row_padding)),
+            text = stringResource(id = R.string.episodes),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.height(IntrinsicSize.Min))
+        val state = rememberLazyListState()
+        LazyRow(
+            state = state,
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            content = {
+                items(
+                    count = episodes.size,
+                    key = {
+                        it
+                    },
+                    itemContent = { index ->
+                        EpisodeItemContent(episodes, index)
                     }
-                }
-            )
-        }
-    )
+                )
+            }
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun EpisodeItemContent(episodes: List<DomainEpisode>, index: Int) {
+    Card(
+        Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
+        shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
+        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
+    ) {
+        Text(
+            text = episodes[index].name ?: stringResource(id = R.string.unknow),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(id = R.dimen.corner_shape),
+                    start = dimensionResource(id = R.dimen.corner_shape),
+                    end = dimensionResource(id = R.dimen.corner_shape),
+                )
+        )
+        Text(
+            text = episodes[index].episode ?: stringResource(id = R.string.unknow),
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(id = R.dimen.corner_shape),
+                    start = dimensionResource(id = R.dimen.corner_shape),
+                    end = dimensionResource(id = R.dimen.corner_shape),
+                )
+        )
+        Text(
+            text = episodes[index].airDate ?: stringResource(id = R.string.unknow),
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.corner_shape))
+        )
+    }
 }

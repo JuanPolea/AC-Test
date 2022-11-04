@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.cache.db
+package com.jfmr.ac.test.data.cache.db.character
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
@@ -6,26 +6,26 @@ import com.jfmr.ac.test.domain.model.character.DomainCharacter
 import com.jfmr.ac.test.domain.model.character.Location
 import com.jfmr.ac.test.domain.model.character.Origin
 
-class DomainCharacterConverter {
+class CharacterConverter {
     @TypeConverter
-    fun domainCharacterToJson(DomainCharacter: DomainCharacter): String =
-        Gson().toJson(DomainCharacter)
+    fun domainCharacterToJson(domainCharacter: DomainCharacter): String =
+        Gson().toJson(domainCharacter)
 
     @TypeConverter
     fun jsonToCharacter(string: String): DomainCharacter =
         Gson().fromJson(string, DomainCharacter::class.java)
 
     @TypeConverter
-    fun originToJson(Origin: Origin): String =
-        Gson().toJson(Origin)
+    fun originToJson(origin: Origin): String =
+        Gson().toJson(origin)
 
     @TypeConverter
     fun jsonToOrigin(string: String): Origin =
         Gson().fromJson(string, Origin::class.java)
 
     @TypeConverter
-    fun locationToJson(Location: Location): String =
-        Gson().toJson(Location)
+    fun locationToJson(location: Location): String =
+        Gson().toJson(location)
 
     @TypeConverter
     fun jsonToLocation(string: String): Location =

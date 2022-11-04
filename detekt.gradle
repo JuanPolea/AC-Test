@@ -1,0 +1,22 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+configurations {
+    detekt
+}
+
+tasks.register("detekt", JavaExec) {
+    main = "io.gitlab.arturbosch.detekt.cli.Main"
+    classpath = configurations.detekt
+
+    def input = "$projectDir"
+    def config = "$projectDir/config/detekt/detekt.yml"
+    def exclude = ".*/build/.*,.*/resources/.*"
+    def params = ['-i', input, '-c', config, '-ex', exclude]
+
+    args(params)
+}
+
+dependencies {
+    detekt 'io.gitlab.arturbosch.detekt:detekt-cli:1.20.0'
+}
+check.dependsOn detekt

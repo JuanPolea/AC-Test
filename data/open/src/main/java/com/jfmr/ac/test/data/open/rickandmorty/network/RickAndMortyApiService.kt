@@ -2,10 +2,10 @@ package com.jfmr.ac.test.data.open.rickandmorty.network
 
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharacterDetailResponse
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharactersResponse
-import com.jfmr.ac.test.data.open.rickandmorty.episode.entities.ResultsItem
 import com.jfmr.ac.test.data.open.rickandmorty.network.EndPoints.CHARACTER_DETAIL_URL
 import com.jfmr.ac.test.data.open.rickandmorty.network.EndPoints.CHARACTER_URL
 import com.jfmr.ac.test.data.open.rickandmorty.network.EndPoints.EPISODES_URL
+import com.jfmr.ac.test.domain.model.episode.DomainEpisode
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -22,6 +22,6 @@ interface RickAndMortyApiService {
     suspend fun retrieveCharacterById(@Path("id") characterId: Int): Response<CharacterDetailResponse>
 
     @GET(EPISODES_URL)
-    suspend fun episodes(@Path("ids") page: List<Int>): Response<List<ResultsItem>>
+    suspend fun episodes(@Path("ids") page: List<Int>): Response<List<DomainEpisode?>?>
 
 }

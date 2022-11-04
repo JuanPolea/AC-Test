@@ -1,4 +1,5 @@
-package com.jfmr.ac.test.data.cache.db
+@file:Suppress("ReturnCount")
+package com.jfmr.ac.test.data.cache.db.character
 
 import android.net.Uri
 import androidx.paging.ExperimentalPagingApi
@@ -6,6 +7,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.Character
 import com.jfmr.ac.test.data.open.rickandmorty.character.model.CharactersResponse
 import com.jfmr.ac.test.data.open.rickandmorty.network.API_PAGE
@@ -54,13 +56,12 @@ class RickAndMortyRemoteMediator @Inject constructor(
                 .results
                 ?.filterNotNull()
                 ?.map { domainCharacter ->
-                    val tema: DomainCharacter = localDB
+                    localDB
                         .characterDao()
                         .getCharacterById(domainCharacter.id)
                         ?.let {
                             domainCharacter.copy(isFavorite = it.isFavorite)
                         } ?: domainCharacter
-                    tema
                 }
                 .apply {
                     if (this?.isNotEmpty() == true) {

@@ -217,44 +217,46 @@ private fun CharacterItemListContent(
             .clickable { onClick(domainCharacter()) },
         shape = CutCornerShape(size = 12.dp),
     ) {
-        Box(
+        Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
+                .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
         ) {
-            Column(modifier = modifier) {
-                Box {
-                    Image(
-                        painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
-                            .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
-                                size(Size.ORIGINAL)
-                            }).error(R.drawable.ic_placeholder).build()),
-                        modifier = modifier.fillMaxWidth(),
-                        contentDescription = domainCharacter().image,
-                        contentScale = ContentScale.FillWidth,
-                    )
-                    HeartButton(
-                        character = domainCharacter(),
-                        action = {
-                            addToFavorites(
-                                domainCharacter().copy(isFavorite = it.isFavorite)
-                            )
-                        },
-                        alignment = Alignment.TopEnd
-                    )
-                }
-                Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
-                    modifier = Modifier.padding(
-                        start = dimensionResource(id = R.dimen.text),
-                        end = dimensionResource(id = R.dimen.text),
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Start,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-
-                Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+            ) {
+                Image(
+                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
+                        .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
+                            size(Size.ORIGINAL)
+                        }).error(R.drawable.ic_placeholder).build()),
+                    modifier = modifier.fillMaxWidth(),
+                    contentDescription = domainCharacter().image,
+                    contentScale = ContentScale.FillWidth,
+                )
+                HeartButton(
+                    character = domainCharacter(),
+                    action = {
+                        addToFavorites(
+                            domainCharacter().copy(isFavorite = it.isFavorite)
+                        )
+                    },
+                    alignment = Alignment.TopEnd
+                )
             }
+            Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
+                modifier = Modifier.padding(
+                    top = dimensionResource(id = R.dimen.text),
+                    start = dimensionResource(id = R.dimen.text),
+                    end = dimensionResource(id = R.dimen.text),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+
+            Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
         }
     }
 }

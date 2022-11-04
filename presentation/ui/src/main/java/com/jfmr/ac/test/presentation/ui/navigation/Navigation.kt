@@ -19,11 +19,11 @@ internal fun Navigation(appState: AppState) {
         startDestination = Feature.CHARACTERS.route
     ) {
         charactersNav(appState)
-        locationsNav(appState)
+        locationsNav()
     }
 }
 
-fun NavGraphBuilder.locationsNav(appState: AppState) {
+fun NavGraphBuilder.locationsNav() {
     navigation(
         startDestination = NavCommand.ContentType(Feature.LOCATIONS).route,
         route = Feature.LOCATIONS.route
@@ -73,10 +73,4 @@ private fun NavGraphBuilder.composable(
     ) {
         content(it)
     }
-}
-
-private inline fun <reified T> NavBackStackEntry.findArgs(arg: NavArg): T {
-    val value = arguments?.get(arg.key)
-    requireNotNull(value)
-    return value as T
 }
