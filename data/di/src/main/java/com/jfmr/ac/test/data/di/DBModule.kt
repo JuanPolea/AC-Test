@@ -6,8 +6,11 @@ import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
-import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
-import com.jfmr.ac.test.data.remote.network.paging.RickAndMortyRemoteMediator
+import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
+import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSourceImpl
+import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +18,19 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [DBModule.Declarations::class])
 @InstallIn(SingletonComponent::class)
 object DBModule {
+
+    @InstallIn(SingletonComponent::class)
+    @Module
+    interface Declarations {
+
+        @Singleton
+        @Binds
+        fun bindsLocalLoginDS(implementation: LocalCharacterDataSourceImpl): LocalCharacterDataSource
+
+    }
 
     @Provides
     @Singleton

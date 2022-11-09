@@ -22,7 +22,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.jfmr.ac.test.domain.model.episode.DomainEpisode
+import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.episode.list.viewmodel.EpisodeViewModel
 
@@ -38,7 +38,7 @@ fun EpisodesScreen(
 }
 
 @Composable
-private fun EpisodesRowContent(episodes: List<DomainEpisode>) {
+private fun EpisodesRowContent(episodes: List<Episode>) {
     if (episodes.isNotEmpty()) {
         Text(
             modifier = Modifier
@@ -71,7 +71,7 @@ private fun EpisodesRowContent(episodes: List<DomainEpisode>) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun EpisodeItemContent(episodes: List<DomainEpisode>, index: Int) {
+private fun EpisodeItemContent(episodes: List<Episode>, index: Int) {
     Card(
         Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),

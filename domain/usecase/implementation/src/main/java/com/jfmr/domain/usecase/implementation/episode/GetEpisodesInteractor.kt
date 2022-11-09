@@ -1,7 +1,7 @@
 package com.jfmr.domain.usecase.implementation.episode
 
 import com.jfmr.ac.test.data.di.QEpisodesRepository
-import com.jfmr.ac.test.domain.model.episode.DomainEpisode
+import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import com.jfmr.ac.test.domain.usecase.open.episode.GetEpisodesUseCase
@@ -13,21 +13,23 @@ class GetEpisodesInteractor @Inject constructor(
 
     override suspend fun invoke(
         episodesList: List<String>,
-        success: (List<DomainEpisode>?) -> Unit,
+        success: (List<Episode>?) -> Unit,
         error: (DomainError) -> Unit,
     ) {
         episodeRepository
             .episodes(episodesList)
             .collect { domainResult ->
                 domainResult
-                    .fold(
-                        {
-                            error(it)
-                        },
-                        {
-                            success(it)
-                        }
-                    )
+                    ?.let {
+                        it.fold(
+                            {
+                                error(it)
+                            },
+                            {
+                                success(it)
+                            }
+                        )
+                    }
             }
     }
 

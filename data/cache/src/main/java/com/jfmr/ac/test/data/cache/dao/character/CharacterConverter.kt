@@ -2,34 +2,34 @@ package com.jfmr.ac.test.data.cache.dao.character
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.model.character.Location
-import com.jfmr.ac.test.domain.model.character.Origin
+import com.jfmr.ac.test.data.cache.entities.LocalCharacter
+import com.jfmr.ac.test.data.cache.entities.LocalLocation
+import com.jfmr.ac.test.data.cache.entities.LocalOrigin
 
 class CharacterConverter {
     @TypeConverter
-    fun domainCharacterToJson(domainCharacter: DomainCharacter): String =
-        Gson().toJson(domainCharacter)
+    fun domainCharacterToJson(localCharacter: LocalCharacter): String =
+        Gson().toJson(localCharacter)
 
     @TypeConverter
-    fun jsonToCharacter(string: String): DomainCharacter =
-        Gson().fromJson(string, DomainCharacter::class.java)
+    fun jsonToCharacter(string: String): LocalCharacter =
+        Gson().fromJson(string, LocalCharacter::class.java)
 
     @TypeConverter
-    fun originToJson(origin: Origin): String =
+    fun originToJson(origin: LocalOrigin): String =
         Gson().toJson(origin)
 
     @TypeConverter
-    fun jsonToOrigin(string: String): Origin =
-        Gson().fromJson(string, Origin::class.java)
+    fun jsonToOrigin(string: String): LocalOrigin =
+        Gson().fromJson(string, LocalOrigin::class.java)
 
     @TypeConverter
-    fun locationToJson(location: Location): String =
+    fun locationToJson(location: LocalLocation): String =
         Gson().toJson(location)
 
     @TypeConverter
-    fun jsonToLocation(string: String): Location =
-        Gson().fromJson(string, Location::class.java)
+    fun jsonToLocation(string: String): LocalLocation =
+        Gson().fromJson(string, LocalLocation::class.java)
 
     @TypeConverter
     fun listStringToJson(stringList: List<String>): String =
@@ -40,10 +40,10 @@ class CharacterConverter {
         Gson().fromJson(string, Array<String>::class.java).toList()
 
     @TypeConverter
-    fun characterListToJson(stringList: List<DomainCharacter>): String =
+    fun characterListToJson(stringList: List<LocalCharacter>): String =
         Gson().toJson(stringList)
 
     @TypeConverter
-    fun jsonToCharacterList(string: String): List<DomainCharacter> =
-        Gson().fromJson(string, Array<DomainCharacter>::class.java).toMutableList()
+    fun jsonToCharacterList(string: String): List<LocalCharacter> =
+        Gson().fromJson(string, Array<LocalCharacter>::class.java).toMutableList()
 }

@@ -21,14 +21,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun HeartButton(
-    character: DomainCharacter,
-    action: (DomainCharacter) -> Unit,
+    character: Character,
+    action: (Character) -> Unit,
     alignment: Alignment = Alignment.Center,
 ) {
 
@@ -40,7 +40,7 @@ internal fun HeartButton(
     }
     Box(modifier = Modifier.fillMaxWidth()) {
         Icon(
-            imageVector = if (character.isFavorite == true) {
+            imageVector = if (character.isFavorite) {
                 Icons.Outlined.Favorite
             } else {
                 Icons.Default.FavoriteBorder
@@ -63,7 +63,7 @@ internal fun HeartButton(
                             animationSpec = tween(100),
                         )
                     }
-                    action(character.copy(isFavorite = !character.isFavorite!!))
+                    action(character.copy(isFavorite = !character.isFavorite))
                 }
         )
     }

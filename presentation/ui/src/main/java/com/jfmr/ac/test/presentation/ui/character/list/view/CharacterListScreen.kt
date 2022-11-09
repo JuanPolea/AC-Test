@@ -54,7 +54,7 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
@@ -69,11 +69,11 @@ import timber.log.Timber
 internal fun CharacterListScreen(
     modifier: Modifier,
     characterListViewModel: CharacterListViewModel = hiltViewModel(),
-    onClick: (DomainCharacter) -> Unit,
+    onClick: (Character) -> Unit,
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val lazyPagingItems: LazyPagingItems<DomainCharacter> = characterListViewModel.pager.collectAsLazyPagingItems()
+    val lazyPagingItems: LazyPagingItems<Character> = characterListViewModel.pager.collectAsLazyPagingItems()
 
     Scaffold(topBar = {
         MainAppBar()
@@ -104,11 +104,11 @@ internal fun CharacterListScreen(
 @Composable
 private fun CharacterListContent(
     modifier: Modifier,
-    onClick: (DomainCharacter) -> Unit,
+    onClick: (Character) -> Unit,
     onRefresh: () -> Unit,
     isRefreshing: () -> Boolean,
-    items: () -> LazyPagingItems<DomainCharacter>,
-    addToFavorites: (DomainCharacter) -> Unit,
+    items: () -> LazyPagingItems<Character>,
+    addToFavorites: (Character) -> Unit,
 ) {
     val lazyGridState = rememberLazyGridState()
     val showScrollToTopButton = remember {
@@ -152,10 +152,10 @@ private fun CharacterListContent(
 private fun CharacterListSuccessContent(
     modifier: Modifier,
     state: () -> LazyGridState,
-    items: () -> LazyPagingItems<DomainCharacter>,
-    onClick: (DomainCharacter) -> Unit,
+    items: () -> LazyPagingItems<Character>,
+    onClick: (Character) -> Unit,
     showScrollToTopButton: () -> State<Boolean>,
-    addToFavorites: (DomainCharacter) -> Unit,
+    addToFavorites: (Character) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -168,7 +168,7 @@ private fun CharacterListSuccessContent(
             it.id
         }, itemContent = { domainCharacter ->
             domainCharacter?.let {
-                CharacterItemListContent(domainCharacter = { it }, onClick = onClick, addToFavorites = addToFavorites)
+                CharacterItemListContent(character = { it }, onClick = onClick, addToFavorites = addToFavorites)
             }
         })
     }
@@ -205,16 +205,16 @@ private fun ScrollToTopButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterItemListContent(
-    domainCharacter: () -> DomainCharacter,
-    onClick: (DomainCharacter) -> Unit,
-    addToFavorites: (DomainCharacter) -> Unit,
+    character: () -> Character,
+    onClick: (Character) -> Unit,
+    addToFavorites: (Character) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.character_list_padding))
-            .clickable { onClick(domainCharacter()) },
+            .clickable { onClick(character()) },
         shape = CutCornerShape(size = 12.dp),
     ) {
         Column(
@@ -227,25 +227,25 @@ private fun CharacterItemListContent(
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = domainCharacter().image)
+                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = character().image)
                         .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
                             size(Size.ORIGINAL)
                         }).error(R.drawable.ic_placeholder).build()),
                     modifier = modifier.fillMaxWidth(),
-                    contentDescription = domainCharacter().image,
+                    contentDescription = character().image,
                     contentScale = ContentScale.FillWidth,
                 )
                 HeartButton(
-                    character = domainCharacter(),
+                    character = character(),
                     action = {
                         addToFavorites(
-                            domainCharacter().copy(isFavorite = it.isFavorite)
+                            character().copy(isFavorite = it.isFavorite)
                         )
                     },
                     alignment = Alignment.TopEnd
                 )
             }
-            Text(text = domainCharacter().name ?: stringResource(id = R.string.unknow),
+            Text(text = character().name ?: stringResource(id = R.string.unknow),
                 modifier = Modifier.padding(
                     top = dimensionResource(id = R.dimen.text),
                     start = dimensionResource(id = R.dimen.text),

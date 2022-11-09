@@ -6,11 +6,15 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.cache"
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
 }
 
 dependencies {
     api(project(path: ":domain:model"))
-    implementation(project(path: ":data:open"))
 
     kapt libs.room.compiler
 
@@ -22,5 +26,5 @@ dependencies {
 
     api libs.kotlin.coroutines
 
-    api libs.bundles.paging
+    api libs.paging.common
 }

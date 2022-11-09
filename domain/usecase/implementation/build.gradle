@@ -13,7 +13,7 @@ kapt {
 
 dependencies {
     api(project(":domain:model"))
-    api(project(":data:open"))
+    api api(project(':data:api',))
     api(project(":data:di"))
     api(project(":domain:repository"))
     api(project(":domain:usecase:open"))

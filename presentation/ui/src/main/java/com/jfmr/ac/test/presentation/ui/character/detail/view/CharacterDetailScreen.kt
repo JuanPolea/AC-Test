@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
@@ -81,8 +81,8 @@ fun CharacterDetailScreen(
 
 @Composable
 private fun CharacterDetailContent(
-    character: DomainCharacter,
-    action: (DomainCharacter) -> Unit,
+    character: Character,
+    action: (Character) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -103,6 +103,9 @@ private fun CharacterDetailContent(
                 )
             }
             item {
+                character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
+            }
+            item {
                 Spacer(
                     modifier = Modifier
                         .height(IntrinsicSize.Max)
@@ -110,9 +113,7 @@ private fun CharacterDetailContent(
                             top = dimensionResource(id = R.dimen.character_list_padding)),
                 )
             }
-            item {
-                character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
-            }
+
         }
     }
 }
@@ -120,8 +121,8 @@ private fun CharacterDetailContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterDetailBody(
-    character: DomainCharacter,
-    action: (DomainCharacter) -> Unit,
+    character: Character,
+    action: (Character) -> Unit,
 ) {
     HeartButton(character, action, Alignment.TopEnd)
     Card(
@@ -158,7 +159,7 @@ private fun CharacterDetailBody(
 
 @Composable
 private fun DetailHeader(
-    character: DomainCharacter,
+    character: Character,
     lazyListState: LazyListState,
 ) {
     var scrolledY = 0f
