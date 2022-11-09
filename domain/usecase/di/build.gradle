@@ -11,7 +11,7 @@ kapt {
 }
 
 dependencies {
-    api(project(":data:open"))
+    api(project(':data:api',))
     api(project(":data:di"))
     api(project(":domain:model"))
     implementation(project(":domain:usecase:implementation"))

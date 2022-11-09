@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.usecase.di.CharacterDetail
 import com.jfmr.ac.test.domain.usecase.di.UpdateCharacter
 import com.jfmr.ac.test.domain.usecase.open.character.CharacterDetailUseCase
@@ -30,38 +30,37 @@ class DetailViewModel @Inject constructor(
     var characterDetailState by mutableStateOf<CharacterDetailState>(CharacterDetailMapper.toCharacterStateLoading(R.string.retrieving_characters))
         private set
 
-    lateinit var characterDetail: DomainCharacter
-
     init {
-        savedStateHandle.get<String>("characterId")?.toInt()?.let {
-            characterDetail = DomainCharacter(id = it)
-            viewModelScope.launch {
-                characterDetailUseCase.invoke(
-                    it,
-                    ::success,
-                    ::error,
-                )
-            }
-        } ?: error()
+        savedStateHandle
+            .get<String>("characterId")
+            ?.toInt()
+            ?.let {
+                viewModelScope.launch {
+                    characterDetailUseCase.invoke(
+                        it,
+                        ::success,
+                        ::error,
+                    )
+                }
+            } ?: error()
 
     }
 
     fun onCharacterDetailEvent(characterDetailEvent: CharacterDetailEvent) {
         characterDetailState = when (characterDetailEvent) {
             is CharacterDetailEvent.CharacterFound -> {
-                characterDetail = characterDetailEvent.character
-                CharacterDetailState.Success(characterDetail)
+                CharacterDetailState.Success(characterDetailEvent.character)
             }
             CharacterDetailEvent.CharacterNotFound -> CharacterDetailState.Error(CharacterDetailError.CharacterNotFound)
             CharacterDetailEvent.CharacterServerError -> CharacterDetailState.Error(CharacterDetailError.ServerError)
         }
     }
 
-    private fun success(character: DomainCharacter) = onCharacterDetailEvent(CharacterDetailEvent.CharacterFound(character))
+    private fun success(character: Character) = onCharacterDetailEvent(CharacterDetailEvent.CharacterFound(character))
 
     private fun error() = onCharacterDetailEvent(CharacterDetailEvent.CharacterServerError)
 
-    internal fun updateCharacter(character: DomainCharacter) {
+    internal fun updateCharacter(character: Character) {
         viewModelScope.launch {
             characterDetailState = CharacterDetailState.Success(updateCharacterUseCase.updateCharacter(character))
         }

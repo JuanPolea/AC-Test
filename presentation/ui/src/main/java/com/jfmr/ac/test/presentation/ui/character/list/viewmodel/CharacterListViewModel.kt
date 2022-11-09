@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.usecase.di.GetCharacters
 import com.jfmr.ac.test.domain.usecase.di.UpdateCharacter
 import com.jfmr.ac.test.domain.usecase.open.character.CharactersUseCase
@@ -20,9 +20,9 @@ class CharacterListViewModel @Inject constructor(
     @UpdateCharacter private val updateCharacterUseCase: UpdateCharacterUseCase,
 ) : ViewModel() {
 
-    var pager: Flow<PagingData<DomainCharacter>> = charactersUseCase.characters().cachedIn(viewModelScope)
+    var pager: Flow<PagingData<Character>> = charactersUseCase.characters().cachedIn(viewModelScope)
 
-    fun addToFavorite(it: DomainCharacter) {
+    fun addToFavorite(it: Character) {
         viewModelScope.launch {
             updateCharacterUseCase.updateCharacter(it)
         }

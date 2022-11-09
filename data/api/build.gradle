@@ -1,0 +1,24 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id "kotlin-parcelize"
+    id "org.jetbrains.kotlin.plugin.serialization"
+}
+
+android {
+    namespace = "com.jfmr.ac.test.data.api"
+}
+
+dependencies {
+    implementation(project(path: ":domain:model"))
+    implementation(project(path: ":data:cache"))
+
+    api libs.bundles.retrofit2
+
+    implementation libs.bundles.arrow
+    kapt libs.arrow.kapt
+
+    api libs.kotlin.coroutines
+    api libs.paging.runtime
+    api libs.kotlin.serialization
+}

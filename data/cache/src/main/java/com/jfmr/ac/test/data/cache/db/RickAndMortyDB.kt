@@ -10,14 +10,14 @@ import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeConverter
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
-import com.jfmr.ac.test.domain.model.character.DomainCharacter
-import com.jfmr.ac.test.domain.model.character.RemoteKeys
-import com.jfmr.ac.test.domain.model.episode.DomainEpisode
+import com.jfmr.ac.test.data.cache.entities.LocalCharacter
+import com.jfmr.ac.test.data.cache.entities.LocalEpisode
+import com.jfmr.ac.test.data.cache.entities.RemoteKeys
 
 private const val DBNAME = "rick_and_morty_database"
 
 @Database(
-    entities = [DomainCharacter::class, RemoteKeys::class, DomainEpisode::class],
+    entities = [LocalCharacter::class, RemoteKeys::class, LocalEpisode::class],
     version = 1,
 )
 
@@ -33,11 +33,12 @@ abstract class RickAndMortyDB : RoomDatabase() {
     companion object {
         fun create(context: Context): RickAndMortyDB {
 
-            return Room.databaseBuilder(
-                context,
-                RickAndMortyDB::class.java,
-                DBNAME
-            )
+            return Room
+                .databaseBuilder(
+                    context,
+                    RickAndMortyDB::class.java,
+                    DBNAME
+                )
                 .build()
         }
     }

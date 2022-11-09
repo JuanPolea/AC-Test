@@ -1,6 +1,9 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.data.remote.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.api.rickandmorty.character.datasource.RemoteDataSource
+import com.jfmr.ac.test.data.remote.character.RemoteDataSourceImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +19,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
+
+    @InstallIn(SingletonComponent::class)
+    @Module
+    interface Declarations {
+
+        @Singleton
+        @Binds
+        fun bindsRemoteCharactersDS(implementation: RemoteDataSourceImpl): RemoteDataSource
+
+    }
 
     @Provides
     @Singleton
