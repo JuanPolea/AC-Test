@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.presentation.ui.main.component
+package com.jfmr.ac.test.presentation.ui.component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallTopAppBar

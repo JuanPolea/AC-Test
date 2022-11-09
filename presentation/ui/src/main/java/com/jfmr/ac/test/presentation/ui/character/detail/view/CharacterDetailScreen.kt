@@ -43,9 +43,9 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
 import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
-import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
-import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
-import com.jfmr.ac.test.presentation.ui.main.component.HeartButton
+import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
+import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.component.HeartButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

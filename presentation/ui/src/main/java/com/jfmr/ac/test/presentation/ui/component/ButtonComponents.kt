@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.presentation.ui.main.component
+package com.jfmr.ac.test.presentation.ui.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween

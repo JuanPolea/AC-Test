@@ -1,7 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.character.list.view
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridItemScope
-import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -57,10 +53,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
-import com.jfmr.ac.test.presentation.ui.main.component.CircularProgressBar
-import com.jfmr.ac.test.presentation.ui.main.component.ErrorScreen
-import com.jfmr.ac.test.presentation.ui.main.component.HeartButton
-import com.jfmr.ac.test.presentation.ui.main.component.MainAppBar
+import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
+import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.component.HeartButton
+import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
+import com.jfmr.ac.test.presentation.ui.component.MainAppBar
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -257,39 +254,6 @@ private fun CharacterItemListContent(
                 overflow = TextOverflow.Ellipsis)
 
             Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
-        }
-    }
-}
-
-fun <T : Any> LazyGridScope.gridItems(
-    items: LazyPagingItems<T>,
-    key: ((item: T) -> Any)? = null,
-    itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit,
-) {
-    items(count = items.itemCount, key = if (key != null) { index ->
-        items[index]?.let(key) ?: PagingPlaceholderKey(index)
-    } else {
-        null
-    }) { index ->
-        itemContent(items[index])
-    }
-}
-
-private data class PagingPlaceholderKey(private val index: Int) : Parcelable {
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(index)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<PagingPlaceholderKey> = object : Parcelable.Creator<PagingPlaceholderKey> {
-            override fun createFromParcel(parcel: Parcel) = PagingPlaceholderKey(parcel.readInt())
-
-            override fun newArray(size: Int) = arrayOfNulls<PagingPlaceholderKey?>(size)
         }
     }
 }
