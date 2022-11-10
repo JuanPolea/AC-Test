@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.jfmr.ac.test.data.cache.entities.LocalCharacter
+import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
 
 @Dao
 interface CharacterDao {

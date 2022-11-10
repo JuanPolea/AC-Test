@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.jfmr.ac.test.data.cache.entities.RemoteKeys
+import com.jfmr.ac.test.data.cache.entities.character.RemoteKeys
 
 @Dao
 interface RemoteKeysDao {
@@ -13,7 +13,7 @@ interface RemoteKeysDao {
     suspend fun insertAll(remoteKey: List<RemoteKeys>)
 
     @Query("SELECT * FROM remote_keys WHERE repoId = :repoId")
-    suspend fun remoteKeysRepoId(repoId: Long): RemoteKeys?
+    suspend fun remoteKeysId(repoId: Long): RemoteKeys?
 
     @Query("DELETE FROM remote_keys")
     suspend fun clearRemoteKeys()

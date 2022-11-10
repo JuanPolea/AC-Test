@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.cache.entities
+package com.jfmr.ac.test.data.cache.entities.character
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

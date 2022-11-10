@@ -10,9 +10,6 @@ android {
 }
 
 dependencies {
-    implementation(project(path: ":domain:model"))
-    implementation(project(path: ":data:cache"))
-
     api libs.bundles.retrofit2
 
     implementation libs.bundles.arrow

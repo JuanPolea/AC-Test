@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.api.rickandmorty.extensions
+package com.jfmr.ac.test.data.remote.character.extensions
 
 import arrow.core.left
 import arrow.core.right

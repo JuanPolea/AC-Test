@@ -12,9 +12,8 @@ kapt {
 }
 dependencies {
     implementation(project(path: ":domain:model"))
-    implementation(project(path: ":data:api"))
+    api(project(path: ":data:api"))
     implementation(project(path: ":data:cache"))
-    implementation(project(path: ":data:paging"))
     implementation(project(path: ":test"))
 
     implementation libs.bundles.hilt

@@ -10,9 +10,9 @@ import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeConverter
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
-import com.jfmr.ac.test.data.cache.entities.LocalCharacter
-import com.jfmr.ac.test.data.cache.entities.LocalEpisode
-import com.jfmr.ac.test.data.cache.entities.RemoteKeys
+import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
+import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
+import com.jfmr.ac.test.data.cache.entities.character.RemoteKeys
 
 private const val DBNAME = "rick_and_morty_database"
 

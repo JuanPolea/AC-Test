@@ -5,11 +5,11 @@ import android.content.Context
 import com.jfmr.ac.test.data.cache.dao.character.CharacterDao
 import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
-import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
-import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSourceImpl
+import com.jfmr.ac.test.data.cache.db.RickAndMortyDB
 import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
+import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -52,11 +52,11 @@ object DBModule {
     @Provides
     @Singleton
     fun provideMediator(
-        database: RickAndMortyDB,
-        networkService: RickAndMortyApiService,
+        localCharacterDataSource: LocalCharacterDataSource,
+        characterRemoteDataSource: CharacterRemoteDataSource,
     ) = RickAndMortyRemoteMediator(
-        localDB = database,
-        networkService = networkService
+        localCharacterDataSource = localCharacterDataSource,
+        characterRemoteDataSource = characterRemoteDataSource
     )
 
     @Provides
