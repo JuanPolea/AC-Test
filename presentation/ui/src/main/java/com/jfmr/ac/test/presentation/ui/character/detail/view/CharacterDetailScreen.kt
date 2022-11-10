@@ -1,20 +1,35 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,15 +41,21 @@ import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -42,10 +63,14 @@ import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailState
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
-import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
 import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.component.ExpandableContent
 import com.jfmr.ac.test.presentation.ui.component.HeartButton
+import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
+
+const val EXPAND_ANIMATION_DURATION: Int = 200
+const val EXPANSTION_TRANSITION_DURATION: Int = 500
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,9 +112,11 @@ private fun CharacterDetailContent(
     val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(dimensionResource(id = R.dimen.character_detail_padding)), contentAlignment = Alignment.Center) {
-        LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween) {
+        .fillMaxWidth(), contentAlignment = Alignment.Center) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceAround,
+        ) {
             item {
                 DetailHeader(
                     character = character,
@@ -103,7 +130,8 @@ private fun CharacterDetailContent(
                 )
             }
             item {
-                character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
+                //   character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
+                character.episode?.filterNotNull()?.let { EpisodesContent(list = it) }
             }
             item {
                 Spacer(
@@ -118,6 +146,95 @@ private fun CharacterDetailContent(
     }
 }
 
+@SuppressLint("UnusedTransitionTargetStateParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EpisodesContent(list: List<String>) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    val transitionState = remember {
+        MutableTransitionState(expanded)
+            .apply {
+                targetState = !expanded
+            }
+    }
+    val transition = updateTransition(targetState = transitionState, label = "transition")
+    val cardBgColor by transition.animateColor({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }, label = "bgColorTransition") {
+        if (expanded) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+        } else {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+        }
+    }
+    val cardRoundedCorners by transition.animateDp(
+        {
+            tween(
+                durationMillis = EXPAND_ANIMATION_DURATION,
+                easing = FastOutSlowInEasing
+            )
+        },
+        label = "cardRoundedCorners",
+    ) {
+        if (expanded) 4.dp else dimensionResource(id = R.dimen.corner_shape)
+    }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                vertical = 12.dp
+            ),
+        shape = CutCornerShape(cardRoundedCorners),
+        containerColor = cardBgColor,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(start = dimensionResource(id = R.dimen.row_padding)),
+                text = stringResource(id = R.string.episodes),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            IconButton(onClick = {
+                expanded = !expanded
+            }) {
+                val icon = if (expanded) {
+                    Icons.Default.KeyboardArrowUp
+                } else {
+                    Icons.Default.KeyboardArrowDown
+                }
+                Icon(imageVector = icon, contentDescription = "drop")
+            }
+        }
+
+        ExpandableContent(
+            visible = expanded,
+            initialVisibility = expanded,
+            enterTransition = expandHorizontally(
+                expandFrom = Alignment.Start,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ) + fadeIn(
+                initialAlpha = 0.3f,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ),
+            exitTransition = shrinkVertically(
+                shrinkTowards = Alignment.Top,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ) + fadeOut(
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            )
+        ) {
+            EpisodesScreen(episodes = list)
+        }
+    }
+}
+
+@SuppressLint("UnusedTransitionTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterDetailBody(
@@ -125,37 +242,115 @@ private fun CharacterDetailBody(
     action: (Character) -> Unit,
 ) {
     HeartButton(character, action, Alignment.TopEnd)
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    val transitionState = remember {
+        MutableTransitionState(expanded)
+            .apply {
+                targetState = !expanded
+            }
+    }
+    val transition = updateTransition(targetState = transitionState, label = "transition")
+    val cardBgColor by transition.animateColor({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }, label = "bgColorTransition") {
+        if (expanded) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+        } else {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+        }
+    }
+    val cardRoundedCorners by transition.animateDp(
+        {
+            tween(
+                durationMillis = EXPAND_ANIMATION_DURATION,
+                easing = FastOutSlowInEasing
+            )
+        },
+        label = "cardRoundedCorners",
+    ) {
+        if (expanded) 4.dp else dimensionResource(id = R.dimen.corner_shape)
+    }
+    val contentColor by transition.animateColor({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }, label = "contentColor") {
+        if (expanded) Color.White else Color.Black
+    }
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
-        shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
-        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+            .fillMaxWidth()
+            .padding(
+                //horizontal = cardPaddingHorizontal,
+                vertical = 12.dp
+            ),
+        shape = CutCornerShape(cardRoundedCorners),
+        containerColor = cardBgColor,
+        contentColor = contentColor
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            dimensionResource(id = R.dimen.row_padding),
-                        ),
-                    text = stringResource(id = R.string.character),
-                    style = MaterialTheme.typography.titleLarge,
-                )
+            Text(
+                modifier = Modifier
+                    .padding(
+                        dimensionResource(id = R.dimen.row_padding),
+                    ),
+                text = character.name ?: stringResource(id = R.string.character),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            IconButton(onClick = {
+                expanded = !expanded
+            }) {
+                val icon = if (expanded) {
+                    Icons.Default.KeyboardArrowUp
+                } else {
+                    Icons.Default.KeyboardArrowDown
+                }
+                Icon(imageVector = icon, contentDescription = "drop")
             }
         }
-        Divider()
-        DetailRow(R.string.name, character.name ?: stringResource(id = R.string.unknow))
-        DetailRow(R.string.status, character.status ?: stringResource(id = R.string.unknow))
-        DetailRow(R.string.location, character.location?.name ?: stringResource(id = R.string.unknow))
-        DetailRow(R.string.gender, character.gender ?: stringResource(id = R.string.unknow))
-        DetailRow(R.string.species, character.species ?: stringResource(id = R.string.unknow))
-        DetailRow(R.string.origin, character.origin?.name ?: stringResource(id = R.string.unknow))
+        if (expanded) {
+            Divider()
+        }
+        ExpandableContent(
+            visible = expanded,
+            initialVisibility = expanded,
+            enterTransition = expandVertically(
+                expandFrom = Alignment.Top,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ) + fadeIn(
+                initialAlpha = 0.3f,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ),
+            exitTransition =
+            shrinkVertically(
+                // Expand from the top.
+                shrinkTowards = Alignment.Top,
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ) + fadeOut(
+                // Fade in with the initial alpha of 0.3f.
+                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            ),
+            onExpanded = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    with(character) {
+                        DetailRow(R.string.status, status)
+                        DetailRow(R.string.location, location?.name)
+                        DetailRow(R.string.gender, gender)
+                        DetailRow(R.string.species, species)
+                        DetailRow(R.string.origin, origin?.name)
+                    }
+                }
+            })
     }
 }
+
 
 @Composable
 private fun DetailHeader(
@@ -173,9 +368,10 @@ private fun DetailHeader(
         contentDescription = stringResource(id = R.string.image_detail_description),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.character_detail_padding))
             .shadow(
                 elevation = dimensionResource(id = R.dimen.character_detail_image_elevation),
-                shape = CircleShape,
+                shape = CutCornerShape(12.dp),
                 spotColor = MaterialTheme.colorScheme.primary
             )
             .graphicsLayer {
@@ -190,7 +386,7 @@ private fun DetailHeader(
 
 
 @Composable
-private fun DetailRow(nameResource: Int, value: String) {
+private fun DetailRow(nameResource: Int?, value: String?) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(
@@ -199,11 +395,11 @@ private fun DetailRow(nameResource: Int, value: String) {
             bottom = dimensionResource(id = R.dimen.character_detail_padding),
         ), verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = stringResource(id = nameResource),
+            text = stringResource(id = nameResource ?: R.string.unknow),
             style = MaterialTheme.typography.titleMedium,
         )
         Text(
-            text = value,
+            text = value ?: stringResource(id = R.string.unknow),
             style = MaterialTheme.typography.bodyMedium,
         )
     }

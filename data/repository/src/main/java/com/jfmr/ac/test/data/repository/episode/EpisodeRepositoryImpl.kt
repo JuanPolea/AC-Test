@@ -4,7 +4,7 @@ import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.data.api.rickandmorty.episode.datasource.RemoteEpisodesDataSource
+import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.entities.LocalEpisode
 import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource

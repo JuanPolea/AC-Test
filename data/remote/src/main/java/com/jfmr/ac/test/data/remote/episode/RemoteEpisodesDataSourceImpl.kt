@@ -2,7 +2,7 @@ package com.jfmr.ac.test.data.remote.episode
 
 import android.net.Uri
 import arrow.core.right
-import com.jfmr.ac.test.data.api.rickandmorty.episode.datasource.RemoteEpisodesDataSource
+import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.data.api.rickandmorty.extensions.tryCall
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.domain.model.character.DomainResult

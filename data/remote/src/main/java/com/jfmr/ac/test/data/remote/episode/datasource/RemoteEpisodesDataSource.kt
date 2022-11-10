@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.api.rickandmorty.episode.datasource
+package com.jfmr.ac.test.data.remote.episode.datasource
 
 import com.jfmr.ac.test.domain.model.character.DomainResult
 import com.jfmr.ac.test.domain.model.episode.Episode

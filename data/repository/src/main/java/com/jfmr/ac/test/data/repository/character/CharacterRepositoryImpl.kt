@@ -7,7 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.data.api.rickandmorty.character.datasource.RemoteDataSource
+import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import com.jfmr.ac.test.data.api.rickandmorty.character.entity.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
 import com.jfmr.ac.test.data.cache.entities.LocalCharacter
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 class CharacterRepositoryImpl
 @Inject constructor(
-    private val remoteDataSource: RemoteDataSource,
+    private val characterRemoteDataSource: CharacterRemoteDataSource,
     private val localCharacterDataSource: LocalCharacterDataSource,
 ) : CharacterRepository {
 
@@ -36,7 +36,7 @@ class CharacterRepositoryImpl
     override fun characters(): Flow<PagingData<Character>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            remoteMediator = RickAndMortyRemoteMediator(localCharacterDataSource.geLocalDB(), remoteDataSource.getNetworkService()),
+            remoteMediator = RickAndMortyRemoteMediator(localCharacterDataSource.geLocalDB(), characterRemoteDataSource.getNetworkService()),
             pagingSourceFactory = { localCharacterDataSource.getCharacters() }
         ).flow
             .mapLatest { paging ->
@@ -47,7 +47,7 @@ class CharacterRepositoryImpl
     }
 
     override suspend fun getCharacterById(id: Int): DomainResult<Character> =
-        remoteDataSource
+        characterRemoteDataSource
             .retrieveCharacterById(id)
             .fold(
                 { error ->
