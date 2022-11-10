@@ -104,7 +104,6 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessNull_RemoteError() = runTest {
-
         mockSuccess(null)
 
         val result = characterRemoteDataSourceImpl.retrieveCharacterById(characterID)
@@ -151,7 +150,7 @@ class CharacterRemoteDataSourceImplTest {
 
     private fun mockErrorResponse(errorCode: Int) {
         coEvery {
-            rickAndMortyApiService.retrieveCharacterById(7)
+            rickAndMortyApiService.retrieveCharacterById(characterID)
         } returns Response.error(errorCode, "ErrorBody".toResponseBody())
     }
 
