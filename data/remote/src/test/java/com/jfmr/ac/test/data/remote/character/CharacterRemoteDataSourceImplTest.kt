@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.remote.character
 
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.CharacterResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS
 import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS_WITHOUT_EPISODES

@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.data.api.rickandmorty.network
 
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.CharacterResponse
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.CharactersResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharactersResponse
 import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.EndPoints.CHARACTER_DETAIL_URL
 import com.jfmr.ac.test.data.api.rickandmorty.network.EndPoints.CHARACTER_URL

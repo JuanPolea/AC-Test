@@ -8,7 +8,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.CharactersResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharactersResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
 import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
