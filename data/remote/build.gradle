@@ -12,13 +12,19 @@ kapt {
 }
 dependencies {
     implementation(project(path: ":domain:model"))
-    implementation(project(path: ":data:api"))
+    api(project(path: ":data:api"))
     implementation(project(path: ":data:cache"))
-    implementation(project(path: ":data:paging"))
+    implementation(project(path: ":test"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
+    //Testing
+    testImplementation libs.test.junit
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:1.6.10"
+    testImplementation "io.mockk:mockk-android:1.12.0"
+    testImplementation "io.mockk:mockk:1.12.2"
 }

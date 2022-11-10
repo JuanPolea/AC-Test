@@ -17,7 +17,7 @@ dependencies {
 
     implementation(project(path: ":domain:model"))
     implementation(project(path: ":domain:repository"))
-     implementation(project(path: ':data:api'))
+    implementation(project(path: ':data:api'))
     implementation(project(path: ":data:remote"))
     implementation(project(path: ":data:repository"))
     implementation(project(path: ":data:cache"))

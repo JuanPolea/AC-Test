@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.di
 
-import com.jfmr.ac.test.data.api.rickandmorty.episode.datasource.RemoteEpisodesDataSource
+import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.data.remote.episode.RemoteEpisodesDataSourceImpl
 import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource
 import dagger.Binds

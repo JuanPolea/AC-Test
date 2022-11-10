@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.jfmr.ac.test.data.cache.entities.LocalEpisode
+import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 
 @Dao
 interface EpisodeDao {

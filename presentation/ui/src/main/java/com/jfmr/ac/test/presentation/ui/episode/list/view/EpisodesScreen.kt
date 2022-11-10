@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
@@ -40,13 +41,6 @@ fun EpisodesScreen(
 @Composable
 private fun EpisodesRowContent(episodes: List<Episode>) {
     if (episodes.isNotEmpty()) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = dimensionResource(id = R.dimen.row_padding)),
-            text = stringResource(id = R.string.episodes),
-            style = MaterialTheme.typography.titleLarge,
-        )
         Spacer(modifier = Modifier.height(IntrinsicSize.Min))
         val state = rememberLazyListState()
         LazyRow(
@@ -55,15 +49,14 @@ private fun EpisodesRowContent(episodes: List<Episode>) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             content = {
-                items(
-                    count = episodes.size,
-                    key = {
-                        it
-                    },
-                    itemContent = { index ->
-                        EpisodeItemContent(episodes, index)
+                itemsIndexed(
+                    items = episodes,
+                    key = { _, item ->
+                        item.id
                     }
-                )
+                ) { index, item ->
+                    EpisodeItemContent(item, index)
+                }
             }
         )
     }
@@ -71,15 +64,14 @@ private fun EpisodesRowContent(episodes: List<Episode>) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun EpisodeItemContent(episodes: List<Episode>, index: Int) {
+private fun EpisodeItemContent(episode: Episode, index: Int) {
     Card(
         Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
-        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
         border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary)
     ) {
         Text(
-            text = episodes[index].name ?: stringResource(id = R.string.unknow),
+            text = episode.name ?: stringResource(id = R.string.unknow),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,7 +82,7 @@ private fun EpisodeItemContent(episodes: List<Episode>, index: Int) {
                 )
         )
         Text(
-            text = episodes[index].episode ?: stringResource(id = R.string.unknow),
+            text = episode.episode ?: stringResource(id = R.string.unknow),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +93,7 @@ private fun EpisodeItemContent(episodes: List<Episode>, index: Int) {
                 )
         )
         Text(
-            text = episodes[index].airDate ?: stringResource(id = R.string.unknow),
+            text = episode.airDate ?: stringResource(id = R.string.unknow),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()

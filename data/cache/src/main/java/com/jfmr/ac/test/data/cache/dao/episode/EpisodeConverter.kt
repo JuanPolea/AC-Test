@@ -2,7 +2,7 @@ package com.jfmr.ac.test.data.cache.dao.episode
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.jfmr.ac.test.data.cache.entities.LocalEpisode
+import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 
 class EpisodeConverter {
     @TypeConverter

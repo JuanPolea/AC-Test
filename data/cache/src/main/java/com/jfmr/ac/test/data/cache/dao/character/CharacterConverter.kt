@@ -2,9 +2,9 @@ package com.jfmr.ac.test.data.cache.dao.character
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.jfmr.ac.test.data.cache.entities.LocalCharacter
-import com.jfmr.ac.test.data.cache.entities.LocalLocation
-import com.jfmr.ac.test.data.cache.entities.LocalOrigin
+import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
+import com.jfmr.ac.test.data.cache.entities.character.LocalLocation
+import com.jfmr.ac.test.data.cache.entities.character.LocalOrigin
 
 class CharacterConverter {
     @TypeConverter

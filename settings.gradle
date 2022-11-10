@@ -76,11 +76,9 @@ dependencyResolutionManagement {
             library('android-test-espresso', 'androidx.test.espresso:espresso-core:3.4.0')
             library('android-test-compose-ui', 'androidx.compose.ui', 'ui-test-junit4').versionRef('compose')
             library('android-test-compose-tooling', 'androidx.compose.ui', 'ui-tooling').versionRef('compose')
-
             library('mockk-main', 'io.mockk:mockk:1.12.2')
             library('mockk-jvm', 'io.mockk:mockk-agent-jvm:1.12.2')
             library('test-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.10')
-            bundle('test', ['test-junit', 'android-test-junit', 'mockk-main', 'mockk-jvm', 'test-coroutines'])
 
         }
     }
@@ -103,3 +101,4 @@ include ':data:remote'
 include ':data:cache'
 include ':data:repository'
 include ':data:paging'
+include ':test'

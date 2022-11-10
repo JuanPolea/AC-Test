@@ -31,6 +31,10 @@ subprojects { subProject ->
         }
     }
 
+    configurations.all {
+        resolutionStrategy.force 'org.objenesis:objenesis:2.6'
+    }
+
     afterEvaluate {
         if (it.hasProperty('android')) {
             android {
@@ -42,6 +46,7 @@ subprojects { subProject ->
                     targetSdk 33
                     versionCode 1
                     versionName "0.0.1"
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
                 }
                 buildTypes {
                     release {
@@ -56,8 +61,10 @@ subprojects { subProject ->
                 kotlinOptions {
                     jvmTarget = JavaVersion.VERSION_11
                 }
+                testOptions {
+                    unitTests.returnDefaultValues = true
+                }
             }
-
         }
     }
 }
