@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
-import com.jfmr.ac.test.domain.usecase.di.GetEpisode
-import com.jfmr.ac.test.domain.usecase.open.episode.GetEpisodesUseCase
+import com.jfmr.ac.test.usecase.di.GetEpisode
+import com.jfmr.ac.test.usecase.episode.GetEpisodesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.cache
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber

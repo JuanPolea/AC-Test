@@ -1,8 +1,8 @@
 package com.jfmr.ac.test.data.paging.mapper
 
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.CharacterResponse
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.LocationResponse
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.character.OriginResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.LocationResponse
+import com.jfmr.ac.test.data.api.rickandmorty.character.entity.OriginResponse
 import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
 import com.jfmr.ac.test.data.cache.entities.character.LocalLocation
 import com.jfmr.ac.test.data.cache.entities.character.LocalOrigin

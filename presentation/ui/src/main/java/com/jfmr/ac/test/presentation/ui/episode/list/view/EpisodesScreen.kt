@@ -55,7 +55,7 @@ private fun EpisodesRowContent(episodes: List<Episode>) {
                         item.id
                     }
                 ) { index, item ->
-                    EpisodeItemContent(item, index)
+                    EpisodeItemContent(item)
                 }
             }
         )
@@ -64,7 +64,7 @@ private fun EpisodesRowContent(episodes: List<Episode>) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun EpisodeItemContent(episode: Episode, index: Int) {
+private fun EpisodeItemContent(episode: Episode) {
     Card(
         Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),

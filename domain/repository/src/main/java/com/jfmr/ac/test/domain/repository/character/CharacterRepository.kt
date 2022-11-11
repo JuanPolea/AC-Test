@@ -2,7 +2,7 @@ package com.jfmr.ac.test.domain.repository.character
 
 import androidx.paging.PagingData
 import com.jfmr.ac.test.domain.model.character.Character
-import com.jfmr.ac.test.domain.model.character.DomainResult
+import com.jfmr.ac.test.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {

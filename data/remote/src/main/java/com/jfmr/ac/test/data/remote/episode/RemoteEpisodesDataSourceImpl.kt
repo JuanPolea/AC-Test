@@ -6,7 +6,7 @@ import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.remote.character.extensions.tryCall
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
-import com.jfmr.ac.test.domain.model.character.DomainResult
+import com.jfmr.ac.test.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
