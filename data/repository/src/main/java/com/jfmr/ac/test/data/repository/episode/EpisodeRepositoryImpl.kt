@@ -11,7 +11,7 @@ import com.jfmr.ac.test.data.cache.entities.episode.mapper.LocalEpisodeExtension
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.data.remote.episode.mapper.EpisodeExtensions.toDomain
 import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource
-import com.jfmr.ac.test.data.repository.episode.mapper.EpisodeExtensions.toEntity
+import com.jfmr.ac.test.data.repository.episode.mapper.EpisodeResponseExtensions.toEntity
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.episode.Episodes
 import com.jfmr.ac.test.domain.model.error.DomainError

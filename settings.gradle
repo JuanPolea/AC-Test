@@ -87,9 +87,6 @@ rootProject.name = "AC-Test"
 include ':app'
 include ':presentation:ui'
 
-include ':domain:usecase:open'
-include ':domain:usecase:implementation'
-include ':domain:usecase:di'
 include ':domain:model'
 include ':domain:repository'
 
@@ -102,3 +99,4 @@ include ':data:cache'
 include ':data:repository'
 include ':data:paging'
 include ':test'
+include ':domain:usecase'

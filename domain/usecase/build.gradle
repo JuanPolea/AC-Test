@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.jfmr.ac.test.usecase'
+}
+
+dependencies {
+    api(project(":domain:model"))
+    api api(project(':data:api',))
+    api(project(":data:di"))
+    api(project(":domain:repository"))
+    api(project(path: ":data:cache"))
+
+    implementation libs.bundles.hilt
+    kapt libs.bundles.hiltkapt
+
+    implementation libs.bundles.arrow
+    kapt libs.arrow.kapt
+}

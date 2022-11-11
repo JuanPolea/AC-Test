@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -147,7 +148,6 @@ private fun CharacterDetailContent(
 }
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EpisodesContent(list: List<String>) {
     var expanded by remember {
@@ -180,6 +180,18 @@ fun EpisodesContent(list: List<String>) {
     ) {
         if (expanded) 4.dp else dimensionResource(id = R.dimen.corner_shape)
     }
+    EpidosdesItemContent(cardRoundedCorners, cardBgColor, expanded, list)
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun EpidosdesItemContent(
+    cardRoundedCorners: Dp,
+    cardBgColor: Color,
+    expanded: Boolean,
+    list: List<String>,
+) {
+    var expanded1 = expanded
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,9 +213,9 @@ fun EpisodesContent(list: List<String>) {
                 style = MaterialTheme.typography.titleLarge,
             )
             IconButton(onClick = {
-                expanded = !expanded
+                expanded1 = !expanded1
             }) {
-                val icon = if (expanded) {
+                val icon = if (expanded1) {
                     Icons.Default.KeyboardArrowUp
                 } else {
                     Icons.Default.KeyboardArrowDown
@@ -213,8 +225,8 @@ fun EpisodesContent(list: List<String>) {
         }
 
         ExpandableContent(
-            visible = expanded,
-            initialVisibility = expanded,
+            visible = expanded1,
+            initialVisibility = expanded1,
             enterTransition = expandHorizontally(
                 expandFrom = Alignment.Start,
                 animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
@@ -277,11 +289,22 @@ private fun CharacterDetailBody(
     }, label = "contentColor") {
         if (expanded) Color.White else Color.Black
     }
+    CharacterDetailBodyContent(cardRoundedCorners, cardBgColor, contentColor, character, expanded)
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun CharacterDetailBodyContent(
+    cardRoundedCorners: Dp,
+    cardBgColor: Color,
+    contentColor: Color,
+    character: Character,
+    expanded: Boolean,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                //horizontal = cardPaddingHorizontal,
                 vertical = 12.dp
             ),
         shape = CutCornerShape(cardRoundedCorners),
@@ -293,24 +316,7 @@ private fun CharacterDetailBody(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        dimensionResource(id = R.dimen.row_padding),
-                    ),
-                text = character.name ?: stringResource(id = R.string.character),
-                style = MaterialTheme.typography.titleLarge,
-            )
-            IconButton(onClick = {
-                expanded = !expanded
-            }) {
-                val icon = if (expanded) {
-                    Icons.Default.KeyboardArrowUp
-                } else {
-                    Icons.Default.KeyboardArrowDown
-                }
-                Icon(imageVector = icon, contentDescription = "drop")
-            }
+            CharacterDescriptionContent(character, expanded)
         }
         if (expanded) {
             Divider()
@@ -347,7 +353,31 @@ private fun CharacterDetailBody(
                         DetailRow(R.string.origin, origin?.name)
                     }
                 }
-            })
+            }
+        )
+    }
+}
+
+@Composable
+private fun CharacterDescriptionContent(character: Character, expanded1: Boolean) {
+    var expanded11 = expanded1
+    Text(
+        modifier = Modifier
+            .padding(
+                dimensionResource(id = R.dimen.row_padding),
+            ),
+        text = character.name ?: stringResource(id = R.string.character),
+        style = MaterialTheme.typography.titleLarge,
+    )
+    IconButton(onClick = {
+        expanded11 = !expanded11
+    }) {
+        val icon = if (expanded11) {
+            Icons.Default.KeyboardArrowUp
+        } else {
+            Icons.Default.KeyboardArrowDown
+        }
+        Icon(imageVector = icon, contentDescription = "drop")
     }
 }
 
