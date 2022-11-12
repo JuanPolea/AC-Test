@@ -39,6 +39,7 @@ abstract class RickAndMortyDB : RoomDatabase() {
                     RickAndMortyDB::class.java,
                     DBNAME
                 ).fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
         }
     }

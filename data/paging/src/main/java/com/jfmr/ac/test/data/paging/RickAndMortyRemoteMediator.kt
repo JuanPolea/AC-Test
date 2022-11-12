@@ -36,19 +36,23 @@ class RickAndMortyRemoteMediator @Inject constructor(
                 val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 val uri = Uri.parse(nextKey)
                 val nextPageQuery = uri.getQueryParameter(API_PAGE)
-                nextPageQuery?.toInt() ?: 0
+                nextPageQuery?.toInt() ?: null
             }
         }
 
         return try {
-            val characters: CharactersResponse = page.let { characterRemoteDataSource.retrieveCharacters(it) }
-            localCharacterDataSource
-                .geLocalDB()
-                .withTransaction {
-                    insertRemoteKeys(characters)
-                    insertCharacters(characters)
-                }
-            MediatorResult.Success(endOfPaginationReached = characters.results?.isEmpty() == true)
+            val characters: CharactersResponse? = page?.let {
+                characterRemoteDataSource.retrieveCharacters(it)
+            }
+            characters?.let {
+                localCharacterDataSource
+                    .geLocalDB()
+                    .withTransaction {
+                        insertRemoteKeys(it)
+                    }
+                insertCharacters(it)
+            }
+            MediatorResult.Success(endOfPaginationReached = characters?.results?.isEmpty() == true)
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }

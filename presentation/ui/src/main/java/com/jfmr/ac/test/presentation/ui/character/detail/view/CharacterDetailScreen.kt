@@ -1,6 +1,7 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -8,33 +9,25 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
@@ -52,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,12 +60,13 @@ import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailSt
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
 import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.component.ExpandButton
 import com.jfmr.ac.test.presentation.ui.component.ExpandableContent
-import com.jfmr.ac.test.presentation.ui.component.HeartButton
+import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
+import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
-const val EXPANSTION_TRANSITION_DURATION: Int = 500
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,196 +76,113 @@ fun CharacterDetailScreen(
 ) {
     val characterDetailState = detailViewModel.characterDetailState
     Scaffold(topBar = {
-        SmallTopAppBar(title = {
-            Text(text = "Detail")
-        },
+        SmallTopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.character_detail),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
             navigationIcon = {
-                IconButton(onClick = { onUpClick.invoke() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                NavigateUpIcon(onUpClick)
+            },
+            actions = {
+                if (characterDetailState is CharacterDetailState.Success) {
+                    val character = characterDetailState.characterDetail
+                    FavoriteButton(
+                        isFavorite = character.isFavorite,
+                        action = { detailViewModel.updateCharacter(character.copy(isFavorite = it)) },
+                    )
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.primary,
                 containerColor = MaterialTheme.colorScheme.background,
-            ))
+            ),
+        )
     }) {
         when (characterDetailState) {
             is CharacterDetailState.Loading -> CircularProgressBar(stringResource(id = characterDetailState.messageResource))
             is CharacterDetailState.Error -> ErrorScreen(messageResource = R.string.character_detail_not_found) {}
-            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail) {
-                detailViewModel.updateCharacter(it)
-            }
+            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail)
         }
     }
 
 }
 
 @Composable
-private fun CharacterDetailContent(
-    character: Character,
-    action: (Character) -> Unit,
-) {
+private fun CharacterDetailContent(character: Character) {
     val lazyListState = rememberLazyListState()
-
-    Box(modifier = Modifier
-        .fillMaxWidth(), contentAlignment = Alignment.Center) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround,
-        ) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 DetailHeader(
                     character = character,
-                    lazyListState = lazyListState
+                    lazyListState = lazyListState,
                 )
             }
             item {
-                CharacterDetailBody(
-                    character = character,
-                    action = action
-                )
+                CharacterDetailBody(character = character)
             }
             item {
-                //   character.episode?.filterNotNull()?.let { EpisodesScreen(episodes = it) }
-                character.episode?.filterNotNull()?.let { EpisodesContent(list = it) }
+                character
+                    .episode
+                    ?.filterNotNull()
+                    ?.filter {
+                        it.isNotEmpty()
+                    }?.let {
+                        EpisodesContent(list = it)
+                    }
             }
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(IntrinsicSize.Max)
-                        .padding(
-                            top = dimensionResource(id = R.dimen.character_list_padding)),
-                )
-            }
-
         }
     }
 }
 
-@SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun EpisodesContent(list: List<String>) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    val transitionState = remember {
-        MutableTransitionState(expanded)
-            .apply {
-                targetState = !expanded
-            }
-    }
-    val transition = updateTransition(targetState = transitionState, label = "transition")
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "bgColorTransition") {
-        if (expanded) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
-        } else {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-        }
-    }
-    val cardRoundedCorners by transition.animateDp(
-        {
-            tween(
-                durationMillis = EXPAND_ANIMATION_DURATION,
-                easing = FastOutSlowInEasing
-            )
-        },
-        label = "cardRoundedCorners",
+    val visible by remember { mutableStateOf(true) }
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally {
+            with(density) { -40.dp.roundToPx() }
+        } + expandHorizontally(
+            expandFrom = Alignment.Start
+        ) + fadeIn(
+            initialAlpha = 0.3f
+        ),
+        exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()
     ) {
-        if (expanded) 4.dp else dimensionResource(id = R.dimen.corner_shape)
-    }
-    EpidosdesItemContent(cardRoundedCorners, cardBgColor, expanded, list)
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun EpidosdesItemContent(
-    cardRoundedCorners: Dp,
-    cardBgColor: Color,
-    expanded: Boolean,
-    list: List<String>,
-) {
-    var expanded1 = expanded
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                vertical = 12.dp
-            ),
-        shape = CutCornerShape(cardRoundedCorners),
-        containerColor = cardBgColor,
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.row_padding)),
-                text = stringResource(id = R.string.episodes),
-                style = MaterialTheme.typography.titleLarge,
-            )
-            IconButton(onClick = {
-                expanded1 = !expanded1
-            }) {
-                val icon = if (expanded1) {
-                    Icons.Default.KeyboardArrowUp
-                } else {
-                    Icons.Default.KeyboardArrowDown
-                }
-                Icon(imageVector = icon, contentDescription = "drop")
-            }
-        }
-
-        ExpandableContent(
-            visible = expanded1,
-            initialVisibility = expanded1,
-            enterTransition = expandHorizontally(
-                expandFrom = Alignment.Start,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ) + fadeIn(
-                initialAlpha = 0.3f,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ),
-            exitTransition = shrinkVertically(
-                shrinkTowards = Alignment.Top,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ) + fadeOut(
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            )
-        ) {
-            EpisodesScreen(episodes = list)
-        }
+        EpisodesScreen(episodes = list)
     }
 }
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterDetailBody(
     character: Character,
-    action: (Character) -> Unit,
 ) {
-    HeartButton(character, action, Alignment.TopEnd)
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+    var expanded by remember { mutableStateOf(false) }
     val transitionState = remember {
         MutableTransitionState(expanded)
             .apply {
                 targetState = !expanded
             }
     }
-    val transition = updateTransition(targetState = transitionState, label = "transition")
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "bgColorTransition") {
+    val transition = updateTransition(targetState = transitionState, label = stringResource(R.string.transitionLabel))
+
+    val cardBgColor by transition.animateColor(
+        {
+            tween(durationMillis = EXPAND_ANIMATION_DURATION)
+        }, label = stringResource(R.string.background_transition_label)) {
         if (expanded) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
         } else {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
         }
     }
     val cardRoundedCorners by transition.animateDp(
@@ -280,16 +192,21 @@ private fun CharacterDetailBody(
                 easing = FastOutSlowInEasing
             )
         },
-        label = "cardRoundedCorners",
+        label = stringResource(R.string.rounded_corners_label),
     ) {
-        if (expanded) 4.dp else dimensionResource(id = R.dimen.corner_shape)
+        if (expanded) {
+            dimensionResource(id = R.dimen.corner_shape_small)
+        } else {
+            dimensionResource(id = R.dimen.corner_shape)
+        }
     }
-    val contentColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "contentColor") {
-        if (expanded) Color.White else Color.Black
-    }
-    CharacterDetailBodyContent(cardRoundedCorners, cardBgColor, contentColor, character, expanded)
+    CharacterDetailBodyContent(
+        cardRoundedCorners = cardRoundedCorners,
+        cardBgColor = cardBgColor,
+        character = character,
+        expanded = expanded,
+        action = { expanded = it }
+    )
 }
 
 @Composable
@@ -297,87 +214,59 @@ private fun CharacterDetailBody(
 private fun CharacterDetailBodyContent(
     cardRoundedCorners: Dp,
     cardBgColor: Color,
-    contentColor: Color,
     character: Character,
     expanded: Boolean,
+    action: (Boolean) -> Unit,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                vertical = 12.dp
-            ),
+            .padding(dimensionResource(id = R.dimen.character_detail_padding)),
         shape = CutCornerShape(cardRoundedCorners),
         containerColor = cardBgColor,
-        contentColor = contentColor
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    dimensionResource(id = R.dimen.row_padding),
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CharacterDescriptionContent(character, expanded)
+            Text(
+                modifier = Modifier
+                    .padding(
+                        dimensionResource(id = R.dimen.row_padding),
+                    ),
+                text = character.name ?: stringResource(id = R.string.character),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            ExpandButton(
+                expanded = expanded,
+                action = {
+                    action(it)
+                }
+            )
         }
         if (expanded) {
             Divider()
         }
-        ExpandableContent(
-            visible = expanded,
-            initialVisibility = expanded,
-            enterTransition = expandVertically(
-                expandFrom = Alignment.Top,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ) + fadeIn(
-                initialAlpha = 0.3f,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ),
-            exitTransition =
-            shrinkVertically(
-                // Expand from the top.
-                shrinkTowards = Alignment.Top,
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ) + fadeOut(
-                // Fade in with the initial alpha of 0.3f.
-                animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
-            ),
-            onExpanded = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    with(character) {
-                        DetailRow(R.string.status, status)
-                        DetailRow(R.string.location, location?.name)
-                        DetailRow(R.string.gender, gender)
-                        DetailRow(R.string.species, species)
-                        DetailRow(R.string.origin, origin?.name)
-                    }
+        ExpandableContent(visible = expanded) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                with(character) {
+                    DetailRow(R.string.status, status)
+                    DetailRow(R.string.location, location?.name)
+                    DetailRow(R.string.gender, gender)
+                    DetailRow(R.string.species, species)
+                    DetailRow(R.string.origin, origin?.name)
                 }
             }
-        )
-    }
-}
-
-@Composable
-private fun CharacterDescriptionContent(character: Character, expanded1: Boolean) {
-    var expanded11 = expanded1
-    Text(
-        modifier = Modifier
-            .padding(
-                dimensionResource(id = R.dimen.row_padding),
-            ),
-        text = character.name ?: stringResource(id = R.string.character),
-        style = MaterialTheme.typography.titleLarge,
-    )
-    IconButton(onClick = {
-        expanded11 = !expanded11
-    }) {
-        val icon = if (expanded11) {
-            Icons.Default.KeyboardArrowUp
-        } else {
-            Icons.Default.KeyboardArrowDown
         }
-        Icon(imageVector = icon, contentDescription = "drop")
     }
 }
 
@@ -388,30 +277,41 @@ private fun DetailHeader(
     lazyListState: LazyListState,
 ) {
     var scrolledY = 0f
-    var previousOffset = 0
-    AsyncImage(
-        model = ImageRequest
-            .Builder(LocalContext.current)
-            .data(character.image)
-            .placeholder(R.drawable.ic_placeholder)
-            .crossfade(true).build(),
-        contentDescription = stringResource(id = R.string.image_detail_description),
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensionResource(id = R.dimen.character_detail_padding))
             .shadow(
-                elevation = dimensionResource(id = R.dimen.character_detail_image_elevation),
-                shape = CutCornerShape(12.dp),
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
                 spotColor = MaterialTheme.colorScheme.primary
             )
-            .graphicsLayer {
-                scrolledY += lazyListState.firstVisibleItemScrollOffset - previousOffset
-                translationY = scrolledY * 0.5f
-                previousOffset = lazyListState.firstVisibleItemScrollOffset
-            },
-        contentScale = ContentScale.FillWidth,
-        error = painterResource(id = R.drawable.ic_placeholder)
     )
+    {
+        var previousOffset = 0
+        AsyncImage(
+            model = ImageRequest
+                .Builder(LocalContext.current)
+                .data(character.image)
+                .placeholder(R.drawable.ic_placeholder)
+                .crossfade(true).build(),
+            contentDescription = stringResource(id = R.string.image_detail_description),
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = dimensionResource(id = R.dimen.card_elevation),
+                    shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                    spotColor = MaterialTheme.colorScheme.primary
+                )
+                .graphicsLayer {
+                    scrolledY += lazyListState.firstVisibleItemScrollOffset - previousOffset
+                    translationY = scrolledY * 0.5f
+                    previousOffset = lazyListState.firstVisibleItemScrollOffset
+                },
+            contentScale = ContentScale.FillWidth,
+            error = painterResource(id = R.drawable.ic_placeholder),
+        )
+    }
 }
 
 

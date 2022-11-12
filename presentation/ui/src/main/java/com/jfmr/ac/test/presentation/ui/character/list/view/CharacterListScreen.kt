@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -55,11 +56,10 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
 import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
-import com.jfmr.ac.test.presentation.ui.component.HeartButton
-import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
+import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
 import com.jfmr.ac.test.presentation.ui.component.MainAppBar
+import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,7 +130,6 @@ private fun CharacterListContent(
         }
     }
 
-    Timber.wtf(items().loadState.toString())
     if (
         items().loadState.source.refresh is LoadState.Loading
         || items().loadState.append is LoadState.Loading
@@ -211,6 +210,11 @@ private fun CharacterItemListContent(
         modifier = modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.character_list_padding))
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                spotColor = MaterialTheme.colorScheme.primary
+            )
             .clickable { onClick(character()) },
         shape = CutCornerShape(size = 12.dp),
     ) {
@@ -232,14 +236,14 @@ private fun CharacterItemListContent(
                     contentDescription = character().image,
                     contentScale = ContentScale.FillWidth,
                 )
-                HeartButton(
-                    character = character(),
+                FavoriteButton(
+                    isFavorite = character().isFavorite,
                     action = {
                         addToFavorites(
-                            character().copy(isFavorite = it.isFavorite)
+                            character().copy(isFavorite = !character().isFavorite)
                         )
                     },
-                    alignment = Alignment.TopEnd
+                    modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
             Text(text = character().name ?: stringResource(id = R.string.unknow),

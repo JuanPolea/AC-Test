@@ -2,69 +2,96 @@ package com.jfmr.ac.test.presentation.ui.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.presentation.ui.R
 import kotlinx.coroutines.launch
 
+
 @Composable
-internal fun HeartButton(
-    character: Character,
-    action: (Character) -> Unit,
-    alignment: Alignment = Alignment.Center,
+internal fun NavigateUpIcon(onUpClick: () -> Unit) {
+    IconButton(onClick = { onUpClick.invoke() }) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = stringResource(id = R.string.navigation_description),
+        )
+    }
+}
+
+@Composable
+fun FavoriteButton(
+    isFavorite: Boolean,
+    action: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-
-    val interactionSource = MutableInteractionSource()
-
     val coroutineScope = rememberCoroutineScope()
     val scale = remember {
         Animatable(1f)
     }
-    Box(modifier = Modifier.fillMaxWidth()) {
+
+    IconButton(
+        onClick = {
+            coroutineScope.launch {
+                scale.animateTo(
+                    0.8f,
+                    animationSpec = tween(100),
+                )
+                scale.animateTo(
+                    1f,
+                    animationSpec = tween(100),
+                )
+            }
+            action(!isFavorite)
+        },
+        modifier = modifier
+            .scale(scale = scale.value)
+            .size(size = dimensionResource(id = R.dimen.favorite_size))
+            .padding(dimensionResource(id = R.dimen.character_list_padding))
+
+    ) {
         Icon(
-            imageVector = if (character.isFavorite) {
-                Icons.Outlined.Favorite
+            imageVector = if (isFavorite) {
+                Icons.Default.Favorite
             } else {
                 Icons.Default.FavoriteBorder
             },
             contentDescription = stringResource(id = R.string.fav_description),
-            tint = Color.Red,
-            modifier = Modifier
-                .scale(scale = scale.value)
-                .size(size = dimensionResource(id = R.dimen.favorite_size))
-                .align(alignment)
-                .padding(dimensionResource(id = R.dimen.character_list_padding))
-                .clickable(interactionSource = interactionSource, indication = null) {
-                    coroutineScope.launch {
-                        scale.animateTo(
-                            0.8f,
-                            animationSpec = tween(100),
-                        )
-                        scale.animateTo(
-                            1f,
-                            animationSpec = tween(100),
-                        )
-                    }
-                    action(character.copy(isFavorite = !character.isFavorite))
-                }
+            tint = Color.Red
+        )
+
+    }
+}
+
+@Composable
+internal fun ExpandButton(expanded: Boolean, action: (Boolean) -> Unit) {
+    IconButton(
+        onClick = {
+            action(!expanded)
+        }) {
+        val icon = if (expanded) {
+            Icons.Default.KeyboardArrowUp
+        } else {
+            Icons.Default.KeyboardArrowDown
+        }
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(id = R.string.expand_Button_description)
         )
     }
 }
