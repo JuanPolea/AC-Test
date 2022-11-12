@@ -22,6 +22,7 @@ object CharacterExtensions {
         type = this?.type.orEmpty(),
         url = this?.url.orEmpty(),
         status = this?.status.orEmpty(),
+        isFavorite = this?.isFavorite ?: false
     )
 
     private fun OriginResponse?.toEntity() = LocalOrigin(

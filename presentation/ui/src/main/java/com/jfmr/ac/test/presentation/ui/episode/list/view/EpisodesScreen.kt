@@ -23,9 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.presentation.ui.R
@@ -46,13 +46,15 @@ fun EpisodesScreen(
 private fun EpisodesRowContent(episodes: List<Episode>) {
     val state = rememberLazyListState()
     val visibleState = remember {
-        MutableTransitionState(false)
+        MutableTransitionState(episodes.isNotEmpty()).apply {
+            targetState = episodes.isEmpty()
+        }
     }
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        AnimatedVisibility(visible = episodes.isNotEmpty(), enter = fadeIn()) {
+        AnimatedVisibility(visible = visibleState.targetState, enter = fadeIn()) {
             Text(
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.character_detail_padding)),
@@ -88,9 +90,14 @@ private fun EpisodesRowContent(episodes: List<Episode>) {
 @OptIn(ExperimentalMaterial3Api::class)
 private fun EpisodeItemContent(episode: Episode) {
     Card(
-        Modifier.padding(dimensionResource(id = R.dimen.row_padding)),
+        Modifier
+            .padding(dimensionResource(id = R.dimen.row_padding))
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape))
+            ),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
+        border = BorderStroke(dimensionResource(id = R.dimen.border_stroke), MaterialTheme.colorScheme.primary),
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         Text(

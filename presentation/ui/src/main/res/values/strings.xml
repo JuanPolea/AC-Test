@@ -28,4 +28,10 @@
     <string name="connection_established">Reconnected!</string>
     <string name="connection_lost">Connection lost</string>
     <string name="fav_description">Fav description</string>
+    <string name="expand_Button_description">Expand button</string>
+    <string name="character_detail">Detail</string>
+    <string name="navigation_description">Navigation Description</string>
+    <string name="transitionLabel">transition</string>
+    <string name="background_transition_label">bgColorTransition</string>
+    <string name="rounded_corners_label">cardRoundedCorners</string>
 </resources>

@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -209,6 +210,11 @@ private fun CharacterItemListContent(
         modifier = modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.character_list_padding))
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                spotColor = MaterialTheme.colorScheme.primary
+            )
             .clickable { onClick(character()) },
         shape = CutCornerShape(size = 12.dp),
     ) {

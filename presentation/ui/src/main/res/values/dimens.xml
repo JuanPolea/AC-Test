@@ -13,4 +13,6 @@
     <dimen name="favorite_size">42dp</dimen>
     <dimen name="character_detail_image_elevation">32dp</dimen>
     <dimen name="corner_shape_small">4dp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="border_stroke">4dp</dimen>
 </resources>

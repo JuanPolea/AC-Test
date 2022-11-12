@@ -9,11 +9,9 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +25,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
@@ -49,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +49,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -66,12 +60,13 @@ import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailSt
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
 import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
 import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
+import com.jfmr.ac.test.presentation.ui.component.ExpandButton
 import com.jfmr.ac.test.presentation.ui.component.ExpandableContent
 import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
+import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodesScreen
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
-const val EXPANSION_TRANSITION_DURATION: Int = 500
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,33 +75,25 @@ fun CharacterDetailScreen(
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
     val characterDetailState = detailViewModel.characterDetailState
-    var isFavorite = remember {
-        false
-    }
     Scaffold(topBar = {
         SmallTopAppBar(
             title = {
-                Text(text = "Detail")
+                Text(
+                    text = stringResource(R.string.character_detail),
+                    style = MaterialTheme.typography.titleLarge
+                )
             },
             navigationIcon = {
-                IconButton(onClick = { onUpClick.invoke() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                }
+                NavigateUpIcon(onUpClick)
             },
             actions = {
                 if (characterDetailState is CharacterDetailState.Success) {
                     val character = characterDetailState.characterDetail
                     FavoriteButton(
                         isFavorite = character.isFavorite,
-                        action = { detailViewModel.updateCharacter(character.copy(isFavorite = !character.isFavorite)) },
+                        action = { detailViewModel.updateCharacter(character.copy(isFavorite = it)) },
                     )
                 }
-                /* if (characterDetailState is CharacterDetailState.Success) {
-                     val character = characterDetailState.characterDetail
-                     HeartButton2(isFavorite = character.isFavorite, action = {
-                         detailViewModel.updateCharacter(character.copy(isFavorite = it))
-                     })
-                 }*/
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.primary,
@@ -117,28 +104,21 @@ fun CharacterDetailScreen(
         when (characterDetailState) {
             is CharacterDetailState.Loading -> CircularProgressBar(stringResource(id = characterDetailState.messageResource))
             is CharacterDetailState.Error -> ErrorScreen(messageResource = R.string.character_detail_not_found) {}
-            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail) {
-                detailViewModel.updateCharacter(it)
-            }
+            is CharacterDetailState.Success -> CharacterDetailContent(characterDetailState.characterDetail)
         }
     }
 
 }
 
-
 @Composable
-private fun CharacterDetailContent(
-    character: Character,
-    action: (Character) -> Unit,
-) {
+private fun CharacterDetailContent(character: Character) {
     val lazyListState = rememberLazyListState()
-
-    Box(modifier = Modifier
-        .fillMaxWidth(), contentAlignment = Alignment.Center) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-        ) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 DetailHeader(
                     character = character,
@@ -146,10 +126,7 @@ private fun CharacterDetailContent(
                 )
             }
             item {
-                CharacterDetailBody(
-                    character = character,
-                    action = action
-                )
+                CharacterDetailBody(character = character)
             }
             item {
                 character
@@ -161,25 +138,21 @@ private fun CharacterDetailContent(
                         EpisodesContent(list = it)
                     }
             }
-
         }
     }
 }
 
 @Composable
 fun EpisodesContent(list: List<String>) {
-    var visible by remember { mutableStateOf(true) }
+    val visible by remember { mutableStateOf(true) }
     val density = LocalDensity.current
     AnimatedVisibility(
         visible = visible,
         enter = slideInHorizontally {
-            // Slide in from 40 dp from the top.
             with(density) { -40.dp.roundToPx() }
         } + expandHorizontally(
-            // Expand from the top.
             expandFrom = Alignment.Start
         ) + fadeIn(
-            // Fade in with the initial alpha of 0.3f.
             initialAlpha = 0.3f
         ),
         exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()
@@ -189,29 +162,27 @@ fun EpisodesContent(list: List<String>) {
 }
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterDetailBody(
     character: Character,
-    action: (Character) -> Unit,
 ) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+    var expanded by remember { mutableStateOf(false) }
     val transitionState = remember {
         MutableTransitionState(expanded)
             .apply {
                 targetState = !expanded
             }
     }
-    val transition = updateTransition(targetState = transitionState, label = "transition")
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "bgColorTransition") {
+    val transition = updateTransition(targetState = transitionState, label = stringResource(R.string.transitionLabel))
+
+    val cardBgColor by transition.animateColor(
+        {
+            tween(durationMillis = EXPAND_ANIMATION_DURATION)
+        }, label = stringResource(R.string.background_transition_label)) {
         if (expanded) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
         } else {
-            MaterialTheme.colorScheme.primary
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
         }
     }
     val cardRoundedCorners by transition.animateDp(
@@ -221,7 +192,7 @@ private fun CharacterDetailBody(
                 easing = FastOutSlowInEasing
             )
         },
-        label = "cardRoundedCorners",
+        label = stringResource(R.string.rounded_corners_label),
     ) {
         if (expanded) {
             dimensionResource(id = R.dimen.corner_shape_small)
@@ -229,6 +200,24 @@ private fun CharacterDetailBody(
             dimensionResource(id = R.dimen.corner_shape)
         }
     }
+    CharacterDetailBodyContent(
+        cardRoundedCorners = cardRoundedCorners,
+        cardBgColor = cardBgColor,
+        character = character,
+        expanded = expanded,
+        action = { expanded = it }
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun CharacterDetailBodyContent(
+    cardRoundedCorners: Dp,
+    cardBgColor: Color,
+    character: Character,
+    expanded: Boolean,
+    action: (Boolean) -> Unit,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -238,7 +227,11 @@ private fun CharacterDetailBody(
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    dimensionResource(id = R.dimen.row_padding),
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -250,53 +243,30 @@ private fun CharacterDetailBody(
                 text = character.name ?: stringResource(id = R.string.character),
                 style = MaterialTheme.typography.titleLarge,
             )
-            IconButton(onClick = {
-                expanded = !expanded
-            }) {
-                val icon = if (expanded) {
-                    Icons.Default.KeyboardArrowUp
-                } else {
-                    Icons.Default.KeyboardArrowDown
+            ExpandButton(
+                expanded = expanded,
+                action = {
+                    action(it)
                 }
-                Icon(imageVector = icon, contentDescription = "drop")
-            }
+            )
         }
         if (expanded) {
             Divider()
         }
-        ExpandableContent(
-            visible = expanded,
-            initialVisibility = expanded,
-            enterTransition = expandVertically(
-                expandFrom = Alignment.Top,
-                animationSpec = tween(EXPANSION_TRANSITION_DURATION)
-            ) + fadeIn(
-                initialAlpha = 0.3f,
-                animationSpec = tween(EXPANSION_TRANSITION_DURATION)
-            ),
-            exitTransition =
-            shrinkVertically(
-                // Expand from the top.
-                shrinkTowards = Alignment.Top,
-                animationSpec = tween(EXPANSION_TRANSITION_DURATION)
-            ) + fadeOut(
-                // Fade in with the initial alpha of 0.3f.
-                animationSpec = tween(EXPANSION_TRANSITION_DURATION)
-            ),
-            onExpanded = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    with(character) {
-                        DetailRow(R.string.status, status)
-                        DetailRow(R.string.location, location?.name)
-                        DetailRow(R.string.gender, gender)
-                        DetailRow(R.string.species, species)
-                        DetailRow(R.string.origin, origin?.name)
-                    }
+        ExpandableContent(visible = expanded) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                with(character) {
+                    DetailRow(R.string.status, status)
+                    DetailRow(R.string.location, location?.name)
+                    DetailRow(R.string.gender, gender)
+                    DetailRow(R.string.species, species)
+                    DetailRow(R.string.origin, origin?.name)
                 }
-            })
+            }
+        }
     }
 }
 
@@ -307,14 +277,17 @@ private fun DetailHeader(
     lazyListState: LazyListState,
 ) {
     var scrolledY = 0f
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(dimensionResource(id = R.dimen.character_detail_padding))
-        .shadow(
-            elevation = dimensionResource(id = R.dimen.character_detail_image_elevation),
-            shape = CutCornerShape(12.dp),
-            spotColor = MaterialTheme.colorScheme.primary
-        )) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.character_detail_padding))
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                spotColor = MaterialTheme.colorScheme.primary
+            )
+    )
+    {
         var previousOffset = 0
         AsyncImage(
             model = ImageRequest
@@ -325,6 +298,11 @@ private fun DetailHeader(
             contentDescription = stringResource(id = R.string.image_detail_description),
             modifier = Modifier
                 .fillMaxWidth()
+                .shadow(
+                    elevation = dimensionResource(id = R.dimen.card_elevation),
+                    shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                    spotColor = MaterialTheme.colorScheme.primary
+                )
                 .graphicsLayer {
                     scrolledY += lazyListState.firstVisibleItemScrollOffset - previousOffset
                     translationY = scrolledY * 0.5f
