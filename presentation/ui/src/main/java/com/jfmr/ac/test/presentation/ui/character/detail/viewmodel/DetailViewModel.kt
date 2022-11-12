@@ -65,4 +65,19 @@ class DetailViewModel @Inject constructor(
             characterDetailState = CharacterDetailState.Success(updateCharacterUseCase.updateCharacter(character))
         }
     }
+
+    fun isFavorite(): Boolean =
+        when (characterDetailState) {
+            is CharacterDetailState.Error, is CharacterDetailState.Loading -> false
+            is CharacterDetailState.Success -> (characterDetailState as CharacterDetailState.Success).characterDetail.isFavorite
+
+        }
+
+    fun shouldAddToFavorite(isFavorite: Boolean) {
+        viewModelScope.launch {
+            if (characterDetailState is CharacterDetailState.Success) {
+                updateCharacterUseCase.updateCharacter((characterDetailState as CharacterDetailState.Success).characterDetail.copy(isFavorite = isFavorite))
+            }
+        }
+    }
 }
