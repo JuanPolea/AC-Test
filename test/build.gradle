@@ -6,9 +6,17 @@ plugins {
 
 android {
     namespace 'com.jfmr.ac.test.tests'
+    sourceSets {
+        test {
+            resources {
+                srcDirs += ["src/test/resources"]
+            }
+        }
+    }
 }
 
 dependencies {
+    implementation(project(":domain:model"))
 
     implementation 'androidx.paging:paging-common-ktx:3.1.1'
     kapt libs.arrow.kapt

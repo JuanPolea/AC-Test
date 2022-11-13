@@ -65,6 +65,13 @@ subprojects { subProject ->
                     unitTests.returnDefaultValues = true
                     unitTests.includeAndroidResources = true
                 }
+                sourceSets {
+                    test {
+                        resources {
+                            srcDirs += ["${rootDir}/test/src/test/resources"]
+                        }
+                    }
+                }
             }
             dependencies {
                 testImplementation libs.test.junit
