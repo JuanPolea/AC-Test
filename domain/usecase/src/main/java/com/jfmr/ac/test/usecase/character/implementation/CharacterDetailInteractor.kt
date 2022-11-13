@@ -13,7 +13,8 @@ class CharacterDetailInteractor @Inject constructor(
 
     override suspend fun invoke(
         characterId: Int,
-        success: (Character) -> Unit, error: (DomainError) -> Unit,
+        success: (Character) -> Unit,
+        error: (DomainError) -> Unit,
     ) =
         characterRepository
             .getCharacterById(characterId)

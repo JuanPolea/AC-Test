@@ -9,6 +9,6 @@ class CharactersInteractor @Inject constructor(
     @QCharacterRepository private val characterRepository: CharacterRepository,
 ) : CharactersUseCase {
 
-    override fun characters() =
+    override operator fun invoke() =
         characterRepository.characters()
 }

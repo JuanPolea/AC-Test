@@ -13,6 +13,7 @@ dependencies {
     api(project(":data:di"))
     api(project(":domain:repository"))
     api(project(path: ":data:cache"))
+    api(project(path: ":test"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

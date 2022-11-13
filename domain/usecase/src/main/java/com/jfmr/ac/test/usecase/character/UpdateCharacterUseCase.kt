@@ -4,5 +4,5 @@ import com.jfmr.ac.test.domain.model.character.Character
 
 interface UpdateCharacterUseCase {
 
-    suspend fun updateCharacter(character: Character): Character
+    suspend operator fun invoke(character: Character): Character
 }
