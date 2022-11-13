@@ -11,9 +11,5 @@ android {
 
 dependencies {
     api libs.bundles.retrofit2
-
-    implementation libs.bundles.arrow
-    kapt libs.arrow.kapt
-
     api libs.kotlin.serialization
 }

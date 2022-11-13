@@ -12,7 +12,7 @@ interface LocalCharacterDataSource {
     suspend fun updateCharacter(character: LocalCharacter): Int
     suspend fun insert(character: LocalCharacter): Long
     fun geLocalDB(): RickAndMortyDB
-    suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>)
+    suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>): List<Long>
     suspend fun insertCharacters(characters: List<LocalCharacter>): List<Long>
     suspend fun remoteKeysId(id: Long): RemoteKeys?
 }

@@ -26,10 +26,9 @@ object TestUtils {
         return Gson().fromJson(resultString, type)
     }
 
-
-    fun getStringFromJson(fileName: String): String {
+    fun getObjectAsString(fileName: String): String {
         val inputStream = this.javaClass.classLoader!!.getResourceAsStream(fileName)
-        return readTextStream(inputStream)
+        return readTextStream(inputStream).replace("\n", "")
     }
 
 }

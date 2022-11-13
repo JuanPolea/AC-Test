@@ -131,10 +131,9 @@ private fun CharacterDetailContent(character: Character) {
             item {
                 character
                     .episode
-                    ?.filterNotNull()
-                    ?.filter {
+                    .filter {
                         it.isNotEmpty()
-                    }?.let {
+                    }.let {
                         EpisodesContent(list = it)
                     }
             }

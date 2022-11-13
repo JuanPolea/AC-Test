@@ -65,6 +65,13 @@ subprojects { subProject ->
                     unitTests.returnDefaultValues = true
                 }
             }
+            dependencies {
+                testImplementation libs.test.junit
+                testImplementation libs.mockk.main
+                testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+                testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
+
+            }
         }
     }
 }
