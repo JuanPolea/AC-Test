@@ -7,9 +7,9 @@ import com.jfmr.ac.test.usecase.character.UpdateCharacterUseCase
 import javax.inject.Inject
 
 class UpdateCharacterInteractor @Inject constructor(
-    @QCharacterRepository val characterRepository: CharacterRepository,
+    @QCharacterRepository private val characterRepository: CharacterRepository,
 ) : UpdateCharacterUseCase {
 
-    override suspend fun updateCharacter(character: Character) =
+    override suspend operator fun invoke(character: Character) =
         characterRepository.updateCharacter(character)
 }

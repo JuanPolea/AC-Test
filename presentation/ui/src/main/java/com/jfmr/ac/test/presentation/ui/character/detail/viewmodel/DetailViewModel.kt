@@ -62,7 +62,7 @@ class DetailViewModel @Inject constructor(
 
     internal fun updateCharacter(character: Character) {
         viewModelScope.launch {
-            characterDetailState = CharacterDetailState.Success(updateCharacterUseCase.updateCharacter(character))
+            characterDetailState = CharacterDetailState.Success(updateCharacterUseCase.invoke(character))
         }
     }
 
@@ -76,7 +76,7 @@ class DetailViewModel @Inject constructor(
     fun shouldAddToFavorite(isFavorite: Boolean) {
         viewModelScope.launch {
             if (characterDetailState is CharacterDetailState.Success) {
-                updateCharacterUseCase.updateCharacter((characterDetailState as CharacterDetailState.Success).characterDetail.copy(isFavorite = isFavorite))
+                updateCharacterUseCase.invoke((characterDetailState as CharacterDetailState.Success).characterDetail.copy(isFavorite = isFavorite))
             }
         }
     }

@@ -11,26 +11,21 @@ class GetEpisodesInteractor @Inject constructor(
     @QEpisodesRepository private val episodeRepository: EpisodeRepository,
 ) : GetEpisodesUseCase {
 
-    override suspend fun invoke(
+    override suspend operator fun invoke(
         episodesList: List<String>,
         success: (List<Episode>?) -> Unit,
         error: (DomainError) -> Unit,
     ) {
         episodeRepository
             .episodes(episodesList)
-            .collect { domainResult ->
-                domainResult
-                    ?.let {
-                        it.fold(
-                            {
-                                error(it)
-                            },
-                            {
-                                success(it)
-                            }
-                        )
-                    }
-            }
-    }
+            .fold(
 
+                {
+                    error(it)
+                },
+                {
+                    success(it)
+                }
+            )
+    }
 }

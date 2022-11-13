@@ -20,11 +20,11 @@ class CharacterListViewModel @Inject constructor(
     @UpdateCharacter private val updateCharacterUseCase: UpdateCharacterUseCase,
 ) : ViewModel() {
 
-    var pager: Flow<PagingData<Character>> = charactersUseCase.characters().cachedIn(viewModelScope)
+    var pager: Flow<PagingData<Character>> = charactersUseCase.invoke().cachedIn(viewModelScope)
 
     fun addToFavorite(it: Character) {
         viewModelScope.launch {
-            updateCharacterUseCase.updateCharacter(it)
+            updateCharacterUseCase.invoke(it)
         }
 
     }
