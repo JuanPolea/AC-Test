@@ -78,7 +78,7 @@ dependencyResolutionManagement {
             library('android-test-compose-tooling', 'androidx.compose.ui', 'ui-tooling').versionRef('compose')
             library('mockk-main', 'io.mockk:mockk:1.12.2')
             library('mockk-jvm', 'io.mockk:mockk-agent-jvm:1.12.2')
-            library('test-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.10')
+            library('test-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4')
 
         }
     }

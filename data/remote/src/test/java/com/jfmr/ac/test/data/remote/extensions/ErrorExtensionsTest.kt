@@ -4,7 +4,7 @@ import arrow.core.Either
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_NOT_FOUND
-import okhttp3.ResponseBody.Companion.toResponseBody
+import com.jfmr.ac.test.tests.data.Network.getResponseError
 import org.junit.Test
 import retrofit2.HttpException
 import retrofit2.Response
@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class ErrorExtensionsTest {
 
-    private val response: Response<RemoteError> = Response.error(NETWORK_CODE_NOT_FOUND, "Error retrieving list".toResponseBody())
+    private val response: Response<RemoteError> = getResponseError(NETWORK_CODE_NOT_FOUND)
     private val httpError = HttpException(response)
     private val otherException = IllegalThreadStateException()
     private val unknown = RemoteError.Unknown()

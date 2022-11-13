@@ -10,6 +10,7 @@ android {
 
 dependencies {
 
+    implementation 'androidx.paging:paging-common-ktx:3.1.1'
     kapt libs.arrow.kapt
     implementation libs.bundles.arrow
 
@@ -20,10 +21,7 @@ dependencies {
     androidTestImplementation libs.test.junit
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
+    implementation libs.bundles.retrofit2
+
 
 }
-task copyResDirectoryToClasses(type: Copy) {
-    from "${projectDir}/test/src/test/res"
-    into "${buildDir}/intermediates/classes/test/debug/res"
-}
-

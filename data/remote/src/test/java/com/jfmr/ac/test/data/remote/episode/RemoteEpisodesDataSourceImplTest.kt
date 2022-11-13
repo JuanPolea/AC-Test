@@ -5,13 +5,13 @@ import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.tests.TestUtils
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR
+import com.jfmr.ac.test.tests.data.Network.getResponseError
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -36,7 +36,8 @@ class RemoteEpisodesDataSourceImplTest {
 
     @Test
     fun retrieveEpisodes_Success_ListEpisodeResponse() = runTest {
-        val episodes = TestUtils.getObjectFromJson("episodes.json", Array<EpisodeResponse>::class.java) as Array<EpisodeResponse>
+        val episodes =
+            TestUtils.getObjectFromJson("episodes.json", Array<EpisodeResponse>::class.java) as Array<EpisodeResponse>
 
         coEvery {
             rickAndMortyApiService.episodes(any())
@@ -52,7 +53,7 @@ class RemoteEpisodesDataSourceImplTest {
 
         coEvery {
             rickAndMortyApiService.episodes(any())
-        } returns Response.error(NETWORK_CODE_SERVER_ERROR, "Error retrieving list".toResponseBody())
+        } returns getResponseError(NETWORK_CODE_SERVER_ERROR)
 
         val actual: Response<List<EpisodeResponse?>?> = remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
 

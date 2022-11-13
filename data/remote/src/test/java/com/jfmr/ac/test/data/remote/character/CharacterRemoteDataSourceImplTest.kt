@@ -11,13 +11,13 @@ import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_BAD_REQUEST
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_NOT_FOUND
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_UNAUTHORIZED
+import com.jfmr.ac.test.tests.data.Network.getResponseError
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Rule
 import retrofit2.Response
 import javax.inject.Inject
@@ -101,7 +101,7 @@ class CharacterRemoteDataSourceImplTest {
         } ?: kotlin.run {
             coEvery {
                 rickAndMortyApiService.retrieveCharacterById(characterId)
-            } returns Response.error(NETWORK_CODE_SERVER_ERROR, "Body is null".toResponseBody())
+            } returns getResponseError(NETWORK_CODE_SERVER_ERROR)
         }
 
     }
@@ -136,6 +136,6 @@ class CharacterRemoteDataSourceImplTest {
     private fun mockErrorResponse(errorCode: Int) {
         coEvery {
             rickAndMortyApiService.retrieveCharacterById(characterId)
-        } returns Response.error(errorCode, "ErrorBody".toResponseBody())
+        } returns getResponseError(errorCode)
     }
 }

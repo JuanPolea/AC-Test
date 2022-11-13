@@ -68,9 +68,7 @@ class EpisodeRepositoryImpl @Inject constructor(
             .insertEpisodes(
                 episodes
                     .results
-                    ?.filterNotNull()
-                    ?.fromDomain()
-                    .orEmpty()
+                    .fromDomain()
             )
 }
 
