@@ -11,14 +11,14 @@ import com.jfmr.ac.test.data.cache.dao.character.RemoteKeysDao
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeConverter
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
-import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 import com.jfmr.ac.test.data.cache.entities.character.RemoteKeys
+import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 
 private const val DBNAME = "rick_and_morty_database"
 
 @Database(
     entities = [LocalCharacter::class, RemoteKeys::class, LocalEpisode::class],
-    version = 1,
+    version = 2,
 )
 
 @TypeConverters(
@@ -39,8 +39,8 @@ abstract class RickAndMortyDB : RoomDatabase() {
                     RickAndMortyDB::class.java,
                     DBNAME
                 ).fallbackToDestructiveMigration()
-                .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
+
         }
     }
 }

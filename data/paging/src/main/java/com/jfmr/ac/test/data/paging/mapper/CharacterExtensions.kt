@@ -9,29 +9,39 @@ import com.jfmr.ac.test.data.cache.entities.character.LocalOrigin
 
 object CharacterExtensions {
 
-    fun CharacterResponse?.toEntity() = LocalCharacter(
-        id = this?.id ?: -1,
-        image = this?.image.orEmpty(),
-        gender = this?.gender.orEmpty(),
-        species = this?.species.orEmpty(),
-        created = this?.created.orEmpty(),
-        origin = this?.origin?.toEntity(),
-        name = this?.name.orEmpty(),
-        location = this?.location?.toEntity(),
-        episode = this?.episode.orEmpty(),
-        type = this?.type.orEmpty(),
-        url = this?.url.orEmpty(),
-        status = this?.status.orEmpty(),
-        isFavorite = this?.isFavorite ?: false
-    )
+    fun CharacterResponse?.toEntity() =
+        this?.let {
+            LocalCharacter(
+                id = it.id ?: -1,
+                image = image.orEmpty(),
+                gender = gender.orEmpty(),
+                species = species.orEmpty(),
+                created = created.orEmpty(),
+                origin = origin.toEntity(),
+                name = name.orEmpty(),
+                location = location.toEntity(),
+                episode = episode?.filterNotNull().orEmpty(),
+                type = type.orEmpty(),
+                url = url.orEmpty(),
+                status = status.orEmpty(),
+                isFavorite = isFavorite
+            )
+        } ?: LocalCharacter(id = -1)
 
-    private fun OriginResponse?.toEntity() = LocalOrigin(
-        name = this?.name.orEmpty(),
-        url = this?.url.orEmpty(),
-    )
+    private fun OriginResponse?.toEntity() =
+        this?.let {
+            LocalOrigin(
+                name = name.orEmpty(),
+                url = url.orEmpty(),
+            )
+        } ?: LocalOrigin()
 
-    private fun LocationResponse?.toEntity() = LocalLocation(
-        name = this?.name,
-        url = this?.url,
-    )
+
+    private fun LocationResponse?.toEntity() =
+        this?.let {
+            LocalLocation(
+                name = name.orEmpty(),
+                url = url.orEmpty(),
+            )
+        } ?: LocalLocation()
 }

@@ -10,29 +10,26 @@ class LocalCharacterDataSourceImpl @Inject constructor(
     private val rickAndMortyDB: RickAndMortyDB,
 ) : LocalCharacterDataSource {
 
-    private val characterDao = rickAndMortyDB.characterDao()
-    private val remoteKeyDao = rickAndMortyDB.remoteKeysDao()
-
     override fun getCharacters(): PagingSource<Int, LocalCharacter> =
-        characterDao.characters()
+        rickAndMortyDB.characterDao().characters()
 
     override suspend fun getCharacterById(id: Int): LocalCharacter? =
-        characterDao.getCharacterById(id)
+        rickAndMortyDB.characterDao().getCharacterById(id)
 
     override suspend fun updateCharacter(character: LocalCharacter): Int =
-        characterDao.updateCharacter(character)
+        rickAndMortyDB.characterDao().updateCharacter(character)
 
     override suspend fun insert(character: LocalCharacter): Long =
-        characterDao.insert(character)
+        rickAndMortyDB.characterDao().insert(character)
 
     override fun geLocalDB(): RickAndMortyDB = rickAndMortyDB
 
     override suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>) =
-        remoteKeyDao.insertAll(remoteKeys)
+        rickAndMortyDB.remoteKeysDao().insertAll(remoteKeys)
 
     override suspend fun insertCharacters(characters: List<LocalCharacter>): List<Long> =
-        characterDao.insertCharacters(characters)
+        rickAndMortyDB.characterDao().insertCharacters(characters)
 
     override suspend fun remoteKeysId(id: Long): RemoteKeys? =
-        remoteKeyDao.remoteKeysId(id)
+        rickAndMortyDB.remoteKeysDao().remoteKeysId(id)
 }

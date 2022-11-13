@@ -5,19 +5,21 @@ import com.google.gson.Gson
 import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 
 class EpisodeConverter {
-    @TypeConverter
-    fun domainEpisodesToJson(episodes: List<LocalEpisode>): String =
-        Gson().toJson(episodes)
 
     @TypeConverter
-    fun jsonToEpisodes(string: String): Array<LocalEpisode> =
-        Gson().fromJson(string, Array<LocalEpisode>::class.java)
-
-    @TypeConverter
-    fun domainEpisodeToJson(episode: LocalEpisode): String =
+    fun localEpisodeToJson(episode: LocalEpisode): String =
         Gson().toJson(episode)
 
     @TypeConverter
-    fun jsonToEpisode(string: String): LocalEpisode =
+    fun jsonToLocalEpisode(string: String): LocalEpisode =
         Gson().fromJson(string, LocalEpisode::class.java)
+
+    @TypeConverter
+    fun localEpisodesToJson(episodes: List<LocalEpisode>): String =
+        Gson().toJson(episodes)
+
+    @TypeConverter
+    fun jsonToLocalEpisodes(string: String): Array<LocalEpisode> =
+        Gson().fromJson(string, Array<LocalEpisode>::class.java)
+
 }

@@ -7,6 +7,7 @@ import com.jfmr.ac.test.data.cache.entities.character.LocalLocation
 import com.jfmr.ac.test.data.cache.entities.character.LocalOrigin
 
 class CharacterConverter {
+
     @TypeConverter
     fun domainCharacterToJson(localCharacter: LocalCharacter): String =
         Gson().toJson(localCharacter)
@@ -39,11 +40,4 @@ class CharacterConverter {
     fun jsonToListString(string: String): List<String> =
         Gson().fromJson(string, Array<String>::class.java).toList()
 
-    @TypeConverter
-    fun characterListToJson(stringList: List<LocalCharacter>): String =
-        Gson().toJson(stringList)
-
-    @TypeConverter
-    fun jsonToCharacterList(string: String): List<LocalCharacter> =
-        Gson().fromJson(string, Array<LocalCharacter>::class.java).toMutableList()
 }

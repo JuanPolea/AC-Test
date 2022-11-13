@@ -7,8 +7,10 @@ import com.jfmr.ac.test.domain.model.episode.Episode
 object LocalEpisodeExtensions {
 
     fun List<LocalEpisode>?.toDomain(): List<Episode> =
-        this?.map {
-            it.toDomain()
+        this?.let {
+            it.map { localEpisode ->
+                localEpisode.toDomain()
+            }
         } ?: emptyList()
 
     fun LocalEpisode.toDomain() =
@@ -23,8 +25,10 @@ object LocalEpisodeExtensions {
         )
 
     fun List<Episode>?.fromDomain(): List<LocalEpisode> =
-        this?.map {
-            it.fromDomain()
+        this?.let {
+            it.map { episode ->
+                episode.fromDomain()
+            }
         } ?: emptyList()
 
     fun Episode.fromDomain() =

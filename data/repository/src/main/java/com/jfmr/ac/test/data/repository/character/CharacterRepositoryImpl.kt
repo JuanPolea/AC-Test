@@ -8,14 +8,14 @@ import androidx.paging.map
 import arrow.core.left
 import arrow.core.right
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
+import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExtensions.fromDomain
+import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExtensions.toDomain
 import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import com.jfmr.ac.test.data.remote.character.extensions.tryCall
-import com.jfmr.ac.test.data.repository.character.mapper.LocalCharacterExtensions.fromDomain
-import com.jfmr.ac.test.data.repository.character.mapper.LocalCharacterExtensions.toDomain
-import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.DomainResult
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi

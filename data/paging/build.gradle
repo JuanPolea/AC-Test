@@ -12,6 +12,7 @@ dependencies {
     implementation(project(path: ":data:cache"))
     implementation(project(path: ':data:remote'))
     implementation(project(path: ":domain:repository"))
+    implementation(project(path: ":test"))
 
     kapt libs.room.compiler
 
@@ -24,4 +25,6 @@ dependencies {
     api libs.kotlin.coroutines
 
     api libs.paging.common
+
+
 }
