@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id "java-test-fixtures"
 }
 
 android {
@@ -21,3 +22,8 @@ dependencies {
 
 
 }
+task copyResDirectoryToClasses(type: Copy) {
+    from "${projectDir}/test/src/test/res"
+    into "${buildDir}/intermediates/classes/test/debug/res"
+}
+

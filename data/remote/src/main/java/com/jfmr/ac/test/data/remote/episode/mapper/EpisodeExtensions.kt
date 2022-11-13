@@ -5,14 +5,19 @@ import com.jfmr.ac.test.domain.model.episode.Episode
 
 object EpisodeExtensions {
 
-    fun EpisodeResponse.toDomain() =
-        Episode(
-            id = id ?: -1,
-            airDate = airDate,
-            characters = characters,
-            created = created,
-            name = name,
-            episode = episode,
-            url = url
-        )
+    fun EpisodeResponse?.toDomain(): Episode? =
+        this?.let {
+            id?.let {
+                Episode(
+                    id = it,
+                    airDate = airDate.orEmpty(),
+                    characters = characters?.filterNotNull() ?: emptyList(),
+                    created = created.orEmpty(),
+                    name = name.orEmpty(),
+                    episode = episode.orEmpty(),
+                    url = url.orEmpty()
+                )
+            }
+        }
+
 }

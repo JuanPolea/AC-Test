@@ -5,7 +5,6 @@ import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS
 import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS_WITHOUT_EPISODES
 import com.jfmr.ac.test.data.remote.character.CharacterConstants.EMPTY
-import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.TestUtils
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_BAD_REQUEST
@@ -36,7 +35,7 @@ class CharacterRemoteDataSourceImplTest {
     @Inject
     val characterRemoteDataSourceImpl = CharacterRemoteDataSourceImpl(rickAndMortyApiService)
 
-    private val characterID = 1
+    private val characterId = 1
 
     @org.junit.Before
     fun setUp() {
@@ -50,12 +49,11 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessData_Character() = runTest {
-        val expected: CharacterResponse =
-            TestUtils.getObjectFromJson(CHARACTER_BY_ID_SUCCESS, CharacterResponse::class.java) as CharacterResponse
+        val expected: CharacterResponse = TestUtils.getObjectFromJson(CHARACTER_BY_ID_SUCCESS, CharacterResponse::class.java) as CharacterResponse
 
         mockSuccess(expected)
 
-        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterID).body()
+        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterId).body()
 
         assertEquals(expected, actual)
         assertTrue { actual?.episode?.isNotEmpty() == true }
@@ -63,12 +61,11 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessEmpty_Character() = runTest {
-        val expected: CharacterResponse =
-            TestUtils.getObjectFromJson(EMPTY, CharacterResponse::class.java) as CharacterResponse
+        val expected: CharacterResponse = TestUtils.getObjectFromJson(EMPTY, CharacterResponse::class.java) as CharacterResponse
 
         mockSuccess(expected)
 
-        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterID).body()
+        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterId).body()
 
         assertEquals(expected, actual)
     }
@@ -80,7 +77,7 @@ class CharacterRemoteDataSourceImplTest {
 
         mockSuccess(expected)
 
-        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterID).body()
+        val actual: CharacterResponse? = characterRemoteDataSourceImpl.retrieveCharacterById(characterId).body()
 
         assertEquals(expected, actual)
         assertTrue { actual?.episode?.isEmpty() == true }
@@ -90,20 +87,27 @@ class CharacterRemoteDataSourceImplTest {
     fun retrieveCharacterById_SuccessNull_RemoteError() = runTest {
         mockSuccess(null)
 
-        val actual: Response<CharacterResponse> = characterRemoteDataSourceImpl.retrieveCharacterById(characterID)
+        val actual: Response<CharacterResponse> = characterRemoteDataSourceImpl.retrieveCharacterById(characterId)
 
-        assertEquals(RemoteError.Connectivity, actual as RemoteError)
+        assertEquals(NETWORK_CODE_SERVER_ERROR, actual.code())
     }
 
     private fun mockSuccess(body: CharacterResponse?) {
-        coEvery {
-            rickAndMortyApiService.retrieveCharacterById(characterID)
-        } returns Response.success(body)
+        body?.let {
+            coEvery {
+                rickAndMortyApiService.retrieveCharacterById(characterId)
+            } returns Response.success(it)
+
+        } ?: kotlin.run {
+            coEvery {
+                rickAndMortyApiService.retrieveCharacterById(characterId)
+            } returns Response.error(NETWORK_CODE_SERVER_ERROR, "Body is null".toResponseBody())
+        }
+
     }
 
     @org.junit.Test
     fun retrieveCharacterById_Error_Server() = runTest {
-        val characterId = 7
 
         mockErrorResponse(NETWORK_CODE_NOT_FOUND)
         var result: Response<CharacterResponse> = characterRemoteDataSourceImpl.retrieveCharacterById(characterId)
@@ -131,7 +135,7 @@ class CharacterRemoteDataSourceImplTest {
 
     private fun mockErrorResponse(errorCode: Int) {
         coEvery {
-            rickAndMortyApiService.retrieveCharacterById(characterID)
+            rickAndMortyApiService.retrieveCharacterById(characterId)
         } returns Response.error(errorCode, "ErrorBody".toResponseBody())
     }
 }
