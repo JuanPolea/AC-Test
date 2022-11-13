@@ -37,7 +37,7 @@ class LocalCharacterDataSourceImplTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        localCharacter = TestUtils.getObjectFromJson("local_character.json", LocalCharacter::class.java) as LocalCharacter
+        localCharacter = TestUtils.getObjectFromJson("character.json", LocalCharacter::class.java) as LocalCharacter
         localCharacters.add(localCharacter)
         repeat(10) {
             remoteKeys.add(RemoteKeys(it.toLong(), null, "https://rickandmortyapi.com/api/character/?page=2"))

@@ -14,7 +14,7 @@ class CharacterConverterTest {
     private lateinit var expectedCharacter: Character
 
     private val characterConverter = CharacterConverter()
-    private val fileName = "local_character.json"
+    private val fileName = "character.json"
     private val expectedEpisodes =
         "[\"https://rickandmortyapi.com/api/episode/1\"," +
                 "\"https://rickandmortyapi.com/api/episode/2\"," +

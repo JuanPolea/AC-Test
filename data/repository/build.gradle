@@ -17,7 +17,7 @@ dependencies {
     implementation(project(path: ':data:api'))
     implementation(project(path: ":data:cache"))
     implementation(project(path: ":data:paging"))
-    implementation(project(path: ":test"))
+    testImplementation(project(path: ":test"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt

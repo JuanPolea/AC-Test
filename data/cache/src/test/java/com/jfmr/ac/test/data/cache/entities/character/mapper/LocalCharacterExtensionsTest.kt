@@ -21,8 +21,8 @@ class LocalCharacterExtensionsTest {
 
     @Before
     fun setUp() {
-        expectedLocalCharacter = TestUtils.getObjectFromJson("local_character.json", LocalCharacter::class.java) as LocalCharacter
-        expectedCharacter = TestUtils.getObjectFromJson("local_character.json", Character::class.java) as Character
+        expectedLocalCharacter = TestUtils.getObjectFromJson("character.json", LocalCharacter::class.java) as LocalCharacter
+        expectedCharacter = TestUtils.getObjectFromJson("character.json", Character::class.java) as Character
     }
 
     @Test

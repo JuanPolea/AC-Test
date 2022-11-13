@@ -2,12 +2,12 @@ package com.jfmr.ac.test.usecase.episode.implementation
 
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import com.jfmr.ac.test.tests.TestUtils
+import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -24,14 +24,11 @@ import kotlin.test.assertEquals
 class GetEpisodesInteractorTest {
     private val episodeRepository: EpisodeRepository = mockk()
     private val getEpisodesUseCase = GetEpisodesInteractor(episodeRepository)
-    private lateinit var expectedCharacter: Character
     private lateinit var expectedEpisodes: Array<Episode>
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        expectedCharacter =
-            TestUtils.getObjectFromJson("character.json", Character::class.java) as Character
 
         expectedEpisodes =
             TestUtils.getObjectFromJson("episodes.json", Array<Episode>::class.java) as Array<Episode>
