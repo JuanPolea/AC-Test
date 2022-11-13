@@ -13,7 +13,7 @@ import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExten
 import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
-import com.jfmr.ac.test.data.remote.character.extensions.tryCall
+import com.jfmr.ac.test.data.remote.extensions.tryCall
 import com.jfmr.ac.test.domain.model.DomainResult
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError

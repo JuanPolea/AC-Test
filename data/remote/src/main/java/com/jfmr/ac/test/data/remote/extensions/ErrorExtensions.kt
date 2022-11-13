@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.remote.character.extensions
+package com.jfmr.ac.test.data.remote.extensions
 
 import arrow.core.left
 import arrow.core.right

@@ -63,6 +63,7 @@ subprojects { subProject ->
                 }
                 testOptions {
                     unitTests.returnDefaultValues = true
+                    unitTests.includeAndroidResources = true
                 }
             }
             dependencies {
@@ -70,7 +71,8 @@ subprojects { subProject ->
                 testImplementation libs.mockk.main
                 testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
                 testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
-
+                testImplementation "org.jetbrains.kotlin:kotlin-test:1.6.10"
+                testImplementation 'junit:junit:4.13.2'
             }
         }
     }
