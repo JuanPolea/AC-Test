@@ -19,7 +19,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CharacterDetailInteractorTest {
+class CharacterDetailUCInteractorTest {
 
     private val characterRepository: CharacterRepository = mockk()
     private val characterDetailInteractor = CharacterDetailInteractor(characterRepository)

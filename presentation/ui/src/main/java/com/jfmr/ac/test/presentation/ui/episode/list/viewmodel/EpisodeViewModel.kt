@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
+import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
+import com.jfmr.ac.test.presentation.ui.episode.list.model.toUI
 import com.jfmr.ac.test.usecase.di.GetEpisode
 import com.jfmr.ac.test.usecase.episode.GetEpisodesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +21,7 @@ class EpisodeViewModel @Inject constructor(
     @GetEpisode private val getEpisodesUseCase: GetEpisodesUseCase,
 ) : ViewModel() {
 
-    private val _episodes = MutableStateFlow<List<Episode>>(emptyList())
+    private val _episodes = MutableStateFlow<List<EpisodeUI>>(emptyList())
     internal val episodes = _episodes.asStateFlow()
 
     internal fun episodes(episodesList: List<String>) =
@@ -35,7 +37,7 @@ class EpisodeViewModel @Inject constructor(
     private fun success(episodes: List<Episode>?) =
         episodes?.let { list ->
             _episodes.update {
-                list
+                list.toUI()
             }
         }
 
