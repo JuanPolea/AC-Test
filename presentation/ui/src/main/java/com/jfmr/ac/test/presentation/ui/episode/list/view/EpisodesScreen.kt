@@ -27,8 +27,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.jfmr.ac.test.domain.model.episode.Episode
+import arrow.core.extensions.list.foldable.isNotEmpty
 import com.jfmr.ac.test.presentation.ui.R
+import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
 import com.jfmr.ac.test.presentation.ui.episode.list.viewmodel.EpisodeViewModel
 
 @Composable
@@ -43,52 +44,54 @@ fun EpisodesScreen(
 }
 
 @Composable
-private fun EpisodesRowContent(episodes: List<Episode>) {
-    val state = rememberLazyListState()
-    val visibleState = remember {
-        MutableTransitionState(episodes.isNotEmpty()).apply {
-            targetState = episodes.isEmpty()
+internal fun EpisodesRowContent(episodes: List<EpisodeUI>) {
+    if (episodes.isNotEmpty()) {
+        val state = rememberLazyListState()
+        val visibleState = remember {
+            MutableTransitionState(episodes.isNotEmpty()).apply {
+                targetState = episodes.isEmpty()
+            }
         }
-    }
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
-        AnimatedVisibility(visible = visibleState.targetState, enter = fadeIn()) {
-            Text(
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.character_detail_padding)),
-                text = stringResource(id = R.string.episodes),
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-        AnimatedVisibility(visible = episodes.isNotEmpty(),
-            enter = slideInHorizontally { +400 } + fadeIn(),
-            exit = fadeOut
-                ()) {
-            LazyRow(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                content = {
-                    itemsIndexed(
-                        items = episodes,
-                        key = { _, item ->
-                            item.id
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            AnimatedVisibility(visible = visibleState.targetState, enter = fadeIn()) {
+                Text(
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.character_detail_padding)),
+                    text = stringResource(id = R.string.episodes),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            AnimatedVisibility(visible = episodes.isNotEmpty(),
+                enter = slideInHorizontally { +400 } + fadeIn(),
+                exit = fadeOut
+                    ()) {
+                LazyRow(
+                    state = state,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    content = {
+                        itemsIndexed(
+                            items = episodes,
+                            key = { _, item ->
+                                item.id
+                            }
+                        ) { _, item ->
+                            EpisodeItemContent(item)
                         }
-                    ) { _, item ->
-                        EpisodeItemContent(item)
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun EpisodeItemContent(episode: Episode) {
+internal fun EpisodeItemContent(episode: EpisodeUI) {
     Card(
         Modifier
             .padding(dimensionResource(id = R.dimen.row_padding))
@@ -101,7 +104,7 @@ private fun EpisodeItemContent(episode: Episode) {
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         Text(
-            text = episode.name ?: stringResource(id = R.string.unknow),
+            text = episode.name,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,7 +115,7 @@ private fun EpisodeItemContent(episode: Episode) {
                 )
         )
         Text(
-            text = episode.episode ?: stringResource(id = R.string.unknow),
+            text = episode.episode,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,7 +126,7 @@ private fun EpisodeItemContent(episode: Episode) {
                 )
         )
         Text(
-            text = episode.airDate ?: stringResource(id = R.string.unknow),
+            text = episode.airDate,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()

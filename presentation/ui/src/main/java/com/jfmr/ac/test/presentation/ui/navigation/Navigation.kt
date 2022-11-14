@@ -46,13 +46,13 @@ private fun NavGraphBuilder.charactersNav(
     ) {
 
         composable(NavCommand.ContentType(Feature.CHARACTERS)) {
-            CharacterListScreen(modifier = Modifier, onClick = { resultsItem ->
+            CharacterListScreen(modifier = Modifier, onClick = { characterUI ->
                 appState
                     .navController
                     .navigate(
                         NavCommand
                             .ContentDetail(Feature.CHARACTERS)
-                            .createRoute(resultsItem.id)
+                            .createRoute(characterUI.id)
                     )
             }
             )

@@ -32,11 +32,14 @@ object ListExtensions {
         key: ((item: T) -> Any)? = null,
         itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit,
     ) {
-        items(count = items.itemCount, key = if (key != null) { index ->
-            items[index]?.let(key) ?: PagingPlaceholderKey(index)
-        } else {
-            null
-        }) { index ->
+        items(
+            count = items.itemCount,
+            key = if (key != null) { index ->
+                items[index]?.let(key) ?: PagingPlaceholderKey(index)
+            } else {
+                null
+            }
+        ) { index ->
             itemContent(items[index])
         }
     }
