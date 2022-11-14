@@ -36,7 +36,7 @@ class RickAndMortyRemoteMediator @Inject constructor(
                 val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 val uri = Uri.parse(nextKey)
                 val nextPageQuery = uri.getQueryParameter(API_PAGE)
-                nextPageQuery?.toInt() ?: null
+                nextPageQuery?.toInt()
             }
         }
 
