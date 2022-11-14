@@ -18,6 +18,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,7 +74,6 @@ import com.jfmr.ac.test.presentation.ui.component.ExpandableContent
 import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
-import com.jfmr.ac.test.presentation.ui.episode.list.view.EpisodeItemContent
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
 
@@ -391,5 +391,51 @@ internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
                 }
             )
         }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+internal fun EpisodeItemContent(episode: EpisodeUI) {
+    Card(
+        Modifier
+            .padding(dimensionResource(id = R.dimen.row_padding))
+            .shadow(
+                elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape))
+            ),
+        shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
+        border = BorderStroke(dimensionResource(id = R.dimen.border_stroke), MaterialTheme.colorScheme.primary),
+        containerColor = MaterialTheme.colorScheme.background,
+    ) {
+        Text(
+            text = episode.name,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(id = R.dimen.corner_shape),
+                    start = dimensionResource(id = R.dimen.corner_shape),
+                    end = dimensionResource(id = R.dimen.corner_shape),
+                )
+        )
+        Text(
+            text = episode.episode,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(id = R.dimen.corner_shape),
+                    start = dimensionResource(id = R.dimen.corner_shape),
+                    end = dimensionResource(id = R.dimen.corner_shape),
+                )
+        )
+        Text(
+            text = episode.airDate,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.corner_shape))
+        )
     }
 }
