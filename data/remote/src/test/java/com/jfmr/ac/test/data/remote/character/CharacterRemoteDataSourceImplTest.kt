@@ -2,11 +2,8 @@ package com.jfmr.ac.test.data.remote.character
 
 import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
-import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS
-import com.jfmr.ac.test.data.remote.character.CharacterConstants.CHARACTER_BY_ID_SUCCESS_WITHOUT_EPISODES
-import com.jfmr.ac.test.data.remote.character.CharacterConstants.EMPTY
 import com.jfmr.ac.test.tests.MainCoroutineRule
-import com.jfmr.ac.test.tests.TestUtils
+import com.jfmr.ac.test.tests.character.CharacterUtils
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_BAD_REQUEST
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_NOT_FOUND
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR
@@ -49,7 +46,7 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessData_Character() = runTest {
-        val expected: CharacterResponse = TestUtils.getObjectFromJson(CHARACTER_BY_ID_SUCCESS, CharacterResponse::class.java) as CharacterResponse
+        val expected: CharacterResponse = CharacterUtils.expectedCharacterResponse
 
         mockSuccess(expected)
 
@@ -61,7 +58,7 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessEmpty_Character() = runTest {
-        val expected: CharacterResponse = TestUtils.getObjectFromJson(EMPTY, CharacterResponse::class.java) as CharacterResponse
+        val expected: CharacterResponse = CharacterUtils.expectedEmptyCharacterResponse
 
         mockSuccess(expected)
 
@@ -72,8 +69,7 @@ class CharacterRemoteDataSourceImplTest {
 
     @org.junit.Test
     fun retrieveCharacterById_SuccessEmptyEpisodes_Character() = runTest {
-        val expected: CharacterResponse =
-            TestUtils.getObjectFromJson(CHARACTER_BY_ID_SUCCESS_WITHOUT_EPISODES, CharacterResponse::class.java) as CharacterResponse
+        val expected: CharacterResponse = CharacterUtils.expectedCharacterResponseWithoutEpisodes
 
         mockSuccess(expected)
 
