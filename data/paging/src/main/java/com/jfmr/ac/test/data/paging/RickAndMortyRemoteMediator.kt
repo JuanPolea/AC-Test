@@ -33,7 +33,7 @@ class RickAndMortyRemoteMediator @Inject constructor(
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeys: RemoteKeys? = getRemoteKeyForLastItem(state)
-                val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
                 val uri = Uri.parse(nextKey)
                 val nextPageQuery = uri.getQueryParameter(API_PAGE)
                 nextPageQuery?.toInt()

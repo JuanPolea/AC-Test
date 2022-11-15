@@ -10,8 +10,8 @@ import org.junit.Test
 
 class EpisodeResponseExtensionsTest {
 
-    lateinit var episodesResponse: Array<EpisodeResponse>
-    lateinit var episodes: Array<LocalEpisode>
+    private lateinit var episodesResponse: Array<EpisodeResponse>
+    private lateinit var episodes: Array<LocalEpisode>
 
     @Before
     fun setUp() {
