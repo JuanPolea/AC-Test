@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 class PagingSourceUtils<T : Any>(
     private val data: List<T>,
 ) : PagingSource<Int, T>() {
-    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, T>): Int {
         return 0
     }
 

@@ -1,7 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -12,7 +11,6 @@ import androidx.compose.ui.Alignment
 
 const val EXPANSION_TRANSITION_DURATION: Int = 500
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExpandableContent(
     visible: Boolean,
