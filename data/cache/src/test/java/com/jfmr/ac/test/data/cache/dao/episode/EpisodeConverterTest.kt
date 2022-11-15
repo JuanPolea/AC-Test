@@ -16,8 +16,8 @@ class EpisodeConverterTest {
     private val episodeConverter = EpisodeConverter()
     private val episodeFile = "episode.json"
     private val episodesFile = "episodes.json"
-    lateinit var expectedStringEpisode: String
-    lateinit var expectedStringEpisodes: String
+    private lateinit var expectedStringEpisode: String
+    private lateinit var expectedStringEpisodes: String
 
     @BeforeTest
     fun setUp() {

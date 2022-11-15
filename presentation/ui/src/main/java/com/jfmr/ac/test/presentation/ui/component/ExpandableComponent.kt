@@ -27,16 +27,14 @@ fun ExpandableContent(
     )
     val exitTransition =
         shrinkVertically(
-            // Expand from the top.
             shrinkTowards = Alignment.Top,
             animationSpec = tween(EXPANSION_TRANSITION_DURATION)
         ) + fadeOut(
-            // Fade in with the initial alpha of 0.3f.
             animationSpec = tween(EXPANSION_TRANSITION_DURATION)
         )
+
     AnimatedVisibility(
         visible = visible,
-        initiallyVisible = visible,
         enter = enterTransition,
         exit = exitTransition,
     ) {
