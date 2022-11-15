@@ -17,6 +17,7 @@ android {
 
 dependencies {
     implementation(project(":domain:model"))
+    implementation(project(":data:api"))
 
     implementation 'androidx.paging:paging-common-ktx:3.1.1'
     kapt libs.arrow.kapt

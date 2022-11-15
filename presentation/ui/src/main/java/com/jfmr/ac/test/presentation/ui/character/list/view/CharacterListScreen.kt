@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
@@ -27,12 +28,10 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,6 +41,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -88,15 +88,13 @@ internal fun CharacterListScreen(
             contentAlignment = Alignment.Center
         ) {
             CharacterListContent(
-                onClick = { c -> onClick(c) },
+                onClick = onClick,
                 onRefresh = { lazyPagingItems.refresh() },
-                isRefreshing = {
-                    lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0
-                },
+                isRefreshing = { lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0 },
                 items = { lazyPagingItems },
-            ) {
-                characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it))
-            }
+                addToFavorites = { characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it)) },
+                modifier = modifier,
+            )
         }
     }
 }
@@ -108,28 +106,36 @@ private fun CharacterListContent(
     isRefreshing: () -> Boolean,
     items: () -> LazyPagingItems<CharacterUI>,
     addToFavorites: (CharacterUI) -> Unit,
+    modifier: Modifier,
 ) {
-
-    val swipeState = rememberSwipeRefreshState(isRefreshing = isRefreshing())
-    val refreshState by rememberSaveable {
-        mutableStateOf(items().loadState.mediator?.refresh)
+    val lazyGridState = rememberLazyGridState()
+    val showScrollToTopButton = remember {
+        derivedStateOf {
+            lazyGridState.firstVisibleItemIndex > 0
+        }
     }
-    SwipeRefresh(state = swipeState, onRefresh = { onRefresh() }) {
-        when (refreshState) {
-            is LoadState.Loading ->
-                CircularProgressBar()
-            is LoadState.Error ->
-                ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
-            else ->
-                CharacterListSuccessContent(
-                    items = { items() },
-                    onClick = { c -> onClick(c) },
-                    addToFavorites = { c -> addToFavorites(c) },
-                )
+    val swipeState = rememberSwipeRefreshState(isRefreshing = isRefreshing())
+    SwipeRefresh(
+        state = swipeState,
+        onRefresh = { onRefresh() }
+    ) {
+        when (items().loadState.mediator?.refresh) {
+            is LoadState.Loading -> CircularProgressBar()
+            is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
+            else -> CharacterListSuccessContent(modifier = modifier,
+                state = { lazyGridState },
+                items = items,
+                onClick = onClick,
+                showScrollToTopButton = { showScrollToTopButton },
+                addToFavorites = addToFavorites)
         }
     }
 
-    if (items().loadState.source.refresh is LoadState.Loading || items().loadState.append is LoadState.Loading || items().loadState.refresh is LoadState.Loading) {
+    if (
+        items().loadState.source.refresh is LoadState.Loading
+        || items().loadState.append is LoadState.Loading
+        || items().loadState.refresh is LoadState.Loading
+    ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd,
@@ -141,53 +147,39 @@ private fun CharacterListContent(
 
 @Composable
 private fun CharacterListSuccessContent(
+    state: () -> LazyGridState,
     items: () -> LazyPagingItems<CharacterUI>,
     onClick: (CharacterUI) -> Unit,
+    showScrollToTopButton: () -> State<Boolean>,
     addToFavorites: (CharacterUI) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
 ) {
     val scope = rememberCoroutineScope()
-    val lazyGridState = rememberLazyGridState()
-    val showScrollToTopButton = remember {
-        derivedStateOf {
-            lazyGridState.firstVisibleItemIndex > 0
-        }
-    }
+
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
         columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
-        state = lazyGridState,
+        state = state(),
     ) {
-        gridItems(
-            items = items(),
-            key = {
-                it.id
-            }, itemContent = { domainCharacter ->
-                domainCharacter
-                    ?.let { characterUI ->
-                        CharacterItemListContent(
-                            characterProvider = { characterUI },
-                            onClick = { c -> onClick(c) },
-                            addToFavorites = { c -> addToFavorites(c) }
-                        )
-                    }
+        gridItems(items = items(), key = {
+            it.id
+        }, itemContent = { domainCharacter ->
+            domainCharacter?.let {
+                CharacterItemListContent(character = { it }, onClick = onClick, addToFavorites = addToFavorites)
             }
-        )
+        })
     }
-    ScrollToTopButton(
-        showButton = { showScrollToTopButton.value },
-        scrollUp = {
-            scope.launch {
-                lazyGridState.scrollToItem(0)
-            }
+    ScrollToTopButton(showButton = { showScrollToTopButton().value }) {
+        scope.launch {
+            state().scrollToItem(0)
         }
-    )
+    }
 }
 
 @Composable
 private fun ScrollToTopButton(
     showButton: () -> Boolean,
-    scrollUp: () -> Unit,
+    scrollToTop: () -> Unit,
 ) {
 
     AnimatedVisibility(visible = showButton(), enter = fadeIn(), exit = fadeOut()) {
@@ -196,9 +188,11 @@ private fun ScrollToTopButton(
             contentAlignment = Alignment.BottomEnd,
         ) {
             Button(
-                onClick = { scrollUp() },
+                onClick = {
+                    scrollToTop()
+                },
             ) {
-                Text(text = stringResource(id = R.string.scroll_to_top), style = MaterialTheme.typography.labelMedium)
+                Text(text = stringResource(id = R.string.scroll_up), style = MaterialTheme.typography.labelMedium)
             }
         }
 
@@ -208,54 +202,52 @@ private fun ScrollToTopButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterItemListContent(
-    characterProvider: () -> CharacterUI,
+    character: () -> CharacterUI,
     onClick: (CharacterUI) -> Unit,
     addToFavorites: (CharacterUI) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.character_list_padding))
             .shadow(
                 elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)
-                ),
-                spotColor = MaterialTheme.colorScheme.primary)
-            .clickable { onClick(characterProvider()) },
-        shape = CutCornerShape(size = dimensionResource(id = R.dimen.corner_shape)),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                spotColor = MaterialTheme.colorScheme.primary
+            )
+            .clickable { onClick(character()) },
+        shape = CutCornerShape(size = 12.dp),
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                val painter = rememberAsyncImagePainter(
-                    ImageRequest
-                        .Builder(LocalContext.current)
-                        .data(data = characterProvider().image)
-                        .setParameter(characterProvider().name, characterProvider().name)
-                        .placeholder(R.drawable.ic_placeholder)
-                        .apply {
-                            this.size(Size.ORIGINAL)
-                        }
-                        .error(R.drawable.ic_placeholder).build()
-                )
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+            ) {
                 Image(
-                    painter = painter,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentDescription = characterProvider().image,
+                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = character().image)
+                        .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
+                            size(Size.ORIGINAL)
+                        }).error(R.drawable.ic_placeholder).build()),
+                    modifier = modifier.fillMaxWidth(),
+                    contentDescription = character().image,
                     contentScale = ContentScale.FillWidth,
                 )
                 FavoriteButton(
-                    isFavorite = { characterProvider().isFavorite },
+                    isFavorite = { character().isFavorite },
                     action = {
-                        addToFavorites(characterProvider().copy(isFavorite = !characterProvider().isFavorite))
+                        addToFavorites(
+                            character().copy(isFavorite = !character().isFavorite)
+                        )
                     },
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
-            Text(text = characterProvider().name,
+            Text(text = character().name,
                 modifier = Modifier.padding(
                     top = dimensionResource(id = R.dimen.text),
                     start = dimensionResource(id = R.dimen.text),
@@ -266,7 +258,7 @@ private fun CharacterItemListContent(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
 
-            Spacer(modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
+            Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
         }
     }
 }

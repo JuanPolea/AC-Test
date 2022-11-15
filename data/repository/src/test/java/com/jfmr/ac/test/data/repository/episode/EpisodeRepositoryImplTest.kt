@@ -1,17 +1,16 @@
 package com.jfmr.ac.test.data.repository.episode
 
 import arrow.core.Either
-import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
-import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
-import com.jfmr.ac.test.domain.model.character.Character
+import com.jfmr.ac.test.data.repository.utils.LocalUtils.expectedLocalEpisodes
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.episode.Episodes
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.model.error.RemoteError
-import com.jfmr.ac.test.tests.TestUtils
 import com.jfmr.ac.test.tests.data.Network.getResponseError
+import com.jfmr.ac.test.tests.episodes.EpisodeUtils.episodesResponse
+import com.jfmr.ac.test.tests.episodes.EpisodeUtils.expectedEpisodes
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -34,20 +33,9 @@ class EpisodeRepositoryImplTest {
         episodeDao = episodeDao
     )
 
-    private lateinit var episodeResponse: Array<EpisodeResponse>
-    private lateinit var localEpisodes: Array<LocalEpisode>
-    private lateinit var episodes: Array<Episode>
-    private lateinit var character: Character
-
-
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        episodes = TestUtils.getObjectFromJson("episodes.json", Array<Episode>::class.java) as Array<Episode>
-        localEpisodes = TestUtils.getObjectFromJson("episodes.json", Array<LocalEpisode>::class.java) as Array<LocalEpisode>
-        episodeResponse = TestUtils.getObjectFromJson("episodes.json", Array<EpisodeResponse>::class.java) as Array<EpisodeResponse>
-        character = TestUtils.getObjectFromJson("character.json", Character::class.java) as Character
-
     }
 
     @After
@@ -60,15 +48,15 @@ class EpisodeRepositoryImplTest {
         coEvery {
             remoteEpisodesDataSource
                 .retrieveEpisodes(emptyList())
-        } returns Response.success(episodeResponse.toList())
+        } returns Response.success(episodesResponse.toList())
 
         coEvery {
-            episodeDao.insertEpisodes(localEpisodes.toList())
+            episodeDao.insertEpisodes(expectedLocalEpisodes.toList())
         } returns arrayListOf()
 
         coEvery {
             episodeDao.episodes(emptyList())
-        } returns localEpisodes.toList()
+        } returns expectedLocalEpisodes.toList()
 
         val actual: Either<DomainError, List<Episode>> = episodeRepositoryImpl.episodes(emptyList())
 
@@ -76,7 +64,7 @@ class EpisodeRepositoryImplTest {
             {
 
             }, {
-                assertEquals(episodes.toList(), it)
+                assertEquals(expectedEpisodes.toList(), it)
             }
         )
     }
@@ -89,19 +77,19 @@ class EpisodeRepositoryImplTest {
         } returns getResponseError()
 
         coEvery {
-            episodeDao.insertEpisodes(localEpisodes.toList())
+            episodeDao.insertEpisodes(expectedLocalEpisodes.toList())
         } returns arrayListOf()
 
         coEvery {
             episodeDao.episodes(emptyList())
-        } returns localEpisodes.toList()
+        } returns expectedLocalEpisodes.toList()
 
         val actual: Either<DomainError, List<Episode>> = episodeRepositoryImpl.episodes(emptyList())
 
         actual.fold(
             {
             }, {
-                assertEquals(episodes.toList(), it)
+                assertEquals(expectedEpisodes.toList(), it)
             }
         )
     }
@@ -114,7 +102,7 @@ class EpisodeRepositoryImplTest {
         } returns getResponseError()
 
         coEvery {
-            episodeDao.insertEpisodes(localEpisodes.toList())
+            episodeDao.insertEpisodes(expectedLocalEpisodes.toList())
         } returns arrayListOf()
 
         coEvery {
@@ -135,11 +123,11 @@ class EpisodeRepositoryImplTest {
     fun insert() = runTest {
 
         val expectedEpisodes = Episodes(
-            results = episodes.toList()
+            results = expectedEpisodes.toList()
         )
 
         coEvery {
-            episodeDao.insertEpisodes(localEpisodes.toList())
+            episodeDao.insertEpisodes(expectedLocalEpisodes.toList())
         } returns listOf()
 
         val actual = episodeRepositoryImpl.insert(expectedEpisodes)

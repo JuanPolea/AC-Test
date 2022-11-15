@@ -93,8 +93,8 @@ class DetailViewModel @Inject constructor(
                     characterDetailEvent
                         .characterDetail
                         .character
-                        ?.toDomain()
-                        ?.let {
+                        .toDomain()
+                        .let {
                             updateCharacterUseCase(it)
                                 .let { c ->
                                     characterDetailState.update { cd ->

@@ -1,11 +1,9 @@
 package com.jfmr.ac.test.usecase.character.implementation
 
 import androidx.paging.PagingData
-
 import androidx.paging.map
-import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
-import com.jfmr.ac.test.tests.TestUtils
+import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -24,13 +22,10 @@ class CharactersInteractorTest {
 
     private val characterRepository: CharacterRepository = mockk()
     private val charactersInteractor = CharactersInteractor(characterRepository)
-    private lateinit var expectedCharacter: Character
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        expectedCharacter =
-            TestUtils.getObjectFromJson("character.json", Character::class.java) as Character
     }
 
     @After
