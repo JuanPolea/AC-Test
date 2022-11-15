@@ -7,6 +7,6 @@ import retrofit2.Response
 
 interface CharacterRemoteDataSource {
     suspend fun retrieveCharacterById(characterId: Int): Response<CharacterResponse>
-    suspend fun retrieveCharacters(page: Int): CharactersResponse
+    suspend fun retrieveCharacters(page: Int): Response<CharactersResponse>
     fun getNetworkService(): RickAndMortyApiService
 }

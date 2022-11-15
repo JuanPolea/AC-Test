@@ -16,7 +16,7 @@ const val API_PAGE = "page"
 interface RickAndMortyApiService {
 
     @GET(CHARACTER_URL)
-    suspend fun characters(@Query("page") page: Int): CharactersResponse
+    suspend fun characters(@Query("page") page: Int): Response<CharactersResponse>
 
     @GET(CHARACTER_DETAIL_URL)
     suspend fun retrieveCharacterById(@Path("id") characterId: Int): Response<CharacterResponse>
