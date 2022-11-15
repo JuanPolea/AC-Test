@@ -1,6 +1,7 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -27,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -50,18 +50,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetail
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
@@ -72,6 +67,8 @@ import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
 import com.jfmr.ac.test.presentation.ui.component.ExpandButton
 import com.jfmr.ac.test.presentation.ui.component.ExpandableContent
 import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
+import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlFullWidth
+import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlLandScape
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
 
@@ -84,47 +81,36 @@ fun CharacterDetailScreen(
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
     val characterDetailState by detailViewModel.characterDetailState.collectAsState()
-    Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.character_detail),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    NavigateUpIcon(onUpClick)
-                },
-                actions = {
-                    FavoriteButton(
-                        isFavorite = { characterDetailState.character.isFavorite },
-                        action = {
-                            detailViewModel
-                                .onEvent(
-                                    CharacterDetailEvent
-                                        .UpdateCharacter(
-                                            characterDetailState
-                                                .copy(character = characterDetailState.character.copy(isFavorite = it))
-                                        )
-                                )
-                        },
-                    )
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.primary,
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
-            )
-        }
-    ) {
+    Scaffold(topBar = {
+        SmallTopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.character_detail),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            navigationIcon = {
+                NavigateUpIcon(onUpClick)
+            },
+            actions = {
+                FavoriteButton(
+                    isFavorite = { characterDetailState.character.isFavorite },
+                    action = {
+                        detailViewModel.onEvent(CharacterDetailEvent.UpdateCharacter(characterDetailState.copy(character = characterDetailState.character.copy(
+                            isFavorite = it))))
+                    },
+                )
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
+        )
+    }) {
         when {
-            characterDetailState.isLoading == true ->
-                CircularProgressBar(stringResource(id = R.string.retrieving_characters))
-            characterDetailState.error != null ->
-                ErrorScreen(messageResource = R.string.character_detail_not_found) {}
-            else ->
-                CharacterDetailContent(characterDetailState)
+            characterDetailState.isLoading == true -> CircularProgressBar(stringResource(id = R.string.retrieving_characters))
+            characterDetailState.error != null -> ErrorScreen(messageResource = R.string.character_detail_not_found) {}
+            else -> CharacterDetailContent(characterDetailState)
         }
     }
 
@@ -134,17 +120,13 @@ fun CharacterDetailScreen(
 private fun CharacterDetailContent(characterDetail: CharacterDetail) {
     with(characterDetail.character) {
         val lazyListState = rememberLazyListState()
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
+        Box(contentAlignment = Alignment.Center) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
             ) {
                 item {
-                    DetailHeader(
-                        character = { this@with },
-                        lazyListState = { lazyListState },
-                    )
+                    DetailHeader { this@with }
                 }
                 item {
                     CharacterDetailBody(character = { this@with })
@@ -157,6 +139,24 @@ private fun CharacterDetailContent(characterDetail: CharacterDetail) {
     }
 }
 
+@Composable
+private fun DetailHeader(
+    character: () -> CharacterUI,
+) {
+    if (LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.character_detail_padding))
+            .shadow(elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                spotColor = MaterialTheme.colorScheme.primary)) {
+            ImageFromUrlFullWidth(
+                url = { character().image },
+            )
+        }
+    }
+}
+
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
@@ -165,17 +165,15 @@ private fun CharacterDetailBody(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val transitionState = remember {
-        MutableTransitionState(expanded)
-            .apply {
-                targetState = !expanded
-            }
+        MutableTransitionState(expanded).apply {
+            targetState = !expanded
+        }
     }
     val transition = updateTransition(targetState = transitionState, label = stringResource(R.string.transitionLabel))
 
-    val cardBgColor by transition.animateColor(
-        {
-            tween(durationMillis = EXPAND_ANIMATION_DURATION)
-        }, label = stringResource(R.string.background_transition_label)) {
+    val cardBgColor by transition.animateColor({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }, label = stringResource(R.string.background_transition_label)) {
         if (expanded) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
         } else {
@@ -184,10 +182,7 @@ private fun CharacterDetailBody(
     }
     val cardRoundedCorners by transition.animateDp(
         {
-            tween(
-                durationMillis = EXPAND_ANIMATION_DURATION,
-                easing = FastOutSlowInEasing
-            )
+            tween(durationMillis = EXPAND_ANIMATION_DURATION, easing = FastOutSlowInEasing)
         },
         label = stringResource(R.string.rounded_corners_label),
     ) {
@@ -197,58 +192,11 @@ private fun CharacterDetailBody(
             dimensionResource(id = R.dimen.corner_shape)
         }
     }
-    CharacterDetailBodyContent(
-        cardRoundedCorners = { cardRoundedCorners },
+    CharacterDetailBodyContent(cardRoundedCorners = { cardRoundedCorners },
         cardBgColor = { cardBgColor },
         character = { character() },
         expanded = { expanded },
-        action = { expanded = it }
-    )
-}
-
-@Composable
-private fun DetailHeader(
-    character: () -> CharacterUI,
-    lazyListState: () -> LazyListState,
-) {
-    var scrolledY = 0f
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.character_detail_padding))
-            .shadow(
-                elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
-                spotColor = MaterialTheme.colorScheme.primary
-            )
-    )
-    {
-        var previousOffset = 0
-        AsyncImage(
-            model = ImageRequest
-                .Builder(LocalContext.current)
-                .data(character().image)
-                .placeholder(R.drawable.ic_placeholder)
-                .crossfade(true).build(),
-            contentDescription = stringResource(id = R.string.image_detail_description),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = dimensionResource(id = R.dimen.card_elevation),
-                    shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
-                    spotColor = MaterialTheme.colorScheme.primary
-                )
-                .graphicsLayer {
-                    with(lazyListState()) {
-                        scrolledY += firstVisibleItemScrollOffset - previousOffset
-                        translationY = scrolledY * 0.5f
-                        previousOffset = firstVisibleItemScrollOffset
-                    }
-                },
-            contentScale = ContentScale.FillWidth,
-            error = painterResource(id = R.drawable.ic_placeholder),
-        )
-    }
+        action = { expanded = it })
 }
 
 @Composable
@@ -260,40 +208,30 @@ private fun CharacterDetailBodyContent(
     expanded: () -> Boolean,
     action: (Boolean) -> Unit,
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.character_detail_padding))
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            ),
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(dimensionResource(id = R.dimen.character_detail_padding))
+        .fillMaxWidth()
+        .animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)),
         shape = CutCornerShape(cardRoundedCorners()),
         containerColor = cardBgColor(),
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                dimensionResource(id = R.dimen.row_padding),
+            ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                modifier = Modifier.padding(
                     dimensionResource(id = R.dimen.row_padding),
                 ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        dimensionResource(id = R.dimen.row_padding),
-                    ),
                 text = character().name,
                 style = MaterialTheme.typography.titleLarge,
             )
             ExpandButton(
-                expanded = { expanded() },
+                expanded = {
+                    expanded()
+                },
                 action = {
                     action(it)
                 }
@@ -303,18 +241,40 @@ private fun CharacterDetailBodyContent(
             Divider()
         }
         ExpandableContent(visible = expanded()) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                with(character()) {
-                    DetailRowContent(R.string.status) { status }
-                    DetailRowContent(R.string.location) { location.name }
-                    DetailRowContent(R.string.gender) { gender }
-                    DetailRowContent(R.string.species) { species }
-                    DetailRowContent(R.string.origin) { origin.name }
-                }
-            }
+            CharacterDetailBodyCard(character())
+        }
+    }
+}
+
+@Composable
+private fun CharacterDetailBodyCard(
+    character: CharacterUI,
+) = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.character_detail_padding)),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        CharacterDescriptionContent(character)
+        ImageFromUrlLandScape { character.image }
+    }
+} else {
+    CharacterDescriptionContent(character)
+}
+
+@Composable
+private fun CharacterDescriptionContent(character: CharacterUI) {
+    Column(
+        modifier = Modifier.fillMaxWidth(0.5f),
+        verticalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        with(character) {
+            DetailRowContent(R.string.status) { status }
+            DetailRowContent(R.string.location) { location.name }
+            DetailRowContent(R.string.gender) { gender }
+            DetailRowContent(R.string.species) { species }
+            DetailRowContent(R.string.origin) { origin.name }
         }
     }
 }
@@ -322,9 +282,8 @@ private fun CharacterDetailBodyContent(
 
 @Composable
 private fun DetailRowContent(nameResource: Int, value: () -> String) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(
+    Row(
+        modifier = Modifier.padding(
             start = dimensionResource(id = R.dimen.character_detail_padding),
             end = dimensionResource(id = R.dimen.character_detail_padding),
             bottom = dimensionResource(id = R.dimen.character_detail_padding),
@@ -345,51 +304,31 @@ private fun DetailRowContent(nameResource: Int, value: () -> String) {
 internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
     val density = LocalDensity.current
     val state = rememberLazyListState()
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
-        AnimatedVisibility(
-            visible = episodes().isNotEmpty(),
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceAround) {
+        AnimatedVisibility(visible = episodes().isNotEmpty(),
             enter = slideInHorizontally(
                 initialOffsetX = { with(density) { 10.dp.roundToPx() } },
             ) + expandHorizontally(
                 expandFrom = Alignment.Start,
-            ) + fadeIn(
-                initialAlpha = 0.3f
-            ),
-            exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()
-        ) {
+            ) + fadeIn(initialAlpha = 0.3f),
+            exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()) {
             Text(
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.character_detail_padding)),
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.character_detail_padding)),
                 text = stringResource(id = R.string.episodes),
                 style = MaterialTheme.typography.titleLarge,
             )
         }
         AnimatedVisibility(visible = episodes().isNotEmpty(),
-            enter = slideInHorizontally(
-                animationSpec = tween(300, easing = { OvershootInterpolator().getInterpolation(it) }),
-                initialOffsetX = { 400 }
-            ) + fadeIn(),
-            exit = fadeOut()
-        ) {
-            LazyRow(
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                content = {
-                    itemsIndexed(
-                        items = episodes(),
-                        key = { _, item ->
-                            item.id
-                        }
-                    ) { _, item ->
-                        EpisodeItemContent(item)
-                    }
+            enter = slideInHorizontally(animationSpec = tween(300, easing = { OvershootInterpolator().getInterpolation(it) }),
+                initialOffsetX = { 400 }) + fadeIn(),
+            exit = fadeOut()) {
+            LazyRow(state = state, modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, content = {
+                itemsIndexed(items = episodes(), key = { _, item ->
+                    item.id
+                }) { _, item ->
+                    EpisodeItemContent(item)
                 }
-            )
+            })
         }
     }
 }
@@ -400,16 +339,13 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
     Card(
         Modifier
             .padding(dimensionResource(id = R.dimen.row_padding))
-            .shadow(
-                elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape))
-            ),
+            .shadow(elevation = dimensionResource(id = R.dimen.card_elevation),
+                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape))),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
         border = BorderStroke(dimensionResource(id = R.dimen.border_stroke), MaterialTheme.colorScheme.primary),
         containerColor = MaterialTheme.colorScheme.background,
     ) {
-        Text(
-            text = episode.name,
+        Text(text = episode.name,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -417,10 +353,8 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
                     top = dimensionResource(id = R.dimen.corner_shape),
                     start = dimensionResource(id = R.dimen.corner_shape),
                     end = dimensionResource(id = R.dimen.corner_shape),
-                )
-        )
-        Text(
-            text = episode.episode,
+                ))
+        Text(text = episode.episode,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -428,14 +362,11 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
                     top = dimensionResource(id = R.dimen.corner_shape),
                     start = dimensionResource(id = R.dimen.corner_shape),
                     end = dimensionResource(id = R.dimen.corner_shape),
-                )
-        )
-        Text(
-            text = episode.airDate,
+                ))
+        Text(text = episode.airDate,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.corner_shape))
-        )
+                .padding(dimensionResource(id = R.dimen.corner_shape)))
     }
 }
