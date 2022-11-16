@@ -10,6 +10,6 @@ class UpdateCharacterInteractor @Inject constructor(
     @QCharacterRepository private val characterRepository: CharacterRepository,
 ) : UpdateCharacterUseCase {
 
-    override suspend operator fun invoke(character: Character) =
+    override operator fun invoke(character: Character) =
         characterRepository.updateCharacter(character)
 }

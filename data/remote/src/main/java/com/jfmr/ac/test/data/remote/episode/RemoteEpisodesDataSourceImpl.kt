@@ -12,7 +12,11 @@ class RemoteEpisodesDataSourceImpl @Inject constructor(
 ) : RemoteEpisodesDataSource {
 
     override suspend fun retrieveEpisodes(episodesList: List<String>): Response<List<EpisodeResponse?>?> =
-        apiService.episodes(episodesList.map { Uri.parse(it).lastPathSegment?.toInt() ?: 0 })
+        apiService.episodes(
+            episodesList.map {
+                Uri.parse(it).lastPathSegment?.toInt() ?: 0
+            }
+        )
 
 
 }

@@ -18,14 +18,16 @@ class GetEpisodesInteractor @Inject constructor(
     ) {
         episodeRepository
             .episodes(episodesList)
-            .fold(
+            .collect { domainResult ->
+                domainResult.fold(
+                    {
+                        error(it)
+                    },
+                    {
+                        success(it)
+                    }
+                )
+            }
 
-                {
-                    error(it)
-                },
-                {
-                    success(it)
-                }
-            )
     }
 }

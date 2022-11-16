@@ -1,12 +1,12 @@
 package com.jfmr.ac.test.usecase.character
 
-import com.jfmr.ac.test.domain.model.character.Character
+import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
 
 interface CharacterDetailUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         characterId: Int,
-        success: (Character) -> Unit,
+        success: (CharacterDetail) -> Unit,
         error: (DomainError) -> Unit,
     )
 }

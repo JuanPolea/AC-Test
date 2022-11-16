@@ -7,6 +7,8 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -33,10 +35,12 @@ class UpdateCharacterInteractorTest {
     fun updateCharacter() = runTest {
         coEvery {
             characterRepository.updateCharacter(any())
-        } returns expectedCharacter.copy(isFavorite = !expectedCharacter.isFavorite)
+        } returns flowOf(expectedCharacter.copy(isFavorite = !expectedCharacter.isFavorite))
 
         val actual = updateCharacterInteractor.invoke(expectedCharacter)
+        actual.collectLatest {
+            assertEquals(expectedCharacter.copy(isFavorite = !expectedCharacter.isFavorite), it)
+        }
 
-        assertEquals(expectedCharacter.copy(isFavorite = !expectedCharacter.isFavorite), actual)
     }
 }
