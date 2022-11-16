@@ -15,15 +15,15 @@ import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import com.jfmr.ac.test.data.remote.extensions.tryCall
 import com.jfmr.ac.test.data.remote.qualifier.DispatcherIO
-import com.jfmr.ac.test.domain.model.DomainResult
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -35,8 +35,8 @@ class CharacterRepositoryImpl
 ) : CharacterRepository {
 
     @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
-    override fun characters(): Flow<PagingData<Character>> {
-        return Pager(
+    override fun characters(): Flow<PagingData<Character>> =
+        Pager(
             config = PagingConfig(pageSize = 10),
             remoteMediator = RickAndMortyRemoteMediator(localCharacterDataSource, characterRemoteDataSource),
             pagingSourceFactory = { localCharacterDataSource.getCharacters() }
@@ -46,46 +46,48 @@ class CharacterRepositoryImpl
                     localCharacter.toDomain()
                 }
             }
-    }
 
-    override suspend fun getCharacterById(id: Int): DomainResult<Character> =
-        withContext(coroutineDispatcher) {
-            tryCall {
-                characterRemoteDataSource
-                    .retrieveCharacterById(id)
-            }.fold(
-                { error ->
+    override fun getCharacterById(id: Int) = flow {
+        tryCall {
+            characterRemoteDataSource
+                .retrieveCharacterById(id)
+        }.fold(
+            { error ->
+                emit(
                     localCharacterDataSource
                         .getCharacterById(id)
                         ?.toDomain()
                         ?.right()
                         ?: error.left()
-                },
-                { response ->
-                    if (response.isSuccessful) {
-                        response
-                            .body()
-                            .toEntity()
-                            .also {
-                                localCharacterDataSource
-                                    .getCharacterById(id)
-                                    ?.let { localCharacter ->
-                                        localCharacterDataSource.updateCharacter(localCharacter.copy(isFavorite = localCharacter.isFavorite))
-                                    } ?: localCharacterDataSource.insert(it)
-                            }
-                    }
+                )
+            },
+            { response ->
+                if (response.isSuccessful) {
+                    response
+                        .body()
+                        .toEntity()
+                        .also {
+                            localCharacterDataSource
+                                .getCharacterById(id)
+                                ?.let { localCharacter ->
+                                    localCharacterDataSource
+                                        .updateCharacter(localCharacter.copy(isFavorite = localCharacter.isFavorite))
+                                } ?: localCharacterDataSource.insert(it)
+                        }
+                }
+                emit(
                     localCharacterDataSource
                         .getCharacterById(id)
                         ?.toDomain()
                         ?.right()
                         ?: RemoteError.Connectivity.left()
-                }
-            )
-        }
+                )
+            }
+        )
+    }.flowOn(coroutineDispatcher)
 
-    override suspend fun updateCharacter(character: Character) =
-        withContext(coroutineDispatcher) {
-            localCharacterDataSource.updateCharacter(character.fromDomain())
-            localCharacterDataSource.getCharacterById(character.id)?.toDomain() ?: character
-        }
+    override fun updateCharacter(character: Character) = flow {
+        localCharacterDataSource.updateCharacter(character.fromDomain())
+        emit(localCharacterDataSource.getCharacterById(character.id)?.toDomain() ?: character)
+    }.flowOn(coroutineDispatcher)
 }

@@ -22,9 +22,12 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.spyk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -45,20 +48,22 @@ class CharacterRepositoryImplTest {
 
     private val characterRemoteDataSource: CharacterRemoteDataSource = mockk()
     private val localCharacterDataSource: LocalCharacterDataSource = mockk()
-    private val coroutineDispatcher: CoroutineDispatcher = mockk()
+
+    private var coroutineDispatcher: CoroutineDispatcher = spyk(Dispatchers.IO)
     private val characterRepository = CharacterRepositoryImpl(characterRemoteDataSource = characterRemoteDataSource,
         localCharacterDataSource = localCharacterDataSource,
         coroutineDispatcher = coroutineDispatcher)
     private lateinit var localCharacters: List<LocalCharacter>
     private lateinit var characters: List<Character>
+
     val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(testDispatcher)
         MockKAnnotations.init(this)
         localCharacters = expectedCharactersResponse.results?.filterNotNull()?.map { it.toEntity() } ?: emptyList()
         characters = localCharacters.map { it.toDomain() }
-        Dispatchers.setMain(testDispatcher)
 
         mockkStatic(Dispatchers::class)
         every { Dispatchers.IO } returns testDispatcher
@@ -87,6 +92,7 @@ class CharacterRepositoryImplTest {
 
     @Test
     fun getCharacterById_Success_Character() = runTest {
+
         coEvery {
             characterRemoteDataSource.retrieveCharacterById(any())
         } returns Response.success(expectedCharacterResponse)
@@ -99,9 +105,8 @@ class CharacterRepositoryImplTest {
             localCharacterDataSource.updateCharacter(LocalUtils.expectedLocalCharacter)
         } returns 1
 
-        val actual = characterRepository.getCharacterById(1)
+        val actual = characterRepository.getCharacterById(1).first()
         actual.fold({
-
         }, {
             assertEquals(expectedCharacter, it)
         })
@@ -122,11 +127,14 @@ class CharacterRepositoryImplTest {
         } returns 1
 
         val actual = characterRepository.getCharacterById(1)
-        actual.fold({
+        actual.collectLatest {
+            it.fold({
 
-        }, {
-            assertEquals(expectedCharacter, it)
-        })
+            }, {
+                assertEquals(expectedCharacter, it)
+            })
+        }
+
     }
 
     @Test
@@ -144,9 +152,11 @@ class CharacterRepositoryImplTest {
         } returns 1
 
         val actual = characterRepository.getCharacterById(1)
-        actual.fold({
-            assertEquals(RemoteError.Connectivity, it)
-        }, {})
+        actual.collectLatest {
+            it.fold({
+                assertEquals(RemoteError.Connectivity, it)
+            }, {})
+        }
     }
 
     @Test
@@ -160,9 +170,9 @@ class CharacterRepositoryImplTest {
         } returns expectedLocalCharacter
 
         val actual = characterRepository.updateCharacter(expectedCharacter)
-
-        assertEquals(expectedCharacter, actual)
-
+        actual.collectLatest {
+            assertEquals(expectedCharacter, it)
+        }
     }
 
     @Test
@@ -174,8 +184,9 @@ class CharacterRepositoryImplTest {
             localCharacterDataSource.getCharacterById(any())
         } returns null
         val actual = characterRepository.updateCharacter(expectedCharacter)
-        assertEquals(expectedCharacter, actual)
-
+        actual.collectLatest {
+            assertEquals(expectedCharacter, it)
+        }
     }
 
     @Test
@@ -186,8 +197,7 @@ class CharacterRepositoryImplTest {
         coEvery {
             localCharacterDataSource.getCharacterById(any())
         } returns null
-        val actual = characterRepository.updateCharacter(expectedCharacter)
+        val actual = characterRepository.updateCharacter(expectedCharacter).first()
         assertEquals(expectedCharacter, actual)
-
     }
 }

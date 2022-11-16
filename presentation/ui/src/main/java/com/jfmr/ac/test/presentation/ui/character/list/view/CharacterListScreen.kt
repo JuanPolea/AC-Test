@@ -210,10 +210,10 @@ private fun CharacterItemListContent(
     Card(
         modifier = modifier
             .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.character_list_padding))
+            .padding(dimensionResource(id = R.dimen.size_small))
             .shadow(
-                elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                elevation = dimensionResource(id = R.dimen.size_small_medium),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.size_medium)),
                 spotColor = MaterialTheme.colorScheme.primary
             )
             .clickable { onClick(character()) },
@@ -249,16 +249,16 @@ private fun CharacterItemListContent(
             }
             Text(text = character().name,
                 modifier = Modifier.padding(
-                    top = dimensionResource(id = R.dimen.text),
-                    start = dimensionResource(id = R.dimen.text),
-                    end = dimensionResource(id = R.dimen.text),
+                    top = dimensionResource(id = R.dimen.size_medium),
+                    start = dimensionResource(id = R.dimen.size_medium),
+                    end = dimensionResource(id = R.dimen.size_medium),
                 ),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
 
-            Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.spacer_bottom)))
+            Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.size_medium)))
         }
     }
 }

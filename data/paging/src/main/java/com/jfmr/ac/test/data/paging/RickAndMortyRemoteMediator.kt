@@ -42,7 +42,7 @@ class RickAndMortyRemoteMediator @Inject constructor(
 
         return try {
             val characters: CharactersResponse? = page?.let {
-                characterRemoteDataSource.retrieveCharacters(it)
+                characterRemoteDataSource.retrieveCharacters(it).body()
             }
             characters?.let {
                 localCharacterDataSource

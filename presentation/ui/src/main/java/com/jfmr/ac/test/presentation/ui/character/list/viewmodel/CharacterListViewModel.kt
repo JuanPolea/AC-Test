@@ -15,6 +15,7 @@ import com.jfmr.ac.test.usecase.di.GetCharacters
 import com.jfmr.ac.test.usecase.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +40,9 @@ class CharacterListViewModel @Inject constructor(
         when (characterListEvent) {
             is CharacterListEvent.AddToFavorite ->
                 viewModelScope.launch {
-                    updateCharacterUseCase.invoke(characterListEvent.character.toDomain())
+                    updateCharacterUseCase
+                        .invoke(characterListEvent.character.toDomain())
+                        .collectLatest { }
                 }
         }
     }

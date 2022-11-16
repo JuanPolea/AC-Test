@@ -54,12 +54,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jfmr.ac.test.presentation.ui.R
-import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetail
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
+import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailUI
 import com.jfmr.ac.test.presentation.ui.character.detail.viewmodel.DetailViewModel
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterUI
 import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
@@ -81,6 +82,7 @@ fun CharacterDetailScreen(
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
     val characterDetailState by detailViewModel.characterDetailState.collectAsState()
+    detailViewModel.getData()
     Scaffold(topBar = {
         SmallTopAppBar(
             title = {
@@ -117,7 +119,7 @@ fun CharacterDetailScreen(
 }
 
 @Composable
-private fun CharacterDetailContent(characterDetail: CharacterDetail) {
+private fun CharacterDetailContent(characterDetail: CharacterDetailUI) {
     with(characterDetail.character) {
         val lazyListState = rememberLazyListState()
         Box(contentAlignment = Alignment.Center) {
@@ -146,9 +148,9 @@ private fun DetailHeader(
     if (LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE) {
         Box(modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.character_detail_padding))
-            .shadow(elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+            .padding(dimensionResource(id = R.dimen.size_medium_high))
+            .shadow(elevation = dimensionResource(id = R.dimen.size_small_medium),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.size_medium)),
                 spotColor = MaterialTheme.colorScheme.primary)) {
             ImageFromUrlFullWidth(
                 url = { character().image },
@@ -187,9 +189,9 @@ private fun CharacterDetailBody(
         label = stringResource(R.string.rounded_corners_label),
     ) {
         if (expanded) {
-            dimensionResource(id = R.dimen.corner_shape_small)
+            dimensionResource(id = R.dimen.size_small_medium)
         } else {
-            dimensionResource(id = R.dimen.corner_shape)
+            dimensionResource(id = R.dimen.size_medium)
         }
     }
     CharacterDetailBodyContent(cardRoundedCorners = { cardRoundedCorners },
@@ -210,7 +212,7 @@ private fun CharacterDetailBodyContent(
 ) {
     Card(modifier = Modifier
         .fillMaxWidth()
-        .padding(dimensionResource(id = R.dimen.character_detail_padding))
+        .padding(dimensionResource(id = R.dimen.size_medium_high))
         .fillMaxWidth()
         .animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)),
         shape = CutCornerShape(cardRoundedCorners()),
@@ -219,14 +221,18 @@ private fun CharacterDetailBodyContent(
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(
-                dimensionResource(id = R.dimen.row_padding),
+                dimensionResource(id = R.dimen.size_small_medium),
             ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(
-                modifier = Modifier.padding(
-                    dimensionResource(id = R.dimen.row_padding),
-                ),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .padding(
+                        dimensionResource(id = R.dimen.size_small_medium),
+                    ),
                 text = character().name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             ExpandButton(
                 expanded = {
@@ -253,20 +259,20 @@ private fun CharacterDetailBodyCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.character_detail_padding)),
+            .padding(dimensionResource(id = R.dimen.size_medium_high)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CharacterDescriptionContent(character)
+        CharacterDescriptionContent(character, Modifier.fillMaxWidth(0.5f))
         ImageFromUrlLandScape { character.image }
     }
 } else {
-    CharacterDescriptionContent(character)
+    CharacterDescriptionContent(character, Modifier.fillMaxWidth())
 }
 
 @Composable
-private fun CharacterDescriptionContent(character: CharacterUI) {
+private fun CharacterDescriptionContent(character: CharacterUI, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxWidth(0.5f),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.size_small_medium)),
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         with(character) {
@@ -284,13 +290,15 @@ private fun CharacterDescriptionContent(character: CharacterUI) {
 private fun DetailRowContent(nameResource: Int, value: () -> String) {
     Row(
         modifier = Modifier.padding(
-            start = dimensionResource(id = R.dimen.character_detail_padding),
-            end = dimensionResource(id = R.dimen.character_detail_padding),
-            bottom = dimensionResource(id = R.dimen.character_detail_padding),
-        ), verticalAlignment = Alignment.CenterVertically) {
+            start = dimensionResource(id = R.dimen.size_medium_high),
+            end = dimensionResource(id = R.dimen.size_medium_high),
+            bottom = dimensionResource(id = R.dimen.size_medium_high),
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(
             text = stringResource(id = nameResource),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
         )
         Text(
             text = value().ifEmpty { stringResource(id = R.string.unknow) },
@@ -313,7 +321,7 @@ internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
             ) + fadeIn(initialAlpha = 0.3f),
             exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()) {
             Text(
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.character_detail_padding)),
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.size_medium_high)),
                 text = stringResource(id = R.string.episodes),
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -338,11 +346,11 @@ internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
 internal fun EpisodeItemContent(episode: EpisodeUI) {
     Card(
         Modifier
-            .padding(dimensionResource(id = R.dimen.row_padding))
-            .shadow(elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape))),
-        shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.corner_shape)),
-        border = BorderStroke(dimensionResource(id = R.dimen.border_stroke), MaterialTheme.colorScheme.primary),
+            .padding(dimensionResource(id = R.dimen.size_small_medium))
+            .shadow(elevation = dimensionResource(id = R.dimen.size_small_medium),
+                shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.size_medium))),
+        shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.size_medium)),
+        border = BorderStroke(dimensionResource(id = R.dimen.size_small), MaterialTheme.colorScheme.primary),
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         Text(text = episode.name,
@@ -350,23 +358,23 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(id = R.dimen.corner_shape),
-                    start = dimensionResource(id = R.dimen.corner_shape),
-                    end = dimensionResource(id = R.dimen.corner_shape),
+                    top = dimensionResource(id = R.dimen.size_medium),
+                    start = dimensionResource(id = R.dimen.size_medium),
+                    end = dimensionResource(id = R.dimen.size_medium),
                 ))
         Text(text = episode.episode,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(id = R.dimen.corner_shape),
-                    start = dimensionResource(id = R.dimen.corner_shape),
-                    end = dimensionResource(id = R.dimen.corner_shape),
+                    top = dimensionResource(id = R.dimen.size_medium),
+                    start = dimensionResource(id = R.dimen.size_medium),
+                    end = dimensionResource(id = R.dimen.size_medium),
                 ))
         Text(text = episode.airDate,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.corner_shape)))
+                .padding(dimensionResource(id = R.dimen.size_medium)))
     }
 }
