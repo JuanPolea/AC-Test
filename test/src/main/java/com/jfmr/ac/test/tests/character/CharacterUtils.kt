@@ -24,6 +24,4 @@ object CharacterUtils {
 
     val expectedCharactersResponse =
         TestUtils.getObjectFromJson(CHARACTERS, CharactersResponse::class.java) as CharactersResponse
-
-
 }
