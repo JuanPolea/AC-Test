@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "825306758433",
+    "project_id": "ac-test-d7bcf",
+    "storage_bucket": "ac-test-d7bcf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825306758433:android:1fb7cf93b7b9a1e702d260",
+        "android_client_info": {
+          "package_name": "com.jfmr.ac.test.domain.usecase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825306758433-o0cgj8meltu02h6e8lrqudlhg41o1to8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg4jngo8AVdRbPVKdlCqGg1laYY-kH6Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825306758433-o0cgj8meltu02h6e8lrqudlhg41o1to8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
