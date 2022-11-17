@@ -14,17 +14,11 @@ dependencies {
     implementation(project(path: ":domain:model"))
     api(project(path: ":data:api"))
     implementation(project(path: ":data:cache"))
-    implementation(project(path: ":test"))
+    testImplementation(project(path: ":test"))
 
     implementation libs.bundles.hilt
     kapt libs.bundles.hiltkapt
 
     implementation libs.bundles.arrow
     kapt libs.arrow.kapt
-    //Testing
-    testImplementation libs.test.junit
-    testImplementation libs.kotlin.coroutines
-    testImplementation libs.test.kotlin
-    testImplementation "io.mockk:mockk-android:1.12.0"
-    testImplementation "io.mockk:mockk:1.12.2"
 }

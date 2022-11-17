@@ -74,11 +74,12 @@ subprojects { subProject ->
                 }
             }
             dependencies {
-                testImplementation libs.test.junit
-                testImplementation libs.mockk.main
                 testImplementation libs.kotlin.coroutines
+                testImplementation libs.test.kotlin.coroutines
                 testImplementation libs.test.junit.ktx
                 testImplementation libs.test.kotlin
+                testImplementation libs.test.mockk.android
+                testImplementation libs.test.mockk
             }
         }
     }
