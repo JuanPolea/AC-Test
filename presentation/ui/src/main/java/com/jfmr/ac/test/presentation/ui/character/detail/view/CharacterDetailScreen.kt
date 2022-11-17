@@ -316,7 +316,7 @@ private fun DetailRowContent(nameResource: Int, value: () -> String) {
             style = MaterialTheme.typography.titleSmall,
         )
         Text(
-            text = value().ifEmpty { stringResource(id = R.string.unknow) },
+            text = value().ifEmpty { stringResource(id = R.string.unknown) },
             style = MaterialTheme.typography.bodyMedium,
         )
     }

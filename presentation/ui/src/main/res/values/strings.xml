@@ -10,7 +10,7 @@
     <string name="location">"Location: "</string>
     <string name="gender">"Gender: "</string>
     <string name="species">"Species: "</string>
-    <string name="unknow">Unknow</string>
+    <string name="unknown">Unknown</string>
     <string name="origin">"Origin: "</string>
     <string name="scroll_up">Scroll Up</string>
     <string name="episodes">Episodes</string>

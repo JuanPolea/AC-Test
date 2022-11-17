@@ -4,7 +4,6 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 object Network {
-    const val NETWORK_CODE_SUCCESS = 200
     const val NETWORK_CODE_BAD_REQUEST = 400
     const val NETWORK_CODE_UNAUTHORIZED = 401
     const val NETWORK_CODE_NOT_FOUND = 404
