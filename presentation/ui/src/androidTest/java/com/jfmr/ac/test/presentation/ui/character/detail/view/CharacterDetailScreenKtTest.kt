@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -22,11 +23,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.jfmr.ac.test.presentation.ui.InstrumentationTestUtils.pause
 import com.jfmr.ac.test.presentation.ui.InstrumentationTestUtils.toast
 import com.jfmr.ac.test.presentation.ui.R
+import com.jfmr.ac.test.presentation.ui.character.CharacterUtils.characterUI
+import com.jfmr.ac.test.presentation.ui.character.CharacterUtils.episodes
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailUI
-import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterUI
-import com.jfmr.ac.test.presentation.ui.character.list.model.LocationUI
-import com.jfmr.ac.test.presentation.ui.character.list.model.OriginUI
 import com.jfmr.ac.test.presentation.ui.component.ExpandableButtonTest
 import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
@@ -46,21 +46,6 @@ class CharacterDetailScreenKtTest {
     var composeTestRule = createComposeRule()
     private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val characterUI = CharacterUI(
-        id = 1,
-        image = "",
-        gender = "Male",
-        species = "Human",
-        created = "",
-        origin = OriginUI(name = "Earth", url = ""),
-        name = "Rick Sánchez",
-        LocationUI(name = "Earth", url = ""),
-        episode = emptyList(),
-        type = "Type",
-        url = "",
-        status = "Alive",
-        isFavorite = false,
-    )
 
     private val characterDetailUI = CharacterDetailUI(
         character = characterUI,
@@ -131,36 +116,21 @@ class CharacterDetailScreenKtTest {
             waitForIdle()
             onRoot().printToLog(ExpandableButtonTest::class.java.name)
 
-            onNodeWithContentDescription(context.getString(R.string.fav_description))
-                .assertExists()
-                .assertIsDisplayed()
-                .assertHasClickAction()
-                .performClick()
-
-
-            onNodeWithContentDescription(context.getString(R.string.navigation_description))
-                .assertExists()
-                .assertIsDisplayed()
-                .assertHasClickAction()
-                .performClick()
+            detailHeader()
 
 
             onNodeWithContentDescription(context.getString(R.string.progress_bar_description))
                 .assertExists()
 
-            pause()
             chatacterDetailState.update {
                 characterDetailUI.copy(isLoading = false)
             }
-            pause()
             onNodeWithContentDescription(context.getString(R.string.progress_bar_description))
                 .assertDoesNotExist()
 
             chatacterDetailState.update {
                 characterDetailUI.copy(isLoading = false, error = CharacterDetailError.CharacterNotFound)
             }
-
-            pause()
             onNodeWithContentDescription(context.getString(R.string.image_detail_description))
                 .assertDoesNotExist()
 
@@ -171,20 +141,44 @@ class CharacterDetailScreenKtTest {
                 .assertExists()
                 .assertHasClickAction()
                 .performClick()
+
             chatacterDetailState.update {
-                characterDetailUI.copy(isLoading = false, error = null)
+                characterDetailUI.copy(
+                    character = characterUI,
+                    episodes = episodes,
+                    isLoading = false, error = null,
+                )
             }
-            pause(2000)
             onNodeWithText(characterUI.name)
                 .assertExists()
+
+
             onNodeWithContentDescription(context.getString(R.string.expand_Button_description))
                 .assertExists()
                 .assertHasClickAction()
                 .performClick()
-            chatacterDetailState.update {
-                characterDetailUI.copy(character = characterUI.copy(id = -1))
-            }
+            pause(2000)
+
+            onNodeWithContentDescription(context.getString(R.string.expand_Button_description))
+                .assertExists()
+                .assertHasClickAction()
+                .performClick()
             pause(3000)
+
         }
+    }
+
+    private fun ComposeContentTestRule.detailHeader() {
+        onNodeWithContentDescription(context.getString(R.string.fav_description))
+            .assertExists()
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
+
+        onNodeWithContentDescription(context.getString(R.string.navigation_description))
+            .assertExists()
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
     }
 }
