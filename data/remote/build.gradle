@@ -11,9 +11,8 @@ kapt {
     correctErrorTypes true
 }
 dependencies {
-    implementation(project(path: ":domain:model"))
     api(project(path: ":data:api"))
-    implementation(project(path: ":data:cache"))
+    api(project(path: ":domain:model"))
     testImplementation(project(path: ":test"))
 
     implementation libs.bundles.hilt
