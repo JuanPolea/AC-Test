@@ -8,10 +8,9 @@ android {
 }
 
 dependencies {
-
-    implementation(project(path: ":data:cache"))
-    implementation(project(path: ':data:remote'))
-    implementation(project(path: ":domain:repository"))
+    api(project(path: ":data:cache"))
+    api(project(path: ':data:remote'))
+    api(project(path: ":domain:repository"))
     implementation(project(path: ":test"))
 
     kapt libs.room.compiler
