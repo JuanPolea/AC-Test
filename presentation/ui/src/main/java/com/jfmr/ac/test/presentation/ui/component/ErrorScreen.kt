@@ -29,21 +29,16 @@ fun ErrorScreen(
     retry: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            ErrorScreenPortrait(
-                messageResource = messageResource,
-                isPortrait = false,
-                retry = retry
-            )
-        }
-        else -> {
-            ErrorScreenPortrait(
-                messageResource = messageResource,
-                retry = retry
-            )
-        }
+    val isPortrait = when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> false
+        else -> true
     }
+    ErrorScreenPortrait(
+        messageResource = messageResource,
+        isPortrait = isPortrait,
+        retry = retry
+    )
+
 }
 
 @Composable
