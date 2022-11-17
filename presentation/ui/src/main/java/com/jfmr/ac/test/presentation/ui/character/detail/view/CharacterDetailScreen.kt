@@ -72,12 +72,13 @@ import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlFullWidth
 import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlLandScape
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
+import org.jetbrains.annotations.VisibleForTesting
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CharacterDetailScreen(
+internal fun CharacterDetailScreen(
     onUpClick: () -> Unit,
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
@@ -109,32 +110,41 @@ fun CharacterDetailScreen(
             ),
         )
     }) {
-        when {
-            characterDetailState.isLoading == true -> CircularProgressBar(stringResource(id = R.string.retrieving_characters))
-            characterDetailState.error != null -> ErrorScreen(messageResource = R.string.character_detail_not_found) {}
-            else -> CharacterDetailContent(characterDetailState)
-        }
+        CharacterDetailContent(
+            characterDetail = { characterDetailState },
+            action = { detailViewModel.getData() },
+        )
     }
 
 }
 
+@VisibleForTesting
 @Composable
-private fun CharacterDetailContent(characterDetail: CharacterDetailUI) {
-    with(characterDetail.character) {
-        val lazyListState = rememberLazyListState()
-        Box(contentAlignment = Alignment.Center) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-            ) {
-                item {
-                    DetailHeader { this@with }
-                }
-                item {
-                    CharacterDetailBody(character = { this@with })
-                }
-                item {
-                    CharacterDetailFooter { characterDetail.episodes }
+/* package*/ fun CharacterDetailContent(
+    characterDetail: () -> CharacterDetailUI,
+    action: () -> Unit,
+) {
+    when {
+        characterDetail().isLoading == true ->
+            CircularProgressBar(stringResource(id = R.string.retrieving_characters))
+        characterDetail().error != null ->
+            ErrorScreen(messageResource = R.string.character_detail_not_found) { action() }
+        else -> with(characterDetail().character) {
+            val lazyListState = rememberLazyListState()
+            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
+                LazyColumn(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    state = lazyListState,
+                ) {
+                    item {
+                        DetailHeader { this@with }
+                    }
+                    item {
+                        CharacterDetailBody(character = { this@with })
+                    }
+                    item {
+                        CharacterDetailFooter { characterDetail().episodes }
+                    }
                 }
             }
         }

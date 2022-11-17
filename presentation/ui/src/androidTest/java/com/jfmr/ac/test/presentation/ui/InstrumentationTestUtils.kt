@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 
 object InstrumentationTestUtils {
-    internal fun pause(timeInMillis: Long = 0) {
+    internal fun pause(timeInMillis: Long = 300) {
         Thread.sleep(timeInMillis)
     }
 

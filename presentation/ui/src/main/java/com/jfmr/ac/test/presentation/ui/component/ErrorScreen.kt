@@ -29,21 +29,16 @@ fun ErrorScreen(
     retry: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            ErrorScreenPortrait(
-                messageResource = messageResource,
-                isPortrait = false,
-                retry = retry
-            )
-        }
-        else -> {
-            ErrorScreenPortrait(
-                messageResource = messageResource,
-                retry = retry
-            )
-        }
+    val isPortrait = when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> false
+        else -> true
     }
+    ErrorScreenPortrait(
+        messageResource = messageResource,
+        isPortrait = isPortrait,
+        retry = retry
+    )
+
 }
 
 @Composable
@@ -73,7 +68,7 @@ private fun ErrorScreenPortrait(messageResource: Int, isPortrait: Boolean = true
                 onClick = { retry() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.character_list_padding))) {
+                    .padding(dimensionResource(id = R.dimen.size_small))) {
                 Text(
                     text = stringResource(id = R.string.retry),
                     style = MaterialTheme.typography.titleMedium

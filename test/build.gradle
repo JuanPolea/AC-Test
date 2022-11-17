@@ -33,5 +33,4 @@ dependencies {
     androidTestImplementation libs.kotlin.coroutines
 
     implementation libs.bundles.retrofit2
-    implementation libs.bundles.test.mockk
 }
