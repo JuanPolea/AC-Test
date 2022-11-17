@@ -1,14 +1,16 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
-    namespace = "com.jfmr.domain.ac.test.repository"
+    namespace = "com.jfmr.ac.test.domain.repository"
 }
 
 dependencies {
     api(project(path: ":domain:model"))
-    implementation(project(path: ":data:cache"))
+    api(project(path: ":data:cache"))
+
 }

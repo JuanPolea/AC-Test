@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -10,7 +12,6 @@ android {
 dependencies {
     api(project(path: ":data:cache"))
     api(project(path: ':data:remote'))
-    api(project(path: ":domain:repository"))
     implementation(project(path: ":test"))
 
     kapt libs.room.compiler
@@ -24,6 +25,7 @@ dependencies {
     api libs.kotlin.coroutines
 
     api libs.paging.common
+    implementation libs.firebase.crashlitycs
 
 
 }
