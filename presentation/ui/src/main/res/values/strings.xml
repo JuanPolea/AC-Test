@@ -27,4 +27,5 @@
     <string name="background_transition_label">bgColorTransition</string>
     <string name="rounded_corners_label">cardRoundedCorners</string>
     <string name="progress_bar_description">Progress bar content</string>
+    <string name="detail_list">detail list</string>
 </resources>

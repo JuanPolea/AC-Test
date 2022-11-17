@@ -100,7 +100,7 @@ internal fun CharacterListScreen(
 }
 
 @Composable
-private fun CharacterListContent(
+/*package*/ fun CharacterListContent(
     onClick: (CharacterUI) -> Unit,
     onRefresh: () -> Unit,
     isRefreshing: () -> Boolean,

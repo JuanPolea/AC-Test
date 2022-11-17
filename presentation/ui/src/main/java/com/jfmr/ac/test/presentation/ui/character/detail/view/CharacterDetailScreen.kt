@@ -54,6 +54,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -131,9 +133,12 @@ internal fun CharacterDetailScreen(
             ErrorScreen(messageResource = R.string.character_detail_not_found) { action() }
         else -> with(characterDetail().character) {
             val lazyListState = rememberLazyListState()
-            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
+            val description = stringResource(id = R.string.detail_list)
+            Box(contentAlignment = Alignment.Center) {
                 LazyColumn(
-                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics { contentDescription = description },
                     state = lazyListState,
                 ) {
                     item {
@@ -322,7 +327,10 @@ private fun DetailRowContent(nameResource: Int, value: () -> String) {
 internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
     val density = LocalDensity.current
     val state = rememberLazyListState()
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceAround) {
+    val description = stringResource(id = R.string.episodes)
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .semantics { contentDescription = description }, verticalArrangement = Arrangement.SpaceAround) {
         AnimatedVisibility(visible = episodes().isNotEmpty(),
             enter = slideInHorizontally(
                 initialOffsetX = { with(density) { 10.dp.roundToPx() } },
