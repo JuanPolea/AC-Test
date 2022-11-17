@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -26,5 +28,5 @@ dependencies {
     api libs.paging.room
     api libs.paging.common
     implementation libs.kotlin.serialization
-
+    implementation libs.firebase.crashlitycs
 }

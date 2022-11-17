@@ -5,16 +5,11 @@ import com.jfmr.ac.test.tests.episodes.EpisodeUtils.expectedStringEpisodes
 import com.jfmr.ac.test.utils.LocalUtils.expectedLocalEpisodes
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.BeforeTest
 
 class EpisodeConverterTest {
 
 
     private val episodeConverter = EpisodeConverter()
-
-    @BeforeTest
-    fun setUp() {
-    }
 
     @Test
     fun jsonToLocalEpisode() {

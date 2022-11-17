@@ -16,6 +16,6 @@ object LocalUtils {
 
     val expectedLocalEpisode = TestUtils.getObjectFromJson(EPISODE, LocalEpisode::class.java) as LocalEpisode
 
-    val expectedLocalEpisodes = TestUtils.getObjectFromJson(EPISODES, Array<LocalEpisode>::class.java) as Array<LocalEpisode>
+    val expectedLocalEpisodes: Array<LocalEpisode> = TestUtils.getObjectFromJson(EPISODES, Array<LocalEpisode>::class.java) as Array<LocalEpisode>
 
 }
