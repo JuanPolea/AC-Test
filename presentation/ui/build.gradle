@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'com.google.dagger.hilt.android'
 
 }
 
@@ -27,5 +28,8 @@ dependencies {
     kapt libs.bundles.hiltkapt
 
     implementation libs.paging.compose
-    implementation "com.google.accompanist:accompanist-swiperefresh:0.27.0"
+    implementation libs.accompanist.swiperefresh
+    androidTestImplementation libs.bundles.compose.instrumentationTest
+    androidTestImplementation libs.test.kotlin
+    debugImplementation libs.test.compose.manifest
 }

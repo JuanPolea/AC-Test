@@ -26,9 +26,9 @@ dependencies {
     implementation libs.test.junit
     implementation libs.mockk.main
     implementation libs.google.gson
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    implementation libs.kotlin.coroutines
     androidTestImplementation libs.test.junit
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    androidTestImplementation libs.kotlin.coroutines
 
     implementation libs.bundles.retrofit2
 

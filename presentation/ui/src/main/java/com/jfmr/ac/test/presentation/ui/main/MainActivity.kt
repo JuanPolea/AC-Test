@@ -1,9 +1,8 @@
-package com.jfmr.ac.test.app
+package com.jfmr.ac.test.presentation.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.jfmr.ac.test.presentation.ui.main.RickAndMortyApp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
