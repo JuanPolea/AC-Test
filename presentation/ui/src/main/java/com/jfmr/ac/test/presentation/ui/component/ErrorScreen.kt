@@ -73,7 +73,7 @@ private fun ErrorScreenPortrait(messageResource: Int, isPortrait: Boolean = true
                 onClick = { retry() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.character_list_padding))) {
+                    .padding(dimensionResource(id = R.dimen.size_small))) {
                 Text(
                     text = stringResource(id = R.string.retry),
                     style = MaterialTheme.typography.titleMedium

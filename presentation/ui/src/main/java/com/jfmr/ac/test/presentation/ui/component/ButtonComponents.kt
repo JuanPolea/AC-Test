@@ -4,7 +4,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -65,8 +64,7 @@ fun FavoriteButton(
             },
             modifier = modifier
                 .scale(scale = scale.value)
-                .size(size = dimensionResource(id = R.dimen.favorite_size))
-                .padding(dimensionResource(id = R.dimen.character_list_padding)),
+                .padding(dimensionResource(id = R.dimen.size_small)),
             interactionSource = remember {
                 MutableInteractionSource()
             }

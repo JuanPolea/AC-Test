@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="adaptative_size">150dp</dimen>
-    <dimen name="character_list_padding">4dp</dimen>
-    <dimen name="spacer_bottom">8dp</dimen>
-    <dimen name="text">8dp</dimen>
-    <dimen name="character_detail_padding">16dp</dimen>
-    <dimen name="row_padding">8dp</dimen>
-    <dimen name="corner_shape">12dp</dimen>
-    <dimen name="favorite_size">42dp</dimen>
-    <dimen name="corner_shape_small">4dp</dimen>
-    <dimen name="card_elevation">8dp</dimen>
-    <dimen name="border_stroke">4dp</dimen>
+
+    <dimen name="size_small">4dp</dimen>
+    <dimen name="size_small_medium">8dp</dimen>
+    <dimen name="size_medium">12dp</dimen>
+    <dimen name="size_medium_high">16dp</dimen>
+    <dimen name="size_high">24dp</dimen>
 </resources>

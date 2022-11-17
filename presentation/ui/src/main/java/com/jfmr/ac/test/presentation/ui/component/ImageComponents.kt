@@ -24,8 +24,8 @@ internal fun ImageFromUrlFullWidth(url: () -> String) {
         Modifier
             .fillMaxWidth()
             .shadow(
-                elevation = dimensionResource(id = R.dimen.card_elevation),
-                shape = CutCornerShape(dimensionResource(id = R.dimen.corner_shape)),
+                elevation = dimensionResource(id = R.dimen.size_small_medium),
+                shape = CutCornerShape(dimensionResource(id = R.dimen.size_small)),
                 spotColor = MaterialTheme.colorScheme.primary
             )
     )
@@ -33,13 +33,13 @@ internal fun ImageFromUrlFullWidth(url: () -> String) {
 
 @Composable
 internal fun ImageFromUrlLandScape(url: () -> String) {
-    val size = dimensionResource(id = R.dimen.corner_shape)
+    val size = dimensionResource(id = R.dimen.size_small)
     ImageFromUrl(
         url = url,
         modifier = Modifier
             .aspectRatio(16f / 9f)
             .shadow(
-                elevation = dimensionResource(id = R.dimen.card_elevation),
+                elevation = dimensionResource(id = R.dimen.size_small_medium),
                 shape = CutCornerShape(size),
                 spotColor = MaterialTheme.colorScheme.primary
             )
