@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "air_date": "December 2, 2013",
+    "characters": [
+      "https://rickandmortyapi.com/api/character/1",
+      "https://rickandmortyapi.com/api/character/2"
+    ],
+    "created": "2017-11-10T12:56:33.798Z",
+    "name": "Pilot",
+    "episode": "S01E01",
+    "url": "https://rickandmortyapi.com/api/episode/1"
+  },
+  {
+    "id": 2,
+    "air_date": "December 9, 2013",
+    "characters": [
+      "https://rickandmortyapi.com/api/character/1",
+      "https://rickandmortyapi.com/api/character/2"
+    ],
+    "created": "2017-11-10T12:56:33.916Z",
+    "name": "Lawnmower Dog",
+    "episode": "S01E02",
+    "url": "https://rickandmortyapi.com/api/episode/2"
+  }
+]
+

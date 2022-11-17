@@ -26,4 +26,5 @@ dependencies {
     kapt libs.arrow.kapt
 
     testImplementation libs.test.coroutines
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 }

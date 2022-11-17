@@ -3,9 +3,9 @@ package com.jfmr.ac.test.data.remote.episode
 import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
-import com.jfmr.ac.test.tests.TestUtils
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR
 import com.jfmr.ac.test.tests.data.Network.getResponseError
+import com.jfmr.ac.test.tests.episodes.EpisodeUtils
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -36,8 +36,7 @@ class RemoteEpisodesDataSourceImplTest {
 
     @Test
     fun retrieveEpisodes_Success_ListEpisodeResponse() = runTest {
-        val episodes =
-            TestUtils.getObjectFromJson("episodes.json", Array<EpisodeResponse>::class.java) as Array<EpisodeResponse>
+        val episodes = EpisodeUtils.episodesResponse
 
         coEvery {
             rickAndMortyApiService.episodes(any())

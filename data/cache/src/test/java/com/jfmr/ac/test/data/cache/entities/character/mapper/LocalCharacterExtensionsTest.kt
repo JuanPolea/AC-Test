@@ -8,22 +8,12 @@ import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExten
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.character.Location
 import com.jfmr.ac.test.domain.model.character.Origin
-import com.jfmr.ac.test.tests.TestUtils
-import org.junit.Before
+import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
+import com.jfmr.ac.test.utils.LocalUtils.expectedLocalCharacter
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class LocalCharacterExtensionsTest {
-
-    private lateinit var expectedLocalCharacter: LocalCharacter
-    private lateinit var expectedCharacter: Character
-
-
-    @Before
-    fun setUp() {
-        expectedLocalCharacter = TestUtils.getObjectFromJson("character.json", LocalCharacter::class.java) as LocalCharacter
-        expectedCharacter = TestUtils.getObjectFromJson("character.json", Character::class.java) as Character
-    }
 
     @Test
     fun localCharacter_toDomain_Character() {

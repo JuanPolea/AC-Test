@@ -6,13 +6,14 @@ import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
-import com.jfmr.ac.test.tests.TestUtils
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
+import com.jfmr.ac.test.tests.episodes.EpisodeUtils.expectedEpisodeList
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -24,15 +25,10 @@ import kotlin.test.assertEquals
 class GetEpisodesInteractorTest {
     private val episodeRepository: EpisodeRepository = mockk()
     private val getEpisodesUseCase = GetEpisodesInteractor(episodeRepository)
-    private lateinit var expectedEpisodes: Array<Episode>
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-
-        expectedEpisodes =
-            TestUtils.getObjectFromJson("episodes.json", Array<Episode>::class.java) as Array<Episode>
-
     }
 
     @After
@@ -44,8 +40,7 @@ class GetEpisodesInteractorTest {
     operator fun invoke() = runTest {
         coEvery {
             episodeRepository.episodes(expectedCharacter.episode)
-        } returns expectedEpisodes.toList().right()
-
+        } returns flowOf(expectedEpisodeList.toList().right())
         getEpisodesUseCase.invoke(
             episodesList = expectedCharacter.episode,
             success = ::success,
@@ -57,7 +52,7 @@ class GetEpisodesInteractorTest {
     fun invoke_Error() = runTest {
         coEvery {
             episodeRepository.episodes(expectedCharacter.episode)
-        } returns RemoteError.Connectivity.left()
+        } returns flowOf(RemoteError.Connectivity.left())
 
         getEpisodesUseCase.invoke(
             episodesList = expectedCharacter.episode,
@@ -68,7 +63,7 @@ class GetEpisodesInteractorTest {
 
     private fun success(episode: List<Episode>?) {
         episode?.map {
-            assertContains(expectedEpisodes.toList(), it)
+            assertContains(expectedEpisodeList.toList(), it)
         }
     }
 

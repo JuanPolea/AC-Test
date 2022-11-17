@@ -1,5 +1,6 @@
 package com.jfmr.ac.test.presentation.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +28,26 @@ fun ErrorScreen(
     messageResource: Int,
     retry: () -> Unit,
 ) {
+    val configuration = LocalConfiguration.current
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            ErrorScreenPortrait(
+                messageResource = messageResource,
+                isPortrait = false,
+                retry = retry
+            )
+        }
+        else -> {
+            ErrorScreenPortrait(
+                messageResource = messageResource,
+                retry = retry
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorScreenPortrait(messageResource: Int, isPortrait: Boolean = true, retry: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -37,14 +59,16 @@ fun ErrorScreen(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
             )
-            Image(
-                painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = R.drawable.ic_pickle_rick)
-                    .error(R.drawable.ic_placeholder)
-                    .build()),
-                modifier = Modifier.fillMaxWidth(),
-                contentDescription = stringResource(id = R.string.no_internet_connection),
-                contentScale = ContentScale.FillWidth,
-            )
+            if (isPortrait) {
+                Image(
+                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = R.drawable.ic_pickle_rick)
+                        .error(R.drawable.ic_placeholder)
+                        .build()),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentDescription = stringResource(id = R.string.no_internet_connection),
+                    contentScale = ContentScale.FillWidth,
+                )
+            }
             Button(
                 onClick = { retry() },
                 modifier = Modifier

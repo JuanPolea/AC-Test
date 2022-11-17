@@ -17,6 +17,7 @@ android {
 
 dependencies {
     implementation(project("path": ":domain:usecase"))
+    implementation(project("path": ":test"))
 
     implementation libs.bundles.compose
 
