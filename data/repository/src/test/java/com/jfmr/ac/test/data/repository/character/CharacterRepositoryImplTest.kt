@@ -6,7 +6,6 @@ import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
 import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExtensions.toDomain
 import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
-import com.jfmr.ac.test.data.repository.utils.LocalUtils
 import com.jfmr.ac.test.data.repository.utils.LocalUtils.expectedLocalCharacter
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
@@ -99,10 +98,10 @@ class CharacterRepositoryImplTest {
 
         coEvery {
             localCharacterDataSource.getCharacterById(any())
-        } returns LocalUtils.expectedLocalCharacter
+        } returns expectedLocalCharacter
 
         coEvery {
-            localCharacterDataSource.updateCharacter(LocalUtils.expectedLocalCharacter)
+            localCharacterDataSource.updateCharacter(expectedLocalCharacter)
         } returns 1
 
         val actual = characterRepository.getCharacterById(1).first()
