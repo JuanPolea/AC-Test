@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:api"))
 
-    implementation 'androidx.paging:paging-common-ktx:3.1.1'
+    implementation libs.paging.common
     kapt libs.arrow.kapt
     implementation libs.bundles.arrow
 
@@ -27,10 +27,11 @@ dependencies {
     implementation libs.mockk.main
     implementation libs.google.gson
     implementation libs.kotlin.coroutines
+    implementation libs.test.kotlin.coroutines
+
     androidTestImplementation libs.test.junit
     androidTestImplementation libs.kotlin.coroutines
 
     implementation libs.bundles.retrofit2
-
-
+    implementation libs.bundles.test.mockk
 }
