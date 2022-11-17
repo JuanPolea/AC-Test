@@ -30,13 +30,10 @@ class FavoriteIconTest {
     var composeTestRule = createComposeRule()
     private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private var _isFavorite = MutableStateFlow(false)
-        private set
 
     @Before
     fun setUp() {
         composeTestRule.setContent {
-
-
             ACTestTheme {
                 val favoriteState by _isFavorite.collectAsState()
                 FavoriteButton(
