@@ -1,7 +1,7 @@
 # AC-Test
 Simple Rick And Morty APP
 
-##General Architecture
+## General Architecture
 ![general_architecture](https://user-images.githubusercontent.com/9370932/202516192-487acc19-0532-4eda-9507-0b51680cf222.png)
 
 
