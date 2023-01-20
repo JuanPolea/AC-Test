@@ -103,7 +103,9 @@ class CharacterDetailScreenKtTest {
                         characterDetail = { character },
                         action = {
                             context.toast("Retry clicked")
-                        })
+                        },
+                        padding = it
+                    )
                 }
             }
         }

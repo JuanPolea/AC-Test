@@ -6,6 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -20,6 +21,7 @@ android {
 dependencies {
     api(project(path: ":domain:model"))
     implementation(project(path: ":test"))
+
     kapt libs.room.compiler
     implementation libs.google.gson
     implementation libs.bundles.hilt

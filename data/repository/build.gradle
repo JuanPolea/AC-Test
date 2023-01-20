@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -14,6 +15,7 @@ kapt {
 dependencies {
     api(project(path: ":data:paging"))
     api(project(path: ":domain:repository"))
+    implementation libs.android.ktx
     testImplementation(project(path: ":test"))
 
     implementation libs.bundles.hilt

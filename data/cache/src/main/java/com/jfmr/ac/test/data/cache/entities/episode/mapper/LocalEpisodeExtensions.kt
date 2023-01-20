@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.data.cache.entities.episode.mapper
 
-import arrow.core.extensions.list.monad.map
 import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 import com.jfmr.ac.test.domain.model.episode.Episode
 
