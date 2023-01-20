@@ -2,7 +2,6 @@ package com.jfmr.ac.test.data.repository.episode
 
 import android.net.Uri
 import android.util.Log
-import arrow.core.extensions.list.monad.map
 import arrow.core.left
 import arrow.core.right
 import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse

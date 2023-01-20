@@ -18,31 +18,32 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            library('material', 'com.google.android.material:material:1.6.1')
+            library('material', 'com.google.android.material:material:1.7.0')
+            library('android-ktx', 'androidx.core:core-ktx:1.9.0')
 
-
-            version('compose', '1.2.1')
+            version('compose', '1.3.3')
+            version('fundation', '1.3.1')
             library('compose-ui', 'androidx.compose.ui', 'ui').versionRef('compose')
             library('compose-tooling-preview', 'androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
-            library('compose-navigation', 'androidx.navigation:navigation-compose:2.5.2')
+            library('compose-navigation', 'androidx.navigation:navigation-compose:2.5.3')
             library('compose-coil', 'io.coil-kt:coil-compose:2.2.2')
-            library('compose-fundation', 'androidx.compose.foundation', 'foundation').versionRef('compose')
-            library('material-compose', 'androidx.compose.material3:material3:1.0.0-alpha09')
+            library('compose-fundation', 'androidx.compose.foundation', 'foundation').versionRef('fundation')
+            library('material-compose', 'androidx.compose.material3:material3:1.0.1')
             bundle('compose', ['compose-ui', 'material-compose', 'compose-tooling-preview', 'compose-navigation',
                                'compose-coil', 'compose-fundation'])
 
 
-            library('hilt-android', 'com.google.dagger:hilt-android:2.44')
-            library('hilt-compiler', 'com.google.dagger:hilt-compiler:2.44')
+            library('hilt-android', 'com.google.dagger:hilt-android:2.44.2')
+            library('hilt-compiler', 'com.google.dagger:hilt-compiler:2.44.2')
             library('hilt-compose', 'androidx.hilt:hilt-navigation-compose:1.0.0')
 
             bundle('hilt', ['hilt-android', 'hilt-compose'])
             bundle('hiltkapt', ['hilt-compiler'])
 
-            library('kotlin-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7')
-            library('kotlin-serialization', 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2')
+            library('kotlin-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4')
+            library('kotlin-serialization', 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1')
 
-            version('room', '2.4.3')
+            version('room', '2.5.0')
             library('room-runtime', 'androidx.room', 'room-runtime').versionRef('room')
             library('room-ktx', 'androidx.room', 'room-ktx').versionRef('room')
             library('room-compiler', 'androidx.room', 'room-compiler').versionRef('room')
@@ -66,13 +67,13 @@ dependencyResolutionManagement {
             version('paging', '3.1.1')
             library('paging-common', 'androidx.paging', 'paging-common-ktx').versionRef('paging')
             library('paging-runtime', 'androidx.paging', 'paging-runtime-ktx').versionRef('paging')
-            library('paging-room', 'androidx.room:room-paging:2.4.3')
+            library('paging-room', 'androidx.room:room-paging:2.5.0')
             library('paging-compose', 'androidx.paging', 'paging-compose').version('1.0.0-alpha16')
             bundle('paging', ['paging-common', 'paging-runtime'])
 
-            library('accompanist-swiperefresh', 'com.google.accompanist', 'accompanist-swiperefresh').version('0.27.0')
+            library('accompanist-swiperefresh', 'com.google.accompanist', 'accompanist-swiperefresh').version('0.28.0')
 
-            library('firebase-crashlitycs', 'com.google.firebase', 'firebase-crashlytics-ktx').version('18.3.2')
+            library('firebase-crashlitycs', 'com.google.firebase', 'firebase-crashlytics-ktx').version('18.3.3')
 
             //-- Test ------------------------------------------------------------------------------
             version('compose-test', '1.3.1')
@@ -81,11 +82,11 @@ dependencyResolutionManagement {
             library('test-compose-ui', 'androidx.compose.ui', 'ui-test-junit4').versionRef('compose-test')
             library('test-compose-tooling', 'androidx.compose.ui', 'ui-tooling').versionRef('compose-test')
             library('test-compose-manifest', 'androidx.compose.ui', 'ui-test-manifest').versionRef('compose-test')
-            library('mockk-main', 'io.mockk:mockk:1.12.2')
-            library('test-kotlin-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1')
-            library('test-kotlin', 'org.jetbrains.kotlin:kotlin-test:1.6.10')
-            library('test-junit-ktx', 'androidx.test.ext:junit-ktx:1.1.4')
-            library('test-mockk', "io.mockk:mockk:1.12.2")
+            library('mockk-main', 'io.mockk:mockk:1.13.3')
+            library('test-kotlin-coroutines', 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4')
+            library('test-kotlin', 'org.jetbrains.kotlin:kotlin-test:1.8.0')
+            library('test-junit-ktx', 'androidx.test.ext:junit-ktx:1.1.5')
+            library('test-mockk', "io.mockk:mockk:1.13.3")
 
             bundle('compose-instrumentationTest', ['test-compose-ui', 'test-compose-tooling', 'test-compose-manifest'])
         }

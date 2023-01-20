@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -12,5 +13,6 @@ android {
 dependencies {
     api(project(path: ":domain:model"))
     api(project(path: ":data:cache"))
+    implementation libs.android.ktx
 
 }
