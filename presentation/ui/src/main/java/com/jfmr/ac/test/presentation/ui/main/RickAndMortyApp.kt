@@ -3,7 +3,6 @@ package com.jfmr.ac.test.presentation.ui.main
 import android.net.ConnectivityManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -27,38 +26,42 @@ import com.jfmr.ac.test.presentation.ui.main.theme.ACTestTheme
 import com.jfmr.ac.test.presentation.ui.navigation.Navigation
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RickAndMortyApp(
     internetConnectivityViewModel: InternetConnectivityViewModel = hiltViewModel(),
 ) {
     val appState = rememberAppState()
 
-    val internetState by internetConnectivityViewModel.internetConnectivityState.collectAsState()
+    val internetState by internetConnectivityViewModel.internetConnectivityState.collectAsState(
+        initial = InternetConnectivityState.Idle
+    )
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val internetConnectionError = stringResource(id = R.string.connection_lost)
     val internetConnectionSuccess = stringResource(id = R.string.connection_established)
 
     val connectivityManager =
         LocalContext.current.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-    connectivityManager.requestNetwork(internetConnectivityViewModel.networkRequest, internetConnectivityViewModel.networkCallback)
+    connectivityManager.requestNetwork(
+        internetConnectivityViewModel.networkRequest,
+        internetConnectivityViewModel.networkCallback
+    )
 
     if (internetState is InternetConnectivityState.Disconnected) {
         ShowSnackBar(
-            snackbarHostState = snackbarHostState,
+            snackbarHostState = snackBarHostState,
             message = internetConnectionError
         )
     } else if (internetState == InternetConnectivityState.Connected) {
         ShowSnackBar(
-            snackbarHostState = snackbarHostState,
+            snackbarHostState = snackBarHostState,
             message = internetConnectionSuccess
         )
     }
     ThemeAndSurfaceWrapper {
         Scaffold(
             snackbarHost = {
-                SnackbarHost(snackbarHostState) {
+                SnackbarHost(snackBarHostState) {
                     Snackbar(
                         snackbarData = it,
                     )

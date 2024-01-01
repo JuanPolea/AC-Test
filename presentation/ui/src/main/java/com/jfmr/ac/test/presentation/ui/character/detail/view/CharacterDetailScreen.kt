@@ -42,7 +42,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailUI
@@ -75,6 +75,7 @@ import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlFullWidth
 import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlLandScape
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
+import com.theapache64.rebugger.Rebugger
 import org.jetbrains.annotations.VisibleForTesting
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
@@ -85,19 +86,30 @@ internal fun CharacterDetailScreen(
     onUpClick: () -> Unit,
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
-    val characterDetailState by detailViewModel.characterDetailState.collectAsState()
+    val characterDetailState by detailViewModel.characterDetailState.collectAsStateWithLifecycle()
     detailViewModel.getData()
+    Rebugger(
+        trackMap = mapOf(
+            "characterDetailState" to characterDetailState,
+        ),
+    )
     Scaffold(topBar = {
         TopAppBar(
             title = {
                 Text(
-                    text = stringResource(R.string.character_detail), style = MaterialTheme.typography.titleLarge
+                    text = stringResource(R.string.character_detail),
+                    style = MaterialTheme.typography.titleLarge
                 )
             },
             navigationIcon = {
                 NavigateUpIcon(onUpClick)
             },
             actions = {
+                Rebugger(
+                    trackMap = mapOf(
+                        "isFavourite" to characterDetailState.character.isFavorite
+                    )
+                )
                 FavoriteButton(
                     isFavorite = { characterDetailState.character.isFavorite },
                     action = {
@@ -112,7 +124,7 @@ internal fun CharacterDetailScreen(
                         )
                     },
                 )
-            }, colors = TopAppBarDefaults.smallTopAppBarColors(
+            }, colors = TopAppBarDefaults.topAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.primary,
                 containerColor = MaterialTheme.colorScheme.background,
             )
@@ -231,11 +243,17 @@ private fun CharacterDetailBodyContent(
     expanded: () -> Boolean,
     action: (Boolean) -> Unit,
 ) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(dimensionResource(id = R.dimen.size_medium_high))
-        .fillMaxWidth()
-        .animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)),
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.size_medium_high))
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            ),
         shape = CutCornerShape(cardRoundedCorners()),
         content = {
             Row(
@@ -243,7 +261,9 @@ private fun CharacterDetailBodyContent(
                     .fillMaxWidth()
                     .padding(
                         dimensionResource(id = R.dimen.size_small_medium),
-                    ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     modifier = Modifier

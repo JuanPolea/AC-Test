@@ -62,7 +62,6 @@ import com.jfmr.ac.test.presentation.ui.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CharacterListScreen(
     modifier: Modifier,

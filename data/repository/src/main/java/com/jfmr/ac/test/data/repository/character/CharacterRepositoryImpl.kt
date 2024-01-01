@@ -38,14 +38,17 @@ class CharacterRepositoryImpl
     override fun characters(): Flow<PagingData<Character>> =
         Pager(
             config = PagingConfig(pageSize = 10),
-            remoteMediator = RickAndMortyRemoteMediator(localCharacterDataSource, characterRemoteDataSource),
+            remoteMediator = RickAndMortyRemoteMediator(
+                localCharacterDataSource,
+                characterRemoteDataSource
+            ),
             pagingSourceFactory = { localCharacterDataSource.getCharacters() }
         ).flow
             .mapLatest { paging ->
                 paging.map { localCharacter ->
                     localCharacter.toDomain()
                 }
-            }
+            }.flowOn(coroutineDispatcher)
 
     override fun getCharacterById(id: Int) = flow {
         tryCall {

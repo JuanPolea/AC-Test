@@ -22,7 +22,7 @@ class LocalCharacterDataSourceImpl @Inject constructor(
     override suspend fun insert(character: LocalCharacter): Long =
         rickAndMortyDB.characterDao().insert(character)
 
-    override fun geLocalDB(): RickAndMortyDB = rickAndMortyDB
+    override suspend fun geLocalDB(): RickAndMortyDB = rickAndMortyDB
 
     override suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>) =
         rickAndMortyDB.remoteKeysDao().insertAll(remoteKeys)

@@ -10,17 +10,17 @@ import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 @Dao
 interface EpisodeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisodes(episodes: List<LocalEpisode>): List<Long>
+    fun insertEpisodes(episodes: List<LocalEpisode>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(episode: LocalEpisode): Long
+    fun insert(episode: LocalEpisode): Long
 
     @Query("SELECT * FROM episodes WHERE episodes.id IN (:episodeIds)")
-    suspend fun episodes(episodeIds: List<Int>): List<LocalEpisode>?
+    fun episodes(episodeIds: List<Int>): List<LocalEpisode>?
 
     @Query("DELETE FROM episodes")
-    suspend fun deleteDomainEpisode()
+    fun deleteDomainEpisode()
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateEpisode(episode: LocalEpisode): Int
+    fun updateEpisode(episode: LocalEpisode): Int
 }
