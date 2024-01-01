@@ -9,9 +9,6 @@ plugins {
 android {
     namespace = "com.jfmr.ac.test.data.remote"
 }
-kapt {
-    correctErrorTypes true
-}
 dependencies {
     api(project(path: ":data:api"))
     api(project(path: ":domain:model"))
