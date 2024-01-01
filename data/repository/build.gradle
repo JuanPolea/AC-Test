@@ -9,9 +9,7 @@ plugins {
 android {
     namespace = "com.jfmr.ac.test.data.repository"
 }
-kapt {
-    correctErrorTypes true
-}
+
 dependencies {
     api(project(path: ":data:paging"))
     api(project(path: ":domain:repository"))

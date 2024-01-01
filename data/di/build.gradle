@@ -11,9 +11,6 @@ android {
         buildConfigField "String", "BASE_URL", "\"https://rickandmortyapi.com/api/\""
     }
 }
-kapt {
-    correctErrorTypes true
-}
 dependencies {
     implementation(project(path: ":data:remote"))
     implementation(project(path: ":data:repository"))
