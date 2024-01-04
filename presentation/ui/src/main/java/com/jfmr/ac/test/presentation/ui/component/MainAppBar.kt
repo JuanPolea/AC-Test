@@ -16,7 +16,7 @@ import com.jfmr.ac.test.presentation.ui.R
 fun MainAppBar() {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             scrolledContainerColor = MaterialTheme.colorScheme.background
         )

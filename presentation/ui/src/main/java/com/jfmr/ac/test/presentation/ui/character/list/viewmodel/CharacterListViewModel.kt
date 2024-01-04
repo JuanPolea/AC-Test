@@ -15,8 +15,10 @@ import com.jfmr.ac.test.usecase.di.GetCharacters
 import com.jfmr.ac.test.usecase.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,17 +28,16 @@ class CharacterListViewModel @Inject constructor(
     @UpdateCharacter private val updateCharacterUseCase: UpdateCharacterUseCase,
 ) : ViewModel() {
 
-    var pager: Flow<PagingData<CharacterUI>> =
+    internal val pager: Flow<PagingData<CharacterUI>> =
         charactersUseCase
             .invoke()
             .cachedIn(viewModelScope)
             .map { pagingData ->
                 pagingData
                     .map { character -> character.toUI() }
-            }
-        private set
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(500), PagingData.empty())
 
-    fun onEvent(characterListEvent: CharacterListEvent) {
+    internal fun onEvent(characterListEvent: CharacterListEvent) {
         when (characterListEvent) {
             is CharacterListEvent.AddToFavorite ->
                 viewModelScope.launch {

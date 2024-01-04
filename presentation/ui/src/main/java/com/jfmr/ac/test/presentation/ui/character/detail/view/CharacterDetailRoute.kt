@@ -49,7 +49,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
@@ -75,24 +74,48 @@ import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlFullWidth
 import com.jfmr.ac.test.presentation.ui.component.ImageFromUrlLandScape
 import com.jfmr.ac.test.presentation.ui.component.NavigateUpIcon
 import com.jfmr.ac.test.presentation.ui.episode.list.model.EpisodeUI
-import com.theapache64.rebugger.Rebugger
 import org.jetbrains.annotations.VisibleForTesting
 
 const val EXPAND_ANIMATION_DURATION: Int = 200
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CharacterDetailScreen(
+internal fun CharacterDetailRoute(
     onUpClick: () -> Unit,
+    modifier: Modifier = Modifier,
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
     val characterDetailState by detailViewModel.characterDetailState.collectAsStateWithLifecycle()
-    detailViewModel.getData()
-    Rebugger(
-        trackMap = mapOf(
-            "characterDetailState" to characterDetailState,
-        ),
+    val detailState by detailViewModel.detailViewModelState.collectAsStateWithLifecycle()
+    if (detailState == null)
+        detailViewModel.onEvent(CharacterDetailEvent.OnRetrieveCharacterDetail)
+    CharacterDetailScreen(
+        onUpClick = onUpClick,
+        characterDetailState = characterDetailState,
+        onUpdateCharacter = {
+            detailViewModel.onEvent(
+                CharacterDetailEvent.UpdateCharacter(
+                    characterDetailState.copy(
+                        character = characterDetailState.character.copy(
+                            isFavorite = it
+                        )
+                    )
+                )
+            )
+        },
+        onRetrieveCharacterDetail = { detailViewModel.onEvent(CharacterDetailEvent.OnRetrieveCharacterDetail) },
+        modifier = modifier
     )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun CharacterDetailScreen(
+    onUpClick: () -> Unit,
+    characterDetailState: CharacterDetailUI,
+    onUpdateCharacter: (Boolean) -> Unit,
+    onRetrieveCharacterDetail: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -105,66 +128,50 @@ internal fun CharacterDetailScreen(
                 NavigateUpIcon(onUpClick)
             },
             actions = {
-                Rebugger(
-                    trackMap = mapOf(
-                        "isFavourite" to characterDetailState.character.isFavorite
-                    )
-                )
                 FavoriteButton(
                     isFavorite = { characterDetailState.character.isFavorite },
-                    action = {
-                        detailViewModel.onEvent(
-                            CharacterDetailEvent.UpdateCharacter(
-                                characterDetailState.copy(
-                                    character = characterDetailState.character.copy(
-                                        isFavorite = it
-                                    )
-                                )
-                            )
-                        )
-                    },
+                    action = { onUpdateCharacter(it) },
                 )
-            }, colors = TopAppBarDefaults.topAppBarColors(
+            }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.primary,
                 containerColor = MaterialTheme.colorScheme.background,
             )
         )
     }) { padding ->
-        CharacterDetailContent(characterDetail = { characterDetailState }, action = { detailViewModel.getData() }, padding
+        Box(modifier = modifier.padding(padding))
+        CharacterDetailContent(
+            characterDetail = characterDetailState,
+            action = { onRetrieveCharacterDetail() },
+            padding = padding,
+            modifier = modifier,
         )
     }
-
 }
 
 @VisibleForTesting
 @Composable
-/* package*/ fun CharacterDetailContent(
-    characterDetail: () -> CharacterDetailUI,
+        /* package*/ fun CharacterDetailContent(
+    characterDetail: CharacterDetailUI,
     action: () -> Unit,
     padding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     when {
-        characterDetail().isLoading == true -> CircularProgressBar(stringResource(id = R.string.retrieving_characters))
-        characterDetail().error != null -> ErrorScreen(messageResource = R.string.character_detail_not_found) { action() }
-        else -> with(characterDetail().character) {
+        characterDetail.isLoading == true -> CircularProgressBar(stringResource(id = R.string.retrieving_characters))
+        characterDetail.error != null -> ErrorScreen(messageResource = R.string.character_detail_not_found) { action() }
+        else -> with(characterDetail.character) {
             val lazyListState = rememberLazyListState()
             val description = stringResource(id = R.string.detail_list)
-            Box(contentAlignment = Alignment.Center) {
+            Box(contentAlignment = Alignment.Center, modifier = modifier.padding(padding)) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .semantics { contentDescription = description },
                     state = lazyListState,
                 ) {
-                    item {
-                        DetailHeader { this@with }
-                    }
-                    item {
-                        CharacterDetailBody(character = { this@with })
-                    }
-                    item {
-                        CharacterDetailFooter { characterDetail().episodes }
-                    }
+                    item { CharacterImageContent(this@with.image) }
+                    item { CharacterContent(character = this@with) }
+                    item { EpisodesContent(characterDetail.episodes) }
                 }
             }
         }
@@ -172,8 +179,8 @@ internal fun CharacterDetailScreen(
 }
 
 @Composable
-private fun DetailHeader(
-    character: () -> CharacterUI,
+private fun CharacterImageContent(
+    image: String,
 ) {
     if (LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE) {
         Box(
@@ -187,7 +194,7 @@ private fun DetailHeader(
                 )
         ) {
             ImageFromUrlFullWidth(
-                url = { character().image },
+                url = { image },
             )
         }
     }
@@ -196,8 +203,8 @@ private fun DetailHeader(
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
-private fun CharacterDetailBody(
-    character: () -> CharacterUI,
+private fun CharacterContent(
+    character: CharacterUI,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val transitionState = remember {
@@ -205,7 +212,10 @@ private fun CharacterDetailBody(
             targetState = !expanded
         }
     }
-    val transition = updateTransition(targetState = transitionState, label = stringResource(R.string.transitionLabel))
+    val transition = updateTransition(
+        targetState = transitionState,
+        label = stringResource(R.string.transitionLabel)
+    )
 
     val cardBgColor by transition.animateColor({
         tween(durationMillis = EXPAND_ANIMATION_DURATION)
@@ -228,21 +238,6 @@ private fun CharacterDetailBody(
             dimensionResource(id = R.dimen.size_medium)
         }
     }
-    CharacterDetailBodyContent(cardRoundedCorners = { cardRoundedCorners },
-        cardBgColor = { cardBgColor },
-        character = { character() },
-        expanded = { expanded },
-        action = { expanded = it })
-}
-
-@Composable
-private fun CharacterDetailBodyContent(
-    cardRoundedCorners: () -> Dp,
-    cardBgColor: () -> Color,
-    character: () -> CharacterUI,
-    expanded: () -> Boolean,
-    action: (Boolean) -> Unit,
-) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -254,13 +249,20 @@ private fun CharacterDetailBodyContent(
                     stiffness = Spring.StiffnessLow
                 )
             ),
-        shape = CutCornerShape(cardRoundedCorners()),
+        shape = CutCornerShape(cardRoundedCorners),
         content = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         dimensionResource(id = R.dimen.size_small_medium),
+                    )
+                    .fillMaxWidth()
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
                     ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -271,24 +273,34 @@ private fun CharacterDetailBodyContent(
                         .padding(
                             dimensionResource(id = R.dimen.size_small_medium),
                         ),
-                    text = character().name,
+                    text = character.name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 ExpandButton(expanded = {
-                    expanded()
+                    expanded
                 }, action = {
-                    action(it)
+                    expanded = it
                 })
             }
-            if (expanded()) {
+            if (expanded) {
                 Divider()
             }
-            ExpandableContent(visible = expanded()) {
-                CharacterDetailBodyCard(character())
+            ExpandableContent(visible = expanded) {
+                CharacterDetailBodyCard(character)
             }
         })
+}
+
+@Composable
+private fun CharacterDetailBodyContent(
+    cardRoundedCorners: () -> Dp,
+    character: CharacterUI,
+    expanded: () -> Boolean,
+    action: (Boolean) -> Unit,
+) {
+
 }
 
 @Composable
@@ -298,7 +310,8 @@ private fun CharacterDetailBodyCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.size_medium_high)), horizontalArrangement = Arrangement.SpaceBetween
+            .padding(dimensionResource(id = R.dimen.size_medium_high)),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CharacterDescriptionContent(character, Modifier.fillMaxWidth(0.5f))
         ImageFromUrlLandScape { character.image }
@@ -347,21 +360,24 @@ private fun DetailRowContent(nameResource: Int, value: () -> String) {
 
 
 @Composable
-internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
+internal fun EpisodesContent(episodes: List<EpisodeUI>) {
     val density = LocalDensity.current
     val state = rememberLazyListState()
     val description = stringResource(id = R.string.episodes)
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = description }, verticalArrangement = Arrangement.SpaceAround
+            .semantics { contentDescription = description },
+        verticalArrangement = Arrangement.SpaceAround
     ) {
         AnimatedVisibility(
-            visible = episodes().isNotEmpty(), enter = slideInHorizontally(
+            visible = episodes.isNotEmpty(),
+            enter = slideInHorizontally(
                 initialOffsetX = { with(density) { 10.dp.roundToPx() } },
             ) + expandHorizontally(
                 expandFrom = Alignment.Start,
-            ) + fadeIn(initialAlpha = 0.3f), exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()
+            ) + fadeIn(initialAlpha = 0.3f),
+            exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut()
         ) {
             Text(
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.size_medium_high)),
@@ -370,18 +386,24 @@ internal fun CharacterDetailFooter(episodes: () -> List<EpisodeUI>) {
             )
         }
         AnimatedVisibility(
-            visible = episodes().isNotEmpty(),
-            enter = slideInHorizontally(animationSpec = tween(300, easing = { OvershootInterpolator().getInterpolation(it) }),
+            visible = episodes.isNotEmpty(),
+            enter = slideInHorizontally(animationSpec = tween(
+                300,
+                easing = { OvershootInterpolator().getInterpolation(it) }),
                 initialOffsetX = { 400 }) + fadeIn(),
             exit = fadeOut()
         ) {
-            LazyRow(state = state, modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, content = {
-                itemsIndexed(items = episodes(), key = { _, item ->
-                    item.id
-                }) { _, item ->
-                    EpisodeItemContent(item)
-                }
-            })
+            LazyRow(
+                state = state,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                content = {
+                    itemsIndexed(items = episodes, key = { _, item ->
+                        item.id
+                    }) { _, item ->
+                        EpisodeItemContent(item)
+                    }
+                })
         }
     }
 }
@@ -396,10 +418,15 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
                 shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.size_medium))
             ),
         shape = CutCornerShape(topEnd = dimensionResource(id = R.dimen.size_medium)),
-        border = BorderStroke(dimensionResource(id = R.dimen.size_small), MaterialTheme.colorScheme.primary),
+        border = BorderStroke(
+            dimensionResource(id = R.dimen.size_small),
+            MaterialTheme.colorScheme.primary
+        ),
         content = {
             Text(
-                text = episode.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier
+                text = episode.name,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         top = dimensionResource(id = R.dimen.size_medium),
@@ -408,7 +435,9 @@ internal fun EpisodeItemContent(episode: EpisodeUI) {
                     )
             )
             Text(
-                text = episode.episode, style = MaterialTheme.typography.titleSmall, modifier = Modifier
+                text = episode.episode,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         top = dimensionResource(id = R.dimen.size_medium),

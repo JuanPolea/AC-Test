@@ -19,9 +19,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -99,7 +96,6 @@ internal fun CharacterListRoute(
             CharacterListContent(
                 onClick = onClick,
                 onRefresh = { lazyPagingItems.refresh() },
-                isRefreshing = lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0,
                 items = lazyPagingItems,
                 addToFavorites = {
                     characterListViewModel.onEvent(
@@ -119,7 +115,6 @@ internal fun CharacterListRoute(
         /*package*/ fun CharacterListContent(
     onClick: (CharacterUI) -> Unit,
     onRefresh: () -> Unit,
-    isRefreshing: Boolean,
     items: LazyPagingItems<CharacterUI>,
     addToFavorites: (CharacterUI) -> Unit,
     modifier: Modifier,
@@ -130,22 +125,17 @@ internal fun CharacterListRoute(
             lazyGridState.firstVisibleItemIndex > 0
         }
     }
-    val pullRefreshState =
-        rememberPullRefreshState(refreshing = isRefreshing, onRefresh = onRefresh)
-    Box(Modifier.pullRefresh(pullRefreshState)) {
-        when (items.loadState.mediator?.refresh) {
-            is LoadState.Loading -> CircularProgressBar()
-            is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
-            else -> CharacterListSuccessContent(
-                modifier = modifier,
-                state = { lazyGridState },
-                items = items,
-                onClick = onClick,
-                showScrollToTopButton = { showScrollToTopButton },
-                addToFavorites = addToFavorites
-            )
-        }
-        PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+    when (items.loadState.mediator?.refresh) {
+        is LoadState.Loading -> CircularProgressBar()
+        is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
+        else -> CharacterListSuccessContent(
+            modifier = modifier,
+            state = { lazyGridState },
+            items = items,
+            onClick = onClick,
+            showScrollToTopButton = { showScrollToTopButton },
+            addToFavorites = addToFavorites
+        )
     }
 
     if (

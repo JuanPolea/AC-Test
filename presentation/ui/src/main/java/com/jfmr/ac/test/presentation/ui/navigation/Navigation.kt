@@ -8,8 +8,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jfmr.ac.test.presentation.ui.character.detail.view.CharacterDetailScreen
-import com.jfmr.ac.test.presentation.ui.character.list.view.CharacterListScreen
+import com.jfmr.ac.test.presentation.ui.character.detail.view.CharacterDetailRoute
+import com.jfmr.ac.test.presentation.ui.character.list.view.CharacterListRoute
 import com.jfmr.ac.test.presentation.ui.main.AppState
 
 @Composable
@@ -46,7 +46,7 @@ private fun NavGraphBuilder.charactersNav(
     ) {
 
         composable(NavCommand.ContentType(Feature.CHARACTERS)) {
-            CharacterListScreen(modifier = Modifier, onClick = { characterUI ->
+            CharacterListRoute(modifier = Modifier, onClick = { characterUI ->
                 appState
                     .navController
                     .navigate(
@@ -58,7 +58,7 @@ private fun NavGraphBuilder.charactersNav(
             )
         }
         composable(NavCommand.ContentDetail(Feature.CHARACTERS)) {
-            CharacterDetailScreen(onUpClick = { appState.navController.popBackStack() })
+            CharacterDetailRoute(onUpClick = { appState.navController.popBackStack() })
         }
     }
 }

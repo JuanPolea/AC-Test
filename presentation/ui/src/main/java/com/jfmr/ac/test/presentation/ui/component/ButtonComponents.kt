@@ -24,7 +24,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.main.theme.NoRippleTheme
-import com.theapache64.rebugger.Rebugger
 import kotlinx.coroutines.launch
 
 
@@ -49,13 +48,6 @@ fun FavoriteButton(
     val scale = remember {
         Animatable(1f)
     }
-    Rebugger(
-        trackMap = mapOf(
-            "isFavotir" to isFavorite(),
-            "action" to action,
-            "scale" to scale
-        )
-    )
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         IconButton(
             onClick = {

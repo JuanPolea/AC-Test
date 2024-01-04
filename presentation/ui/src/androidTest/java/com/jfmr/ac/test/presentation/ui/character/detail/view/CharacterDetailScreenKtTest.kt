@@ -1,6 +1,8 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.view
 
 import android.content.Context
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -9,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -99,13 +102,16 @@ class CharacterDetailScreenKtTest {
                         ),
                     )
                 }) {
-                    CharacterDetailContent(
-                        characterDetail = { character },
-                        action = {
-                            context.toast("Retry clicked")
-                        },
-                        padding = it
-                    )
+                    Box(modifier = Modifier.padding(it))
+                    {
+                        CharacterDetailContent(
+                            characterDetail = character,
+                            action = {
+                                context.toast("Retry clicked")
+                            },
+                            padding = it
+                        )
+                    }
                 }
             }
         }
@@ -131,7 +137,10 @@ class CharacterDetailScreenKtTest {
                 .assertDoesNotExist()
 
             chatacterDetailState.update {
-                characterDetailUI.copy(isLoading = false, error = CharacterDetailError.CharacterNotFound)
+                characterDetailUI.copy(
+                    isLoading = false,
+                    error = CharacterDetailError.CharacterNotFound
+                )
             }
             onNodeWithContentDescription(context.getString(R.string.image_detail_description))
                 .assertDoesNotExist()

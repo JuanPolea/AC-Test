@@ -1,9 +1,12 @@
 package com.jfmr.ac.test.presentation.ui.character.list.model
 
+import android.os.Parcelable
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.character.Location
 import com.jfmr.ac.test.domain.model.character.Origin
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class CharacterUI(
     val id: Int = -1,
     val image: String = "",
@@ -18,17 +21,19 @@ data class CharacterUI(
     val url: String = "",
     val status: String = "",
     val isFavorite: Boolean = false,
-)
+) : Parcelable
 
+@Parcelize
 data class OriginUI(
     val name: String = "",
     val url: String = "",
-)
+) : Parcelable
 
+@Parcelize
 data class LocationUI(
     val name: String = "",
     val url: String = "",
-)
+) : Parcelable
 
 sealed class CharacterListEvent {
     data class AddToFavorite(val character: CharacterUI) : CharacterListEvent()
