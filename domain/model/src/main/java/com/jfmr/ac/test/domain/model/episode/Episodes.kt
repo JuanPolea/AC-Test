@@ -1,15 +1,12 @@
 package com.jfmr.ac.test.domain.model.episode
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 data class Episodes(
     val results: List<Episode> = emptyList(),
 )
 
 @kotlinx.serialization.Serializable
-@Parcelize
 data class Episode(
     val id: Int,
     @SerializedName("air_date")
@@ -19,4 +16,4 @@ data class Episode(
     val name: String = "",
     val episode: String = "",
     val url: String = "",
-) : Parcelable
+)

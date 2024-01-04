@@ -1,17 +1,14 @@
 package com.jfmr.ac.test.data.api.rickandmorty.episode.entity
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
-@Parcelize
+
 @Serializable
 data class EpisodesResponse(
     val results: List<EpisodeResponse?>? = null,
-) : Parcelable
+)
 
-@Parcelize
 @Serializable
 data class EpisodeResponse(
     @field:SerializedName("id")
@@ -28,4 +25,4 @@ data class EpisodeResponse(
     val episode: String? = null,
     @field:SerializedName("url")
     val url: String? = null,
-) : Parcelable
+) 

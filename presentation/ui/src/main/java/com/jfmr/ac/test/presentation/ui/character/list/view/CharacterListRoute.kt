@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.presentation.ui.character.list.view
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -62,22 +61,20 @@ import com.jfmr.ac.test.presentation.ui.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CharacterListRoute(
-    modifier: Modifier,
-    characterListViewModel: CharacterListViewModel = hiltViewModel(),
     onClick: (CharacterUI) -> Unit,
+    modifier: Modifier = Modifier,
+    characterListViewModel: CharacterListViewModel = hiltViewModel(),
 ) {
-
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyPagingItems: LazyPagingItems<CharacterUI> =
         characterListViewModel.pager.collectAsLazyPagingItems()
 
     Scaffold(topBar = {
         MainAppBar()
     }, snackbarHost = {
-        SnackbarHost(snackbarHostState) {
+        SnackbarHost(snackBarHostState) {
             Snackbar(
                 snackbarData = it,
             )
@@ -89,20 +86,12 @@ internal fun CharacterListRoute(
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            Log.e(
-                "TAG",
-                "CharacterListRoute: ${lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0}",
-            )
             CharacterListContent(
                 onClick = onClick,
                 onRefresh = { lazyPagingItems.refresh() },
                 items = lazyPagingItems,
                 addToFavorites = {
-                    characterListViewModel.onEvent(
-                        CharacterListEvent.AddToFavorite(
-                            it
-                        )
-                    )
+                    characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it))
                 },
                 modifier = modifier,
             )

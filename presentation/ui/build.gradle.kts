@@ -30,7 +30,7 @@ dependencies {
     implementation(project(":test"))
     implementation("androidx.metrics:metrics-performance:1.0.0-alpha04")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.21"))
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")

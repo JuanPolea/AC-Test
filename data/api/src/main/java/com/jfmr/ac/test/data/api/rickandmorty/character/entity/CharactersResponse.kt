@@ -1,21 +1,18 @@
 package com.jfmr.ac.test.data.api.rickandmorty.character.entity
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-@Parcelize
 @Serializable
 data class CharactersResponse(
     @field:SerializedName("results")
     val results: List<CharacterResponse?>? = null,
     @field:SerializedName("info")
     val info: CharacterInfo? = null,
-) : Parcelable
+)
 
-@Parcelize
+
 @Serializable
 data class CharacterInfo(
     @field:SerializedName("next")
@@ -26,9 +23,9 @@ data class CharacterInfo(
     val prev: String? = null,
     @field:SerializedName("count")
     val count: Int? = null,
-) : Parcelable
+)
 
-@Parcelize
+
 @Serializable
 data class CharacterResponse(
     @field:SerializedName("id")
@@ -58,4 +55,4 @@ data class CharacterResponse(
     @Transient
     @field:SerializedName("isFavorite")
     val isFavorite: Boolean = false,
-) : Parcelable
+)

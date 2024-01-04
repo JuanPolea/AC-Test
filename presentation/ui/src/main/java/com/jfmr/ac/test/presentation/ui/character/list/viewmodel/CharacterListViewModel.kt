@@ -15,10 +15,8 @@ import com.jfmr.ac.test.usecase.di.GetCharacters
 import com.jfmr.ac.test.usecase.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,13 +27,12 @@ class CharacterListViewModel @Inject constructor(
 ) : ViewModel() {
 
     internal val pager: Flow<PagingData<CharacterUI>> =
-        charactersUseCase
-            .invoke()
-            .cachedIn(viewModelScope)
+        charactersUseCase()
             .map { pagingData ->
                 pagingData
                     .map { character -> character.toUI() }
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(500), PagingData.empty())
+            }
+            .cachedIn(viewModelScope)
 
     internal fun onEvent(characterListEvent: CharacterListEvent) {
         when (characterListEvent) {

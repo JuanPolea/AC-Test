@@ -1,14 +1,10 @@
 package com.jfmr.ac.test.data.cache.entities.episode
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@kotlinx.serialization.Serializable
-@Parcelize
 @Entity(tableName = "episodes")
 data class LocalEpisode(
     @PrimaryKey
@@ -21,4 +17,4 @@ data class LocalEpisode(
     val name: String = "",
     val episode: String = "",
     val url: String = "",
-) : Parcelable
+)
