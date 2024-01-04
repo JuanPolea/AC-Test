@@ -19,7 +19,6 @@ import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -34,16 +33,18 @@ class CharacterRepositoryImpl
     @DispatcherIO private val coroutineDispatcher: CoroutineDispatcher,
 ) : CharacterRepository {
 
-    @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalPagingApi::class)
+    private val pager = Pager(
+        config = PagingConfig(pageSize = 10),
+        remoteMediator = RickAndMortyRemoteMediator(
+            localCharacterDataSource,
+            characterRemoteDataSource
+        ),
+        pagingSourceFactory = { localCharacterDataSource.getCharacters() }
+    )
+
     override fun characters(): Flow<PagingData<Character>> =
-        Pager(
-            config = PagingConfig(pageSize = 10),
-            remoteMediator = RickAndMortyRemoteMediator(
-                localCharacterDataSource,
-                characterRemoteDataSource
-            ),
-            pagingSourceFactory = { localCharacterDataSource.getCharacters() }
-        ).flow
+        pager.flow
             .mapLatest { paging ->
                 paging.map { localCharacter ->
                     localCharacter.toDomain()
