@@ -11,22 +11,24 @@ import com.jfmr.ac.test.presentation.ui.character.detail.model.toDetailError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.toUI
 import com.jfmr.ac.test.presentation.ui.character.list.model.toDomain
 import com.jfmr.ac.test.presentation.ui.character.list.model.toUI
+import com.jfmr.ac.test.presentation.ui.navigation.NavArg
 import com.jfmr.ac.test.usecase.character.CharacterDetailUseCase
 import com.jfmr.ac.test.usecase.character.UpdateCharacterUseCase
 import com.jfmr.ac.test.usecase.di.CharacterDetailUC
 import com.jfmr.ac.test.usecase.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private val DETAIL_VIEWMODEL_STATE = "DetailViewModel.State"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -38,11 +40,14 @@ class DetailViewModel @Inject constructor(
 
     private val _characterDetailUIState = MutableStateFlow(CharacterDetailUI())
     val characterDetailState: MutableStateFlow<CharacterDetailUI> = _characterDetailUIState
-    private val trigger = MutableStateFlow("")
-    private val charactersFlow: Flow<Unit> =
-        trigger.mapLatest {
+    private val _characterDetail = MutableStateFlow("")
+    val detailViewModelState: StateFlow<CharacterDetailUI?> =
+        savedStateHandle.getStateFlow(DETAIL_VIEWMODEL_STATE, null)
+
+    private val charactersFlow =
+        _characterDetail.mapLatest { string ->
             savedStateHandle
-                .get<String>("characterId")
+                .get<String>(NavArg.ItemId.key)
                 ?.toInt()
                 ?.let {
                     characterDetailUseCase.invoke(
@@ -51,16 +56,8 @@ class DetailViewModel @Inject constructor(
                         ::error,
                     )
                 } ?: error()
-        }.shareIn(viewModelScope, SharingStarted.WhileSubscribed())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Unit)
 
-
-    internal fun getData() {
-        viewModelScope.launch {
-            charactersFlow
-                .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
-                .collect()
-        }
-    }
 
     private fun success(characterDetail: com.jfmr.ac.test.domain.model.character.CharacterDetail) {
         onEvent(CharacterDetailEvent.CharacterFound(characterDetail.toUI()))
@@ -70,56 +67,68 @@ class DetailViewModel @Inject constructor(
 
     fun onEvent(characterDetailEvent: CharacterDetailEvent) {
         when (characterDetailEvent) {
-            is CharacterDetailEvent.CharacterFound -> {
-                characterDetailState.update { cd ->
-                    cd.copy(
-                        character = characterDetailEvent.detailUI.character,
-                        episodes = characterDetailEvent.detailUI.episodes,
-                        isLoading = false,
-                        error = null
-                    )
-                }
-            }
-            CharacterDetailEvent.CharacterNotFound -> {
-                characterDetailState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = CharacterDetailError.CharacterNotFound
-                    )
-                }
-            }
-            CharacterDetailEvent.CharacterServerError -> {
-                characterDetailState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = CharacterDetailError.ServerError
-                    )
-                }
-            }
-            is CharacterDetailEvent.UpdateCharacter ->
-                viewModelScope.launch {
-                    characterDetailEvent
-                        .detailUI
-                        .character
-                        .toDomain()
-                        .let {
-                            updateCharacterUseCase(it).collectLatest { character ->
-                                characterDetailState.update { cd ->
-                                    cd.copy(
-                                        character = character.toUI(),
-                                        error = null
-                                    )
-                                }
-                            }
+            is CharacterDetailEvent.CharacterFound -> characterDetailState.update { cd ->
+                savedStateHandle[DETAIL_VIEWMODEL_STATE] = cd.copy(
+                    character = characterDetailEvent.detailUI.character,
+                    episodes = characterDetailEvent.detailUI.episodes,
+                    isLoading = false,
+                    error = null
+                )
 
+                cd.copy(
+                    character = characterDetailEvent.detailUI.character,
+                    episodes = characterDetailEvent.detailUI.episodes,
+                    isLoading = false,
+                    error = null
+                )
+            }
+
+
+            CharacterDetailEvent.CharacterNotFound -> characterDetailState.update {
+                it.copy(
+                    isLoading = false,
+                    error = CharacterDetailError.CharacterNotFound
+                )
+            }
+
+
+            CharacterDetailEvent.CharacterServerError -> characterDetailState.update {
+                it.copy(
+                    isLoading = false,
+                    error = CharacterDetailError.ServerError
+                )
+            }
+
+
+            is CharacterDetailEvent.UpdateCharacter -> viewModelScope.launch {
+                characterDetailEvent
+                    .detailUI
+                    .character
+                    .toDomain()
+                    .let {
+                        updateCharacterUseCase(it).collectLatest { character ->
+                            characterDetailState.update { cd ->
+                                cd.copy(
+                                    character = character.toUI(),
+                                    error = null
+                                )
+                            }
                         }
-                }
-            is CharacterDetailEvent.EpisodesFound -> {
-                characterDetailState.update {
-                    it.copy(
-                        episodes = characterDetailEvent.detail.episodes,
-                        isLoading = false
-                    )
+
+                    }
+            }
+
+            is CharacterDetailEvent.EpisodesFound -> characterDetailState.update {
+                it.copy(
+                    episodes = characterDetailEvent.detail.episodes,
+                    isLoading = false
+                )
+            }
+
+
+            CharacterDetailEvent.OnRetrieveCharacterDetail -> viewModelScope.launch {
+                savedStateHandle.get<String>(NavArg.ItemId.key)?.toInt()?.let {
+                    characterDetailUseCase.invoke(it, ::success, ::error)
                 }
             }
         }

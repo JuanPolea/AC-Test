@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,8 +50,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListEvent
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterUI
@@ -62,49 +61,50 @@ import com.jfmr.ac.test.presentation.ui.component.MainAppBar
 import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CharacterListScreen(
-    modifier: Modifier,
-    characterListViewModel: CharacterListViewModel = hiltViewModel(),
+internal fun CharacterListRoute(
     onClick: (CharacterUI) -> Unit,
+    modifier: Modifier = Modifier,
+    characterListViewModel: CharacterListViewModel = hiltViewModel(),
 ) {
-
-    val snackbarHostState = remember { SnackbarHostState() }
-    val lazyPagingItems: LazyPagingItems<CharacterUI> = characterListViewModel.pager.collectAsLazyPagingItems()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val lazyPagingItems: LazyPagingItems<CharacterUI> =
+        characterListViewModel.pager.collectAsLazyPagingItems()
 
     Scaffold(topBar = {
         MainAppBar()
     }, snackbarHost = {
-        SnackbarHost(snackbarHostState) {
+        SnackbarHost(snackBarHostState) {
             Snackbar(
                 snackbarData = it,
             )
         }
     }) { padding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding),
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
             contentAlignment = Alignment.Center
         ) {
             CharacterListContent(
                 onClick = onClick,
                 onRefresh = { lazyPagingItems.refresh() },
-                isRefreshing = { lazyPagingItems.loadState.refresh == LoadState.Loading && lazyPagingItems.itemCount == 0 },
-                items = { lazyPagingItems },
-                addToFavorites = { characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it)) },
+                items = lazyPagingItems,
+                addToFavorites = {
+                    characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it))
+                },
                 modifier = modifier,
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-/*package*/ fun CharacterListContent(
+        /*package*/ fun CharacterListContent(
     onClick: (CharacterUI) -> Unit,
     onRefresh: () -> Unit,
-    isRefreshing: () -> Boolean,
-    items: () -> LazyPagingItems<CharacterUI>,
+    items: LazyPagingItems<CharacterUI>,
     addToFavorites: (CharacterUI) -> Unit,
     modifier: Modifier,
 ) {
@@ -114,27 +114,23 @@ internal fun CharacterListScreen(
             lazyGridState.firstVisibleItemIndex > 0
         }
     }
-    val swipeState = rememberSwipeRefreshState(isRefreshing = isRefreshing())
-    SwipeRefresh(
-        state = swipeState,
-        onRefresh = { onRefresh() }
-    ) {
-        when (items().loadState.mediator?.refresh) {
-            is LoadState.Loading -> CircularProgressBar()
-            is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
-            else -> CharacterListSuccessContent(modifier = modifier,
-                state = { lazyGridState },
-                items = items,
-                onClick = onClick,
-                showScrollToTopButton = { showScrollToTopButton },
-                addToFavorites = addToFavorites)
-        }
+    when (items.loadState.mediator?.refresh) {
+        is LoadState.Loading -> CircularProgressBar()
+        is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
+        else -> CharacterListSuccessContent(
+            modifier = modifier,
+            state = { lazyGridState },
+            items = items,
+            onClick = onClick,
+            showScrollToTopButton = { showScrollToTopButton },
+            addToFavorites = addToFavorites
+        )
     }
 
     if (
-        items().loadState.source.refresh is LoadState.Loading
-        || items().loadState.append is LoadState.Loading
-        || items().loadState.refresh is LoadState.Loading
+        items.loadState.source.refresh is LoadState.Loading
+        || items.loadState.append is LoadState.Loading
+        || items.loadState.refresh is LoadState.Loading
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -148,7 +144,7 @@ internal fun CharacterListScreen(
 @Composable
 private fun CharacterListSuccessContent(
     state: () -> LazyGridState,
-    items: () -> LazyPagingItems<CharacterUI>,
+    items: LazyPagingItems<CharacterUI>,
     onClick: (CharacterUI) -> Unit,
     showScrollToTopButton: () -> State<Boolean>,
     addToFavorites: (CharacterUI) -> Unit,
@@ -161,11 +157,15 @@ private fun CharacterListSuccessContent(
         columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
         state = state(),
     ) {
-        gridItems(items = items(), key = {
+        gridItems(items = items, key = {
             it.id
         }, itemContent = { domainCharacter ->
             domainCharacter?.let {
-                CharacterItemListContent(character = { it }, onClick = onClick, addToFavorites = addToFavorites)
+                CharacterItemListContent(
+                    character = { it },
+                    onClick = onClick,
+                    addToFavorites = addToFavorites
+                )
             }
         })
     }
@@ -192,7 +192,10 @@ private fun ScrollToTopButton(
                     scrollToTop()
                 },
             ) {
-                Text(text = stringResource(id = R.string.scroll_up), style = MaterialTheme.typography.labelMedium)
+                Text(
+                    text = stringResource(id = R.string.scroll_up),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
         }
 
@@ -229,10 +232,14 @@ private fun CharacterItemListContent(
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(data = character().image)
-                        .placeholder(R.drawable.ic_placeholder).crossfade(true).apply(block = fun ImageRequest.Builder.() {
-                            size(Size.ORIGINAL)
-                        }).error(R.drawable.ic_placeholder).build()),
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(data = character().image)
+                            .placeholder(R.drawable.ic_placeholder).crossfade(true)
+                            .apply(block = fun ImageRequest.Builder.() {
+                                size(Size.ORIGINAL)
+                            }).error(R.drawable.ic_placeholder).build()
+                    ),
                     modifier = modifier.fillMaxWidth(),
                     contentDescription = character().image,
                     contentScale = ContentScale.FillWidth,
@@ -247,7 +254,8 @@ private fun CharacterItemListContent(
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
-            Text(text = character().name,
+            Text(
+                text = character().name,
                 modifier = Modifier.padding(
                     top = dimensionResource(id = R.dimen.size_medium),
                     start = dimensionResource(id = R.dimen.size_medium),
@@ -256,7 +264,8 @@ private fun CharacterItemListContent(
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
 
             Spacer(modifier = modifier.padding(bottom = dimensionResource(id = R.dimen.size_medium)))
         }

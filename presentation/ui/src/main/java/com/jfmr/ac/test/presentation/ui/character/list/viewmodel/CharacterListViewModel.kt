@@ -26,17 +26,15 @@ class CharacterListViewModel @Inject constructor(
     @UpdateCharacter private val updateCharacterUseCase: UpdateCharacterUseCase,
 ) : ViewModel() {
 
-    var pager: Flow<PagingData<CharacterUI>> =
-        charactersUseCase
-            .invoke()
-            .cachedIn(viewModelScope)
+    internal val pager: Flow<PagingData<CharacterUI>> =
+        charactersUseCase()
             .map { pagingData ->
                 pagingData
                     .map { character -> character.toUI() }
             }
-        private set
+            .cachedIn(viewModelScope)
 
-    fun onEvent(characterListEvent: CharacterListEvent) {
+    internal fun onEvent(characterListEvent: CharacterListEvent) {
         when (characterListEvent) {
             is CharacterListEvent.AddToFavorite ->
                 viewModelScope.launch {

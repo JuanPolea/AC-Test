@@ -34,18 +34,21 @@ class CharacterRepositoryImpl
     @DispatcherIO private val coroutineDispatcher: CoroutineDispatcher,
 ) : CharacterRepository {
 
-    @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
+
+    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagingApi::class)
     override fun characters(): Flow<PagingData<Character>> =
         Pager(
-            config = PagingConfig(pageSize = 10),
-            remoteMediator = RickAndMortyRemoteMediator(localCharacterDataSource, characterRemoteDataSource),
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = RickAndMortyRemoteMediator(
+                localCharacterDataSource,
+                characterRemoteDataSource
+            ),
             pagingSourceFactory = { localCharacterDataSource.getCharacters() }
-        ).flow
-            .mapLatest { paging ->
-                paging.map { localCharacter ->
-                    localCharacter.toDomain()
-                }
+        ).flow.mapLatest { paging ->
+            paging.map { localCharacter ->
+                localCharacter.toDomain()
             }
+        }.flowOn(coroutineDispatcher)
 
     override fun getCharacterById(id: Int) = flow {
         tryCall {

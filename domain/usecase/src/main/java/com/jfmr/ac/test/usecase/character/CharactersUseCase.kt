@@ -5,5 +5,5 @@ import com.jfmr.ac.test.domain.model.character.Character
 import kotlinx.coroutines.flow.Flow
 
 interface CharactersUseCase {
-    operator fun invoke(): Flow<PagingData<Character>>
+     operator fun invoke(): Flow<PagingData<Character>>
 }

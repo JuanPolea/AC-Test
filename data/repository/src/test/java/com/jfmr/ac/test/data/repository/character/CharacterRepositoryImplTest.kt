@@ -61,7 +61,9 @@ class CharacterRepositoryImplTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         MockKAnnotations.init(this)
-        localCharacters = expectedCharactersResponse.results?.filterNotNull()?.map { it.toEntity() } ?: emptyList()
+        localCharacters =
+            expectedCharactersResponse.results?.asSequence()?.filterNotNull()?.map { it.toEntity() }
+                ?.toList() ?: emptyList()
         characters = localCharacters.map { it.toDomain() }
 
         mockkStatic(Dispatchers::class)

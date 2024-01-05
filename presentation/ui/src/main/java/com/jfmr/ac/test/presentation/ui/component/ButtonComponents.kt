@@ -43,6 +43,7 @@ fun FavoriteButton(
     action: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
     val coroutineScope = rememberCoroutineScope()
     val scale = remember {
         Animatable(1f)
