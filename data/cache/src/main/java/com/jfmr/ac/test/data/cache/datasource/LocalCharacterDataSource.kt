@@ -15,4 +15,5 @@ interface LocalCharacterDataSource {
     suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>): List<Long>
     suspend fun insertCharacters(characters: List<LocalCharacter>): List<Long>
     suspend fun remoteKeysId(id: Long): RemoteKeys?
+    suspend fun clearRemoteKeyByQuery(query: String)
 }

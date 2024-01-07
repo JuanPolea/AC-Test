@@ -15,6 +15,6 @@ interface RemoteKeysDao {
     @Query("SELECT * FROM remote_keys WHERE repoId = :repoId")
     fun remoteKeysId(repoId: Long): RemoteKeys?
 
-    @Query("DELETE FROM remote_keys")
-    fun clearRemoteKeys()
+    @Query("DELETE FROM remote_keys WHERE prevKey = :query")
+    fun clearRemoteKeys(query: String)
 }

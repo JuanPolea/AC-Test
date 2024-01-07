@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.repository.episode.mapper
 
-import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.cache.entities.episode.LocalEpisode
 
 object EpisodeResponseExtensions {

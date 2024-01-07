@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.remote.character
 
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.character.entity.CharacterResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.character.CharacterUtils

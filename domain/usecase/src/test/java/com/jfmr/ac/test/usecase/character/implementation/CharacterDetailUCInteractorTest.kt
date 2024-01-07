@@ -9,6 +9,7 @@ import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
 import com.jfmr.ac.test.tests.episodes.EpisodeUtils
+import com.jfmr.ac.test.usecase.character.detail.CharacterDetailInteractor
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

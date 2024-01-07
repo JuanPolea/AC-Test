@@ -231,7 +231,6 @@ include(":domain:repository")
 include(":framework")
 
 include(":data:api")
-include(":data:di")
 include(":data:remote")
 include(":data:cache")
 include(":data:repository")

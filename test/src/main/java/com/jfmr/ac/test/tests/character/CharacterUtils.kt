@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.tests.character
 
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharacterResponse
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharactersResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.character.entity.CharacterResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.character.entity.CharactersResponse
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.tests.TestUtils
 

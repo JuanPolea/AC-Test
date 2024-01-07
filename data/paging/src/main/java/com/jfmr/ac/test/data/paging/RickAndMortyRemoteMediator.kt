@@ -8,7 +8,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.jfmr.ac.test.data.api.rickandmorty.character.entity.CharactersResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.character.entity.CharactersResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.API_PAGE
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
 import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
@@ -100,7 +100,10 @@ class RickAndMortyRemoteMediator @Inject constructor(
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, LocalCharacter>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
-                localCharacterDataSource.remoteKeysId(repo.id.toLong())
+                localCharacterDataSource.geLocalDB().withTransaction {
+                    localCharacterDataSource.remoteKeysId(repo.id.toLong())
+                }
+
             }
     }
 }
