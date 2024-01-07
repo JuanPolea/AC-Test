@@ -27,7 +27,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,6 +44,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
@@ -52,11 +53,8 @@ import com.jfmr.ac.test.presentation.ui.R
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListEvent
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterUI
 import com.jfmr.ac.test.presentation.ui.character.list.viewmodel.CharacterListViewModel
-import com.jfmr.ac.test.presentation.ui.component.CircularProgressBar
-import com.jfmr.ac.test.presentation.ui.component.ErrorScreen
 import com.jfmr.ac.test.presentation.ui.component.FavoriteButton
 import com.jfmr.ac.test.presentation.ui.component.MainAppBar
-import com.jfmr.ac.test.presentation.ui.component.extensions.ListExtensions.gridItems
 import kotlinx.coroutines.launch
 
 @Composable
@@ -84,102 +82,93 @@ internal fun CharacterListRoute(
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {
-            CharacterListContent(
-                onClick = onClick,
-                onRefresh = { lazyPagingItems.refresh() },
+
+            CharacterListSuccessContent(
+                modifier = modifier,
                 items = lazyPagingItems,
+                onClick = onClick,
                 addToFavorites = {
                     characterListViewModel.onEvent(CharacterListEvent.AddToFavorite(it))
                 },
-                modifier = modifier,
             )
+            if (
+                lazyPagingItems.loadState.source.refresh is LoadState.Loading
+                || lazyPagingItems.loadState.append is LoadState.Loading
+                || lazyPagingItems.loadState.refresh is LoadState.Loading
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomEnd,
+                ) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+            }
         }
     }
 }
 
-@Composable
-        /*package*/ fun CharacterListContent(
-    onClick: (CharacterUI) -> Unit,
-    onRefresh: () -> Unit,
-    items: LazyPagingItems<CharacterUI>,
-    addToFavorites: (CharacterUI) -> Unit,
-    modifier: Modifier,
-) {
-    val lazyGridState = rememberLazyGridState()
-    val showScrollToTopButton = remember {
-        derivedStateOf {
-            lazyGridState.firstVisibleItemIndex > 0
-        }
-    }
-    when (items.loadState.mediator?.refresh) {
-        is LoadState.Loading -> CircularProgressBar()
-        is LoadState.Error -> ErrorScreen(R.string.error_retrieving_characters) { onRefresh() }
-        else -> CharacterListSuccessContent(
-            modifier = modifier,
-            state = { lazyGridState },
-            items = items,
-            onClick = onClick,
-            showScrollToTopButton = { showScrollToTopButton },
-            addToFavorites = addToFavorites
-        )
-    }
 
-    if (
-        items.loadState.source.refresh is LoadState.Loading
-        || items.loadState.append is LoadState.Loading
-        || items.loadState.refresh is LoadState.Loading
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomEnd,
-        ) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
+@Composable
+fun <T : Any> LazyPagingItems<T>.rememberLazyListState(): LazyGridState {
+    // After recreation, LazyPagingItems first return 0 items, then the cached items.
+    // This behavior/issue is resetting the LazyListState scroll position.
+    // Below is a workaround. More info: https://issuetracker.google.com/issues/177245496.
+    return when (itemCount) {
+        // Return a different LazyListState instance.
+        0 -> remember(this) { LazyGridState(0, 0) }
+        // Return rememberLazyListState (normal case).
+        else -> rememberLazyGridState()
     }
 }
 
 @Composable
 private fun CharacterListSuccessContent(
-    state: () -> LazyGridState,
     items: LazyPagingItems<CharacterUI>,
     onClick: (CharacterUI) -> Unit,
-    showScrollToTopButton: () -> State<Boolean>,
     addToFavorites: (CharacterUI) -> Unit,
     modifier: Modifier,
 ) {
     val scope = rememberCoroutineScope()
-
+    val state = items.rememberLazyListState()
+    val shouldShowScrollToUp =
+        remember(state) {
+            derivedStateOf {
+                state.firstVisibleItemIndex > 0
+            }
+        }
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
         columns = GridCells.Adaptive(dimensionResource(id = R.dimen.adaptative_size)),
-        state = state(),
+        state = state,
     ) {
-        gridItems(items = items, key = {
-            it.id
-        }, itemContent = { domainCharacter ->
-            domainCharacter?.let {
+        items(
+            count = items.itemCount,
+            key = items.itemKey { it.id },
+            contentType = items.itemContentType { it.type }
+        ) { index ->
+            items[index]?.let {
                 CharacterItemListContent(
-                    character = { it },
+                    character = it,
                     onClick = onClick,
                     addToFavorites = addToFavorites
                 )
             }
-        })
+        }
     }
-    ScrollToTopButton(showButton = { showScrollToTopButton().value }) {
+    ScrollToTopButton(showButton = shouldShowScrollToUp.value) {
         scope.launch {
-            state().scrollToItem(0)
+            state.scrollToItem(0)
         }
     }
 }
 
+
 @Composable
 private fun ScrollToTopButton(
-    showButton: () -> Boolean,
+    showButton: Boolean,
     scrollToTop: () -> Unit,
 ) {
-
-    AnimatedVisibility(visible = showButton(), enter = fadeIn(), exit = fadeOut()) {
+    AnimatedVisibility(visible = showButton, enter = fadeIn(), exit = fadeOut()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd,
@@ -201,7 +190,7 @@ private fun ScrollToTopButton(
 
 @Composable
 private fun CharacterItemListContent(
-    character: () -> CharacterUI,
+    character: CharacterUI,
     onClick: (CharacterUI) -> Unit,
     addToFavorites: (CharacterUI) -> Unit,
     modifier: Modifier = Modifier,
@@ -215,7 +204,7 @@ private fun CharacterItemListContent(
                 shape = CutCornerShape(dimensionResource(id = R.dimen.size_medium)),
                 spotColor = MaterialTheme.colorScheme.primary
             )
-            .clickable { onClick(character()) },
+            .clickable { onClick(character) },
         shape = CutCornerShape(size = 12.dp),
     ) {
         Column(
@@ -230,28 +219,28 @@ private fun CharacterItemListContent(
                 Image(
                     painter = rememberAsyncImagePainter(
                         ImageRequest.Builder(LocalContext.current)
-                            .data(data = character().image)
+                            .data(data = character.image)
                             .placeholder(R.drawable.ic_placeholder).crossfade(true)
                             .apply(block = fun ImageRequest.Builder.() {
                                 size(Size.ORIGINAL)
                             }).error(R.drawable.ic_placeholder).build()
                     ),
                     modifier = modifier.fillMaxWidth(),
-                    contentDescription = character().image,
+                    contentDescription = character.image,
                     contentScale = ContentScale.FillWidth,
                 )
                 FavoriteButton(
-                    isFavorite = { character().isFavorite },
+                    isFavorite = { character.isFavorite },
                     action = {
                         addToFavorites(
-                            character().copy(isFavorite = !character().isFavorite)
+                            character.copy(isFavorite = !character.isFavorite)
                         )
                     },
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
             Text(
-                text = character().name,
+                text = character.name,
                 modifier = Modifier.padding(
                     top = dimensionResource(id = R.dimen.size_medium),
                     start = dimensionResource(id = R.dimen.size_medium),

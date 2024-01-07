@@ -55,7 +55,7 @@ class EpisodeRepositoryImpl @Inject constructor(
         )
     }.flowOn(coroutineDispatcher)
 
-    private fun retrieveLocalEpisodes(episodesList: List<String>) =
+    private suspend fun retrieveLocalEpisodes(episodesList: List<String>) =
         episodeDao
             .episodes(
                 episodesList
