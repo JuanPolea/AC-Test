@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.data.api.rickandmorty.character.entity
+package com.jfmr.ac.test.data.api.rickandmorty.dto.character.entity
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable

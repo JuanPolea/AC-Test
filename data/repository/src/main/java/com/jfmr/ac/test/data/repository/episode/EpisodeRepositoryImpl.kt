@@ -3,15 +3,15 @@ package com.jfmr.ac.test.data.repository.episode
 import android.net.Uri
 import arrow.core.left
 import arrow.core.right
-import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.cache.entities.episode.mapper.LocalEpisodeExtensions.fromDomain
 import com.jfmr.ac.test.data.cache.entities.episode.mapper.LocalEpisodeExtensions.toDomain
+import com.jfmr.ac.test.data.remote.di.DispatcherIO
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
+import com.jfmr.ac.test.data.remote.episode.datasource.di.QEpisodesDataSource
 import com.jfmr.ac.test.data.remote.episode.mapper.EpisodeExtensions.toDomain
 import com.jfmr.ac.test.data.remote.extensions.tryCall
-import com.jfmr.ac.test.data.remote.qualifier.DispatcherIO
-import com.jfmr.ac.test.data.remote.qualifier.QEpisodesDataSource
 import com.jfmr.ac.test.data.repository.episode.mapper.EpisodeResponseExtensions.toEntity
 import com.jfmr.ac.test.domain.model.episode.Episodes
 import com.jfmr.ac.test.domain.model.error.RemoteError
@@ -38,7 +38,8 @@ class EpisodeRepositoryImpl @Inject constructor(
             },
             { response ->
                 if (response.isSuccessful) {
-                    val episodes: List<EpisodeResponse> = response.body()?.filterNotNull() ?: emptyList()
+                    val episodes: List<EpisodeResponse> =
+                        response.body()?.filterNotNull() ?: emptyList()
                     if (episodes.isNotEmpty()) {
                         episodeDao.insertEpisodes(episodes.toEntity())
                     }

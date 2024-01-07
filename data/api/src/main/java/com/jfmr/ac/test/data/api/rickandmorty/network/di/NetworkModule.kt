@@ -1,9 +1,7 @@
-package com.jfmr.ac.test.data.di
+package com.jfmr.ac.test.data.api.rickandmorty.network.di
 
+import com.jfmr.ac.test.data.api.BuildConfig
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
-import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
-import com.jfmr.ac.test.data.remote.character.CharacterRemoteDataSourceImpl
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,16 +17,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
-
-    @InstallIn(SingletonComponent::class)
-    @Module
-    interface Declarations {
-
-        @Singleton
-        @Binds
-        fun bindsRemoteCharactersDS(implementation: CharacterRemoteDataSourceImpl): CharacterRemoteDataSource
-
-    }
 
     @Provides
     @Singleton
@@ -62,7 +50,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitService(retrofit: Retrofit): RickAndMortyApiService = retrofit.create(RickAndMortyApiService::class.java)
-
-
+    fun provideRetrofitService(retrofit: Retrofit): RickAndMortyApiService =
+        retrofit.create(RickAndMortyApiService::class.java)
 }

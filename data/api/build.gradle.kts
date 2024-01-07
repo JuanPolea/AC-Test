@@ -6,9 +6,15 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.api"
+    defaultConfig {
+        buildConfigField("String", "BASE_URL", "\"https://rickandmortyapi.com/api/\"")
+    }
 }
 
 dependencies {
     api(libs.bundles.retrofit2)
-    api(libs.kotlin.serialization)
+    implementation(libs.kotlin.serialization)
+    implementation(libs.bundles.hilt)
+    kapt(libs.bundles.hiltkapt)
+    implementation(libs.kotlin.serialization)
 }

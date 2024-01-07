@@ -1,5 +1,6 @@
 package com.jfmr.ac.test.data.repository.character
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,8 +14,8 @@ import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExten
 import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
+import com.jfmr.ac.test.data.remote.di.DispatcherIO
 import com.jfmr.ac.test.data.remote.extensions.tryCall
-import com.jfmr.ac.test.data.remote.qualifier.DispatcherIO
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
@@ -91,6 +92,11 @@ class CharacterRepositoryImpl
 
     override fun updateCharacter(character: Character) = flow {
         localCharacterDataSource.updateCharacter(character.fromDomain())
+        Log.e("TAG", "updateCharacter: ${character.id}")
+        Log.e(
+            "TAG",
+            "updateCharacter: ${localCharacterDataSource.getCharacterById(character.id)?.id}",
+        )
         emit(localCharacterDataSource.getCharacterById(character.id)?.toDomain() ?: character)
     }.flowOn(coroutineDispatcher)
 }

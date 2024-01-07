@@ -1,7 +1,7 @@
 package com.jfmr.ac.test.data.remote.episode
 
 import android.net.Uri
-import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import retrofit2.Response

@@ -1,6 +1,6 @@
 package com.jfmr.ac.test.data.remote.episode
 
-import com.jfmr.ac.test.data.api.rickandmorty.episode.entity.EpisodeResponse
+import com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity.EpisodeResponse
 import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR

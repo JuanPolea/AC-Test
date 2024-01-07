@@ -1,13 +1,8 @@
-package com.jfmr.ac.test.data.api.rickandmorty.episode.entity
+package com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
-
-@Serializable
-data class EpisodesResponse(
-    val results: List<EpisodeResponse?>? = null,
-)
 
 @Serializable
 data class EpisodeResponse(
