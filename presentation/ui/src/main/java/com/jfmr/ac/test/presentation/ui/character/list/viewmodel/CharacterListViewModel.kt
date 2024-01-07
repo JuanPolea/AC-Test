@@ -9,10 +9,10 @@ import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListEvent
 import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterUI
 import com.jfmr.ac.test.presentation.ui.character.list.model.toDomain
 import com.jfmr.ac.test.presentation.ui.character.list.model.toUI
-import com.jfmr.ac.test.usecase.character.CharactersUseCase
-import com.jfmr.ac.test.usecase.character.UpdateCharacterUseCase
-import com.jfmr.ac.test.usecase.di.GetCharacters
-import com.jfmr.ac.test.usecase.di.UpdateCharacter
+import com.jfmr.ac.test.usecase.character.list.CharactersUseCase
+import com.jfmr.ac.test.usecase.character.list.di.GetCharacters
+import com.jfmr.ac.test.usecase.character.update.UpdateCharacterUseCase
+import com.jfmr.ac.test.usecase.character.update.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -40,7 +40,9 @@ class CharacterListViewModel @Inject constructor(
                 viewModelScope.launch {
                     updateCharacterUseCase
                         .invoke(characterListEvent.character.toDomain())
-                        .collectLatest { }
+                        .collectLatest {
+
+                        }
                 }
         }
     }

@@ -6,8 +6,8 @@ import com.jfmr.ac.test.presentation.ui.character.list.model.CharacterListEvent
 import com.jfmr.ac.test.presentation.ui.utils.CharacterUIUtils
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.character.CharacterUtils
-import com.jfmr.ac.test.usecase.character.CharactersUseCase
-import com.jfmr.ac.test.usecase.character.UpdateCharacterUseCase
+import com.jfmr.ac.test.usecase.character.list.CharactersUseCase
+import com.jfmr.ac.test.usecase.character.update.UpdateCharacterUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

@@ -12,10 +12,10 @@ import com.jfmr.ac.test.presentation.ui.character.detail.model.toUI
 import com.jfmr.ac.test.presentation.ui.character.list.model.toDomain
 import com.jfmr.ac.test.presentation.ui.character.list.model.toUI
 import com.jfmr.ac.test.presentation.ui.navigation.NavArg
-import com.jfmr.ac.test.usecase.character.CharacterDetailUseCase
-import com.jfmr.ac.test.usecase.character.UpdateCharacterUseCase
-import com.jfmr.ac.test.usecase.di.CharacterDetailUC
-import com.jfmr.ac.test.usecase.di.UpdateCharacter
+import com.jfmr.ac.test.usecase.character.detail.CharacterDetailUseCase
+import com.jfmr.ac.test.usecase.character.detail.di.CharacterDetailUC
+import com.jfmr.ac.test.usecase.character.update.UpdateCharacterUseCase
+import com.jfmr.ac.test.usecase.character.update.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

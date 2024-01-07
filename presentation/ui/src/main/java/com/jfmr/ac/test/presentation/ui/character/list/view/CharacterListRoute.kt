@@ -17,10 +17,8 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -99,7 +97,6 @@ internal fun CharacterListRoute(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
         /*package*/ fun CharacterListContent(
     onClick: (CharacterUI) -> Unit,
@@ -202,7 +199,6 @@ private fun ScrollToTopButton(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterItemListContent(
     character: () -> CharacterUI,
