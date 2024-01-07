@@ -1,6 +1,5 @@
 package com.jfmr.ac.test.data.repository.character
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -20,11 +19,10 @@ import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
@@ -35,23 +33,22 @@ class CharacterRepositoryImpl
     @DispatcherIO private val coroutineDispatcher: CoroutineDispatcher,
 ) : CharacterRepository {
 
-
-    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagingApi::class)
+    @OptIn(ExperimentalPagingApi::class)
     override fun characters(): Flow<PagingData<Character>> =
         Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = 20, prefetchDistance = 20),
             remoteMediator = RickAndMortyRemoteMediator(
                 localCharacterDataSource,
                 characterRemoteDataSource
             ),
-            pagingSourceFactory = { localCharacterDataSource.getCharacters() }
-        ).flow.mapLatest { paging ->
-            paging.map { localCharacter ->
-                localCharacter.toDomain()
+            pagingSourceFactory = { localCharacterDataSource.getCharacters() },
+        ).flow.map {
+            it.map {
+                it.toDomain()
             }
-        }.flowOn(coroutineDispatcher)
+        }
 
-    override fun getCharacterById(id: Int) = flow {
+    override suspend fun getCharacterById(id: Int) = flow {
         tryCall {
             characterRemoteDataSource
                 .retrieveCharacterById(id)
@@ -88,15 +85,10 @@ class CharacterRepositoryImpl
                 )
             }
         )
-    }.flowOn(coroutineDispatcher)
+    }
 
     override fun updateCharacter(character: Character) = flow {
         localCharacterDataSource.updateCharacter(character.fromDomain())
-        Log.e("TAG", "updateCharacter: ${character.id}")
-        Log.e(
-            "TAG",
-            "updateCharacter: ${localCharacterDataSource.getCharacterById(character.id)?.id}",
-        )
         emit(localCharacterDataSource.getCharacterById(character.id)?.toDomain() ?: character)
     }.flowOn(coroutineDispatcher)
 }

@@ -1,13 +1,22 @@
 package com.jfmr.ac.test.data.cache.entities.character.mapper
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.jfmr.ac.test.data.cache.entities.character.LocalCharacter
 import com.jfmr.ac.test.data.cache.entities.character.LocalLocation
 import com.jfmr.ac.test.data.cache.entities.character.LocalOrigin
 import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.character.Location
 import com.jfmr.ac.test.domain.model.character.Origin
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 
 object LocalCharacterExtensions {
+    fun Flow<PagingData<LocalCharacter>>.toDomain() =
+        transform { paging ->
+            emit(paging.map { localCharacter -> localCharacter.toDomain() })
+
+        }
 
     fun LocalCharacter?.toDomain() =
         this?.let {

@@ -27,13 +27,18 @@ class RickAndMortyRemoteMediator @Inject constructor(
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, LocalCharacter>): MediatorResult {
-        val page = when (loadType) {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, LocalCharacter>
+    ): MediatorResult {
+        val page: Int? = when (loadType) {
             LoadType.REFRESH -> 1
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeys: RemoteKeys? = getRemoteKeyForLastItem(state)
-                val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
+                val nextKey: String = remoteKeys?.nextKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = true
+                )
                 val uri = Uri.parse(nextKey)
                 val nextPageQuery = uri.getQueryParameter(API_PAGE)
                 nextPageQuery?.toInt()
@@ -44,57 +49,59 @@ class RickAndMortyRemoteMediator @Inject constructor(
             val characters: CharactersResponse? = page?.let {
                 characterRemoteDataSource.retrieveCharacters(it).body()
             }
-            characters?.let {
-                localCharacterDataSource
-                    .geLocalDB()
-                    .withTransaction {
-                        insertRemoteKeys(it)
+            localCharacterDataSource
+                .geLocalDB()
+                .withTransaction {
+                    if (loadType == LoadType.REFRESH) {
+                        localCharacterDataSource
+                            .geLocalDB().remoteKeysDao().clearRemoteKeys()
+                        localCharacterDataSource
+                            .geLocalDB().characterDao().clearCharacters()
                     }
-                insertCharacters(it)
-            }
+                    characters?.let {
+                        characters
+                            .results
+                            ?.filterNotNull()
+                            ?.mapNotNull { characterResponse ->
+                                characterResponse
+                                    .id
+                                    ?.toLong()
+                                    ?.let { id ->
+                                        RemoteKeys(
+                                            id,
+                                            characters.info?.prev.orEmpty(),
+                                            characters.info?.next.orEmpty()
+                                        )
+                                    }
+                            }?.also { remoteKeys ->
+                                localCharacterDataSource.insertRemoteKeys(remoteKeys)
+                            }
+                        characters
+                            .results
+                            ?.filter {
+                                it?.id != null
+                            }
+                            ?.filterNotNull()
+                            ?.map { characterResponse ->
+                                val character = characterResponse.toEntity()
+                                localCharacterDataSource
+                                    .getCharacterById(character.id)
+                                    ?.let {
+                                        characterResponse.copy(isFavorite = it.isFavorite)
+                                    } ?: characterResponse
+                            }
+                            ?.let { list ->
+                                if (list.isNotEmpty()) {
+                                    localCharacterDataSource
+                                        .insertCharacters(list.map { it.toEntity() })
+                                }
+                            }
+                    }
+                }
             MediatorResult.Success(endOfPaginationReached = characters?.results?.isEmpty() == true)
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }
-    }
-
-    private suspend fun insertRemoteKeys(characters: CharactersResponse) {
-        characters
-            .results
-            ?.filterNotNull()
-            ?.mapNotNull { characterResponse ->
-                characterResponse
-                    .id
-                    ?.toLong()
-                    ?.let { id ->
-                        RemoteKeys(id, characters.info?.prev.orEmpty(), characters.info?.next.orEmpty())
-                    }
-            }?.also { remoteKeys ->
-                localCharacterDataSource.insertRemoteKeys(remoteKeys)
-            }
-    }
-
-    private suspend fun insertCharacters(characters: CharactersResponse) {
-        characters
-            .results
-            ?.filter {
-                it?.id != null
-            }
-            ?.filterNotNull()
-            ?.map { characterResponse ->
-                val character = characterResponse.toEntity()
-                localCharacterDataSource
-                    .getCharacterById(character.id)
-                    ?.let {
-                        characterResponse.copy(isFavorite = it.isFavorite)
-                    } ?: characterResponse
-            }
-            ?.let { list ->
-                if (list.isNotEmpty()) {
-                    localCharacterDataSource
-                        .insertCharacters(list.map { it.toEntity() })
-                }
-            }
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, LocalCharacter>): RemoteKeys? {

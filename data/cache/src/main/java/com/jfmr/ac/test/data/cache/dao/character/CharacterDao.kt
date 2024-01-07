@@ -14,14 +14,17 @@ interface CharacterDao {
     fun insertCharacters(characters: List<LocalCharacter>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(character: LocalCharacter): Long
+    suspend fun insert(character: LocalCharacter): Long
 
     @Query("SELECT * FROM characters")
     fun characters(): PagingSource<Int, LocalCharacter>
 
     @Query("SELECT * FROM characters WHERE characters.id = :id")
-    fun getCharacterById(id: Int): LocalCharacter?
+    suspend fun getCharacterById(id: Int): LocalCharacter?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateCharacter(character: LocalCharacter): Int
+    suspend fun updateCharacter(character: LocalCharacter): Int
+
+    @Query("DELETE FROM characters")
+    suspend fun clearCharacters()
 }

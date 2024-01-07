@@ -7,7 +7,7 @@ import com.jfmr.ac.test.data.cache.entities.character.RemoteKeys
 
 interface LocalCharacterDataSource {
 
-     fun getCharacters(): PagingSource<Int, LocalCharacter>
+    fun getCharacters(): PagingSource<Int, LocalCharacter>
     suspend fun getCharacterById(id: Int): LocalCharacter?
     suspend fun updateCharacter(character: LocalCharacter): Int
     suspend fun insert(character: LocalCharacter): Long
@@ -15,5 +15,5 @@ interface LocalCharacterDataSource {
     suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeys>): List<Long>
     suspend fun insertCharacters(characters: List<LocalCharacter>): List<Long>
     suspend fun remoteKeysId(id: Long): RemoteKeys?
-    suspend fun clearRemoteKeyByQuery(query: String)
+    suspend fun clearAllRemoteKeys()
 }

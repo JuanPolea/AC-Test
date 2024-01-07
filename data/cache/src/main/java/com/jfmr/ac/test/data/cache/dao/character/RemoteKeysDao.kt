@@ -10,11 +10,11 @@ import com.jfmr.ac.test.data.cache.entities.character.RemoteKeys
 interface RemoteKeysDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(remoteKey: List<RemoteKeys>): List<Long>
+    suspend fun insertAll(remoteKey: List<RemoteKeys>): List<Long>
 
     @Query("SELECT * FROM remote_keys WHERE repoId = :repoId")
-    fun remoteKeysId(repoId: Long): RemoteKeys?
+    suspend fun remoteKeysId(repoId: Long): RemoteKeys?
 
-    @Query("DELETE FROM remote_keys WHERE prevKey = :query")
-    fun clearRemoteKeys(query: String)
+    @Query("DELETE FROM remote_keys")
+    suspend fun clearRemoteKeys()
 }

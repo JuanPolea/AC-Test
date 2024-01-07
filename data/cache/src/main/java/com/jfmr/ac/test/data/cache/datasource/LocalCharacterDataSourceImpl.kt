@@ -33,7 +33,7 @@ class LocalCharacterDataSourceImpl @Inject constructor(
     override suspend fun remoteKeysId(id: Long): RemoteKeys? =
         rickAndMortyDB.remoteKeysDao().remoteKeysId(id)
 
-    override suspend fun clearRemoteKeyByQuery(query: String) {
-        rickAndMortyDB.remoteKeysDao().clearRemoteKeys(query)
+    override suspend fun clearAllRemoteKeys() {
+        rickAndMortyDB.remoteKeysDao().clearRemoteKeys()
     }
 }

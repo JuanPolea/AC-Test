@@ -9,7 +9,7 @@ interface CharacterRepository {
 
      fun characters(): Flow<PagingData<Character>>
 
-    fun getCharacterById(id: Int): Flow<DomainResult<Character>>
+    suspend fun getCharacterById(id: Int): Flow<DomainResult<Character>>
 
     fun updateCharacter(character: Character): Flow<Character>
 }
