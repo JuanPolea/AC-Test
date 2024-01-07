@@ -1,8 +1,7 @@
-package com.jfmr.ac.test.usecase.character.implementation
+package com.jfmr.ac.test.usecase.character.list
 
-import com.jfmr.ac.test.data.di.QCharacterRepository
+import com.jfmr.ac.test.data.repository.character.di.QCharacterRepository
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
-import com.jfmr.ac.test.usecase.character.CharactersUseCase
 import javax.inject.Inject
 
 class CharactersInteractor @Inject constructor(

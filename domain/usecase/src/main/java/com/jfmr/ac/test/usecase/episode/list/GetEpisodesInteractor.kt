@@ -1,10 +1,9 @@
-package com.jfmr.ac.test.usecase.episode.implementation
+package com.jfmr.ac.test.usecase.episode.list
 
-import com.jfmr.ac.test.data.di.QEpisodesRepository
+import com.jfmr.ac.test.data.repository.episode.di.QEpisodesRepository
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
-import com.jfmr.ac.test.usecase.episode.GetEpisodesUseCase
 import javax.inject.Inject
 
 class GetEpisodesInteractor @Inject constructor(

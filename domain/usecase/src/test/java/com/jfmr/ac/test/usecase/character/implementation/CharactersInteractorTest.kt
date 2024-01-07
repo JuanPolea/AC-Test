@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
+import com.jfmr.ac.test.usecase.character.list.CharactersInteractor
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

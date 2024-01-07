@@ -8,6 +8,7 @@ import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
 import com.jfmr.ac.test.tests.episodes.EpisodeUtils.expectedEpisodeList
+import com.jfmr.ac.test.usecase.episode.list.GetEpisodesInteractor
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

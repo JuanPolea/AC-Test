@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.usecase.character
+package com.jfmr.ac.test.usecase.character.list
 
 import androidx.paging.PagingData
 import com.jfmr.ac.test.domain.model.character.Character

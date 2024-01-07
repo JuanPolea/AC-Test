@@ -1,12 +1,11 @@
-package com.jfmr.ac.test.usecase.character.implementation
+package com.jfmr.ac.test.usecase.character.detail
 
-import com.jfmr.ac.test.data.di.QCharacterRepository
-import com.jfmr.ac.test.data.di.QEpisodesRepository
+import com.jfmr.ac.test.data.repository.character.di.QCharacterRepository
+import com.jfmr.ac.test.data.repository.episode.di.QEpisodesRepository
 import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
-import com.jfmr.ac.test.usecase.character.CharacterDetailUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge

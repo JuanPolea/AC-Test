@@ -2,6 +2,7 @@ package com.jfmr.ac.test.usecase.character.implementation
 
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
+import com.jfmr.ac.test.usecase.character.update.UpdateCharacterInteractor
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

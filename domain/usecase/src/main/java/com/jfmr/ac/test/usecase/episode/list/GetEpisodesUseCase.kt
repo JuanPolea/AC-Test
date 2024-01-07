@@ -1,4 +1,4 @@
-package com.jfmr.ac.test.usecase.episode
+package com.jfmr.ac.test.usecase.episode.list
 
 import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.error.DomainError
