@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
-import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 class EpisodeRepositoryImplTest {
@@ -63,11 +62,6 @@ class EpisodeRepositoryImplTest {
                 any()
             )
         } answers { testDispatcher.fold(firstArg(), secondArg()) }
-    }
-
-    @BeforeTest
-    fun setDispatcher() {
-
     }
 
     @After
@@ -115,10 +109,13 @@ class EpisodeRepositoryImplTest {
         val actual: Flow<Either<DomainError, List<Episode>>> =
             episodeRepositoryImpl.episodes(emptyList())
 
-        actual.collectLatest {
-            it.fold({}, {
-                assertEquals(expectedEpisodeList.toList(), it)
-            })
+        actual.collectLatest { result ->
+            result.fold(
+                {},
+                { list ->
+                    assertEquals(expectedEpisodeList.toList(), list)
+                }
+            )
         }
 
     }
@@ -140,9 +137,9 @@ class EpisodeRepositoryImplTest {
         val actual: Flow<Either<DomainError, List<Episode>>> =
             episodeRepositoryImpl.episodes(emptyList())
 
-        actual.collectLatest {
-            it.fold({
-                assertEquals(RemoteError.Connectivity, it)
+        actual.collectLatest { result ->
+            result.fold({ error ->
+                assertEquals(RemoteError.Connectivity, error)
             }, {})
         }
 

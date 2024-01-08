@@ -8,6 +8,11 @@ plugins {
 
 android {
     namespace = "com.jfmr.ac.test.data.cache"
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
 }
 
 dependencies {
@@ -21,4 +26,5 @@ dependencies {
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
     implementation(libs.firebase.crashlitycs)
+
 }

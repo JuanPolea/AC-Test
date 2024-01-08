@@ -13,7 +13,7 @@ dependencies {
     api(project(":data:cache"))
     api(project(":data:remote"))
     implementation(project(":test"))
-    implementation(libs.android.ktx)
+    implementation(libs.androidx.ktx)
     kapt(libs.room.compiler)
     api(libs.paging.room)
     implementation(libs.google.gson)

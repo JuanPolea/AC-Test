@@ -13,7 +13,7 @@ android {
 dependencies {
     api(project(":data:api"))
     api(project(":domain:model"))
-    implementation(libs.android.ktx)
+    implementation(libs.androidx.ktx)
 
     testImplementation(project(":test"))
 

@@ -18,7 +18,7 @@ dependencies {
     implementation(project(":data:api"))
 
     implementation(libs.paging.common)
-    implementation(libs.android.ktx)
+    implementation(libs.androidx.ktx)
     kapt(libs.arrow.kapt)
     implementation(libs.bundles.arrow)
 

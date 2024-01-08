@@ -17,14 +17,12 @@ import com.jfmr.ac.test.usecase.character.detail.di.CharacterDetailUC
 import com.jfmr.ac.test.usecase.character.update.UpdateCharacterUseCase
 import com.jfmr.ac.test.usecase.character.update.di.UpdateCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     @CharacterDetailUC private val characterDetailUseCase: CharacterDetailUseCase,
@@ -104,7 +102,8 @@ class DetailViewModel @Inject constructor(
         domainError.toDetailError().let {
             val errorEvent = when (it) {
                 CharacterDetailError.CharacterNotFound -> CharacterDetailEvent.CharacterNotFound
-                CharacterDetailError.ServerError, CharacterDetailError.UnknownError -> CharacterDetailEvent.CharacterServerError
+                CharacterDetailError.ServerError, CharacterDetailError.UnknownError ->
+                    CharacterDetailEvent.CharacterServerError
             }
             onEvent(errorEvent)
         }

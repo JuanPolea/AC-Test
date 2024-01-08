@@ -42,9 +42,9 @@ class CharacterRepositoryImpl
                 characterRemoteDataSource
             ),
             pagingSourceFactory = { localCharacterDataSource.getCharacters() },
-        ).flow.map {
-            it.map {
-                it.toDomain()
+        ).flow.map { paging ->
+            paging.map { localCharacter ->
+                localCharacter.toDomain()
             }
         }
 

@@ -29,10 +29,10 @@ fun NavGraphBuilder.locationsNav() {
         route = Feature.LOCATIONS.route
     ) {
         composable(NavCommand.ContentType(Feature.LOCATIONS)) {
-            Text(text = "jalskfd")
+            Text(text = "Location test")
         }
         composable(NavCommand.ContentDetail(Feature.LOCATIONS)) {
-            Text(text = "etail")
+            Text(text = "Location test")
         }
     }
 }
