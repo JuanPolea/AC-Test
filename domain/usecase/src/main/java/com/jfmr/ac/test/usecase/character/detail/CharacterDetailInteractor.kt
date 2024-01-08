@@ -22,29 +22,31 @@ class CharacterDetailInteractor @Inject constructor(
         error: (DomainError) -> Unit,
     ): Unit =
         characterRepository.getCharacterById(characterId).map { result ->
-            var characterDetail = CharacterDetail()
-            result.fold(
-                ifLeft = {
-                    error(it)
-                },
-                ifRight = { character ->
-                    merge(episodeRepository.episodes(character.episode))
-                        .map {
-                            it.fold(
-                                ifLeft = {
-                                    success(characterDetail.copy(character = character))
-                                },
-                                ifRight = {
-                                    success(
-                                        characterDetail.copy(
-                                            character = character,
-                                            episodes = it
+            with(CharacterDetail())
+            {
+                result.fold(
+                    ifLeft = {
+                        error(it)
+                    },
+                    ifRight = { character ->
+                        merge(episodeRepository.episodes(character.episode))
+                            .map {
+                                it.fold(
+                                    ifLeft = {
+                                        success(copy(character = character))
+                                    },
+                                    ifRight = { episodes ->
+                                        success(
+                                            copy(
+                                                character = character,
+                                                episodes = episodes
+                                            )
                                         )
-                                    )
-                                }
-                            )
-                        }.collect()
-                }
-            )
+                                    }
+                                )
+                            }.collect()
+                    }
+                )
+            }
         }.collect()
 }
