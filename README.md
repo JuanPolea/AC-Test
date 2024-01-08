@@ -12,7 +12,7 @@ Multimodular Rick And Morty APP
 - Timber
 - Retrofit
 - Gson
-- Paging 3
+- Paging
 - Room
 - Jetpack Compose
 - Material 3
