@@ -13,13 +13,12 @@ android {
 dependencies {
     api(project(":domain:model"))
     implementation(project(":test"))
-
-    kapt(libs.room.compiler)
     implementation(libs.google.gson)
     implementation(libs.bundles.hilt)
     kapt(libs.bundles.hiltkapt)
-    api(libs.kotlin.coroutines)
-    api(libs.paging.room)
-    api(libs.paging.common)
+    implementation(libs.kotlin.coroutines)
+    api(libs.bundles.paging)
+    implementation(libs.bundles.room)
+    kapt(libs.room.compiler)
     implementation(libs.firebase.crashlitycs)
 }

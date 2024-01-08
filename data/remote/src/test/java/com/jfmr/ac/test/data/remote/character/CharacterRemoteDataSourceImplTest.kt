@@ -17,7 +17,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import retrofit2.Response
-import javax.inject.Inject
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -29,8 +28,8 @@ class CharacterRemoteDataSourceImplTest {
     @get:Rule
     val instantTaskExecutorRule = MainCoroutineRule()
 
-    @Inject
-    val characterRemoteDataSourceImpl = CharacterRemoteDataSourceImpl(rickAndMortyApiService)
+    private val characterRemoteDataSourceImpl =
+        CharacterRemoteDataSourceImpl(rickAndMortyApiService)
 
     private val characterId = 1
 

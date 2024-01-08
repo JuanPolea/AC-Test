@@ -56,7 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -85,9 +84,7 @@ internal fun CharacterDetailRoute(
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
     val characterDetailState by detailViewModel.characterDetailState.collectAsStateWithLifecycle()
-    val detailState by detailViewModel.detailViewModelState.collectAsStateWithLifecycle()
-    if (detailState == null)
-        detailViewModel.onEvent(CharacterDetailEvent.OnRetrieveCharacterDetail)
+    detailViewModel.onEvent(CharacterDetailEvent.OnRetrieveCharacterDetail)
     CharacterDetailScreen(
         onUpClick = onUpClick,
         characterDetailState = characterDetailState,
@@ -291,16 +288,6 @@ private fun CharacterContent(
                 CharacterDetailBodyCard(character)
             }
         })
-}
-
-@Composable
-private fun CharacterDetailBodyContent(
-    cardRoundedCorners: () -> Dp,
-    character: CharacterUI,
-    expanded: () -> Boolean,
-    action: (Boolean) -> Unit,
-) {
-
 }
 
 @Composable

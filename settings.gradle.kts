@@ -33,7 +33,7 @@ dependencyResolutionManagement {
             library("paging-runtime", "androidx.paging", "paging-runtime-ktx").versionRef("paging")
             library("paging-room", "androidx.room:room-paging:2.6.1")
             library("paging-compose", "androidx.paging", "paging-compose").version("3.3.0-alpha02")
-            bundle("paging", listOf("paging-common", "paging-runtime"))
+            bundle("paging", listOf("paging-common", "paging-runtime", "paging-room"))
             //Kotlin
             version("kotlin-bom", "1.9.21")
             library("kotlin-bom", "org.jetbrains.kotlin", "kotlin-bom").versionRef("kotlin-bom")
