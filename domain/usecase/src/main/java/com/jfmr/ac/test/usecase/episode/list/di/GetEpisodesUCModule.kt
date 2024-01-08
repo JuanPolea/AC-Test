@@ -22,7 +22,7 @@ object GetEpisodesUCModule {
         @GetEpisode
         @Singleton
         @Binds
-        abstract fun bindEpisodesUseCase(implementation: GetEpisodesInteractor): GetEpisodesUseCase
+        fun bindEpisodesUseCase(implementation: GetEpisodesInteractor): GetEpisodesUseCase
 
     }
 }

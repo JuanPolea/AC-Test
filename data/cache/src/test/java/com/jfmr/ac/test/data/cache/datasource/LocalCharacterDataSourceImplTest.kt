@@ -9,12 +9,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import javax.inject.Inject
 import kotlin.test.assertEquals
 
 private const val INSERT_SUCCESS = 1
@@ -22,14 +20,10 @@ private const val INSERT_ERROR = -1
 private const val UPDATE_SUCCESS = 1L
 private const val UPDATE_ERROR = -1L
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LocalCharacterDataSourceImplTest {
 
     private val rickAndMortyDB: RickAndMortyDB = mockk()
-
-    @Inject
-    var localCharacterDataSource = LocalCharacterDataSourceImpl(rickAndMortyDB)
-
+    private val localCharacterDataSource = LocalCharacterDataSourceImpl(rickAndMortyDB)
     private val localCharacters = mutableListOf<LocalCharacter>()
     private val remoteKeys = mutableListOf<RemoteKeys>()
 
@@ -38,7 +32,13 @@ class LocalCharacterDataSourceImplTest {
         MockKAnnotations.init(this)
         localCharacters.add(expectedLocalCharacter)
         repeat(10) {
-            remoteKeys.add(RemoteKeys(it.toLong(), null, "https://rickandmortyapi.com/api/character/?page=2"))
+            remoteKeys.add(
+                RemoteKeys(
+                    it.toLong(),
+                    null,
+                    "https://rickandmortyapi.com/api/character/?page=2"
+                )
+            )
         }
     }
 
@@ -48,7 +48,7 @@ class LocalCharacterDataSourceImplTest {
     }
 
     @Test
-    fun geLocalDB() {
+    fun geLocalDB() = runTest {
         assertEquals(rickAndMortyDB, localCharacterDataSource.geLocalDB())
     }
 

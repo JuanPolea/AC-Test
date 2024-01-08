@@ -13,7 +13,7 @@ android {
 dependencies {
     api(project(":data:paging"))
     api(project(":domain:repository"))
-    implementation(libs.android.ktx)
+    implementation(libs.androidx.ktx)
     testImplementation(project(":test"))
 
     implementation(libs.bundles.hilt)

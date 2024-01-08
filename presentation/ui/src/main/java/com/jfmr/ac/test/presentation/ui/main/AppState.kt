@@ -18,7 +18,7 @@ class AppState(
         val BOTTOM_NAV_OPTIONS: List<NavItem> = listOf(NavItem.CHARACTERS, NavItem.LOCATIONS)
     }
 
-    val currentRoute: String
+    private val currentRoute: String
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route.orEmpty()
 
     val showUpNavigation: Boolean

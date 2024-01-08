@@ -22,6 +22,6 @@ object CharactersUCModule {
         @GetCharacters
         @Singleton
         @Binds
-        abstract fun bindCharacters(implementation: CharactersInteractor): CharactersUseCase
+        fun bindCharacters(implementation: CharactersInteractor): CharactersUseCase
     }
 }

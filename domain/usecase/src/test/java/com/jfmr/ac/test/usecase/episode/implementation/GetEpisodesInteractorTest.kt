@@ -13,7 +13,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -22,7 +21,6 @@ import org.junit.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class GetEpisodesInteractorTest {
     private val episodeRepository: EpisodeRepository = mockk()
     private val getEpisodesUseCase = GetEpisodesInteractor(episodeRepository)

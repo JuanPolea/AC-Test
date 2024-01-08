@@ -22,7 +22,7 @@ object CharacterDetailUCModule {
         @CharacterDetailUC
         @Singleton
         @Binds
-        abstract fun bindCharacterDetail(implementation: CharacterDetailInteractor): CharacterDetailUseCase
+        fun bindCharacterDetail(implementation: CharacterDetailInteractor): CharacterDetailUseCase
 
     }
 }

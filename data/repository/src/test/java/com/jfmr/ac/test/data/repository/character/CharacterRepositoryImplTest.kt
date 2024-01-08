@@ -49,13 +49,15 @@ class CharacterRepositoryImplTest {
     private val localCharacterDataSource: LocalCharacterDataSource = mockk()
 
     private var coroutineDispatcher: CoroutineDispatcher = spyk(Dispatchers.IO)
-    private val characterRepository = CharacterRepositoryImpl(characterRemoteDataSource = characterRemoteDataSource,
+    private val characterRepository = CharacterRepositoryImpl(
+        characterRemoteDataSource = characterRemoteDataSource,
         localCharacterDataSource = localCharacterDataSource,
-        coroutineDispatcher = coroutineDispatcher)
+        coroutineDispatcher = coroutineDispatcher
+    )
     private lateinit var localCharacters: List<LocalCharacter>
     private lateinit var characters: List<Character>
 
-    val testDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
@@ -68,7 +70,12 @@ class CharacterRepositoryImplTest {
 
         mockkStatic(Dispatchers::class)
         every { Dispatchers.IO } returns testDispatcher
-        every { coroutineDispatcher.fold<Any>(any(), any()) } answers { testDispatcher.fold(firstArg(), secondArg()) }
+        every {
+            coroutineDispatcher.fold<Any>(
+                any(),
+                any()
+            )
+        } answers { testDispatcher.fold(firstArg(), secondArg()) }
     }
 
     @After
@@ -130,12 +137,10 @@ class CharacterRepositoryImplTest {
         val actual = characterRepository.getCharacterById(1)
         actual.collectLatest {
             it.fold({
-
-            }, {
-                assertEquals(expectedCharacter, it)
+            }, { character ->
+                assertEquals(expectedCharacter, character)
             })
         }
-
     }
 
     @Test
@@ -154,8 +159,8 @@ class CharacterRepositoryImplTest {
 
         val actual = characterRepository.getCharacterById(1)
         actual.collectLatest {
-            it.fold({
-                assertEquals(RemoteError.Connectivity, it)
+            it.fold({ error ->
+                assertEquals(RemoteError.Connectivity, error)
             }, {})
         }
     }

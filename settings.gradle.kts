@@ -18,14 +18,38 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("libs") {
+            version("androidx-lifecycle", "2.6.2")
             //Android
-            library("android-lifecycle-runtime", "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-            library("android-ktx", "androidx.core:core-ktx:1.10.1")
-            library("activity-ktx", "androidx.activity:activity-ktx:1.8.2")
-            library("fragment-ktx", "androidx.fragment:fragment-ktx:1.6.2")
+            library("androidx-ktx", "androidx.core:core-ktx:1.10.1")
+            library("androidx-activity-ktx", "androidx.activity:activity-ktx:1.8.2")
+            library("androidx-fragment-ktx", "androidx.fragment:fragment-ktx:1.6.2")
+            library(
+                "androidx-lifecycle-viewmodel-ktx",
+                "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+            )
+            library(
+                "androidx-lifecycle-viewmodel-compose",
+                "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
+            )
+            library(
+                "androidx-lifecycle-runtime",
+                "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
+            )
+            library(
+                "androidx-lifecycle-runtime-ktx",
+                "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+            )
             bundle(
-                "android",
-                listOf("android-ktx", "android-lifecycle-runtime", "activity-ktx", "fragment-ktx")
+                "androidx",
+                listOf(
+                    "androidx-ktx",
+                    "androidx-lifecycle-viewmodel-ktx",
+                    "androidx-lifecycle-viewmodel-compose",
+                    "androidx-lifecycle-runtime",
+                    "androidx-lifecycle-runtime-ktx",
+                    "androidx-activity-ktx",
+                    "androidx-fragment-ktx"
+                )
             )
 
             version("paging", "3.2.1")
@@ -33,7 +57,7 @@ dependencyResolutionManagement {
             library("paging-runtime", "androidx.paging", "paging-runtime-ktx").versionRef("paging")
             library("paging-room", "androidx.room:room-paging:2.6.1")
             library("paging-compose", "androidx.paging", "paging-compose").version("3.3.0-alpha02")
-            bundle("paging", listOf("paging-common", "paging-runtime"))
+            bundle("paging", listOf("paging-common", "paging-runtime", "paging-room"))
             //Kotlin
             version("kotlin-bom", "1.9.21")
             library("kotlin-bom", "org.jetbrains.kotlin", "kotlin-bom").versionRef("kotlin-bom")
@@ -74,8 +98,9 @@ dependencyResolutionManagement {
 
             //Compose
             version("androidxComposeBom", "2023.10.01")
-            version("navigation", "2.6.0")
+            version("compose-navigation", "2.7.1")
             version("coil", "2.5.0")
+
             version("activity-compose", "1.8.2")
 
             library(
@@ -134,7 +159,7 @@ dependencyResolutionManagement {
                 "androidx-compose-navigation",
                 "androidx.navigation",
                 "navigation-compose"
-            ).versionRef("navigation")
+            ).versionRef("compose-navigation")
             bundle(
                 "compose-bom", listOf(
                     "androidx-compose-foundation",

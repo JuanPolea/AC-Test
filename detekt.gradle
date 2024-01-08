@@ -5,7 +5,7 @@ configurations {
 }
 
 tasks.register("detekt", JavaExec) {
-    main = "io.gitlab.arturbosch.detekt.cli.Main"
+    getMainClass().set("io.gitlab.arturbosch.detekt.cli.Main")
     classpath = configurations.detekt
 
     def input = "$projectDir"

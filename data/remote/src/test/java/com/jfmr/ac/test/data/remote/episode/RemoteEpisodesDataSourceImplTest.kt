@@ -10,7 +10,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -18,7 +17,6 @@ import org.junit.Test
 import retrofit2.Response
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class RemoteEpisodesDataSourceImplTest {
 
     private val rickAndMortyApiService: RickAndMortyApiService = mockk()
@@ -42,7 +40,8 @@ class RemoteEpisodesDataSourceImplTest {
             rickAndMortyApiService.episodes(any())
         } returns Response.success(episodes.toList())
 
-        val actual: Response<List<EpisodeResponse?>?> = remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
+        val actual: Response<List<EpisodeResponse?>?> =
+            remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
 
         assertEquals(episodes.toList(), actual.body())
     }
@@ -54,7 +53,8 @@ class RemoteEpisodesDataSourceImplTest {
             rickAndMortyApiService.episodes(any())
         } returns getResponseError(NETWORK_CODE_SERVER_ERROR)
 
-        val actual: Response<List<EpisodeResponse?>?> = remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
+        val actual: Response<List<EpisodeResponse?>?> =
+            remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
 
         assertEquals(actual.code(), NETWORK_CODE_SERVER_ERROR)
 

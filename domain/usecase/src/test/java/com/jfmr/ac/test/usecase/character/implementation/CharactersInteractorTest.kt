@@ -9,7 +9,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
@@ -18,7 +17,6 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class CharactersInteractorTest {
 
     private val characterRepository: CharacterRepository = mockk()

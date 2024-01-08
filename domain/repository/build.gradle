@@ -13,6 +13,6 @@ android {
 dependencies {
     api(project(path: ":domain:model"))
     api(project(path: ":data:cache"))
-    implementation libs.android.ktx
+    implementation libs.androidx.ktx
 
 }
