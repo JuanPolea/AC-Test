@@ -8,12 +8,11 @@ import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import com.jfmr.ac.test.data.repository.utils.LocalUtils.expectedLocalCharacter
 import com.jfmr.ac.test.domain.model.character.Character
-import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacter
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharacterResponse
 import com.jfmr.ac.test.tests.character.CharacterUtils.expectedCharactersResponse
-import com.jfmr.ac.test.tests.data.Network.getResponseError
+import com.jfmr.ac.test.tests.data.Network.getRemoteError
 import com.jfmr.ac.test.tests.data.PagingSourceUtils
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -35,7 +34,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import retrofit2.Response
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -103,7 +101,7 @@ class CharacterRepositoryImplTest {
 
         coEvery {
             characterRemoteDataSource.retrieveCharacterById(any())
-        } returns Response.success(expectedCharacterResponse)
+        } returns Result.success(expectedCharacterResponse)
 
         coEvery {
             localCharacterDataSource.getCharacterById(any())
@@ -115,8 +113,9 @@ class CharacterRepositoryImplTest {
 
         val actual = characterRepository.getCharacterById(1).first()
         actual.fold({
-        }, {
             assertEquals(expectedCharacter, it)
+
+        }, {
         })
     }
 
@@ -124,7 +123,7 @@ class CharacterRepositoryImplTest {
     fun getCharacterById_Error_LocalCharacter() = runTest {
         coEvery {
             characterRemoteDataSource.retrieveCharacterById(any())
-        } returns getResponseError(401)
+        } returns getRemoteError(401)
 
         coEvery {
             localCharacterDataSource.getCharacterById(any())
@@ -136,9 +135,9 @@ class CharacterRepositoryImplTest {
 
         val actual = characterRepository.getCharacterById(1)
         actual.collectLatest {
-            it.fold({
-            }, { character ->
+            it.fold({ character ->
                 assertEquals(expectedCharacter, character)
+            }, {
             })
         }
     }
@@ -147,7 +146,7 @@ class CharacterRepositoryImplTest {
     fun getCharacterById_Error_Error() = runTest {
         coEvery {
             characterRemoteDataSource.retrieveCharacterById(any())
-        } returns getResponseError()
+        } returns getRemoteError()
 
         coEvery {
             localCharacterDataSource.getCharacterById(any())
@@ -159,9 +158,12 @@ class CharacterRepositoryImplTest {
 
         val actual = characterRepository.getCharacterById(1)
         actual.collectLatest {
-            it.fold({ error ->
-                assertEquals(RemoteError.Connectivity, error)
-            }, {})
+            it.fold({
+
+            },
+                { error ->
+                    assertEquals("401", error.message)
+                })
         }
     }
 

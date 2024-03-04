@@ -1,12 +1,9 @@
 package com.jfmr.ac.test.presentation.ui.character.detail.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailUI
-import com.jfmr.ac.test.presentation.ui.character.detail.model.toDetailError
-import com.jfmr.ac.test.presentation.ui.character.list.model.toUI
 import com.jfmr.ac.test.presentation.ui.utils.CharacterUIUtils
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.character.CharacterUtils
@@ -17,10 +14,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.runs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -50,6 +45,7 @@ class DetailViewModelTest {
     @Inject
     lateinit var detailViewModel: DetailViewModel
     private val characterUI = CharacterUIUtils.expectedCharacterUI
+    private val characterDetailed = CharacterUIUtils.expectedCharacterDetail
     private val expectedCharacterUI = CharacterUtils.expectedCharacter
     private val episodesUI = CharacterUIUtils.expectedEpisodesUI.toList()
     private val characterDetail = CharacterDetailUI(
@@ -70,23 +66,21 @@ class DetailViewModelTest {
         coEvery {
             characterDetailUseCase.invoke(
                 expectedCharacterUI.id,
-                ::characterDetailSuccess,
-                ::error
             )
-        } just runs
+        } returns flowOf(Result.success(characterDetailed))
         coEvery {
             getEpisodesUseCase.invoke(
                 episodesList = any(),
-                { any() },
-                { any() },
             )
-        } just runs
+        } returns flowOf(Result.success(listOf()))
 
         coEvery {
             updateCharacterUseCase.invoke(
                 any()
             )
-        } returns flowOf(CharacterUtils.expectedCharacter.copy(isFavorite = !CharacterUtils.expectedCharacter.isFavorite))
+        } returns flowOf(
+            CharacterUtils.expectedCharacter.copy(isFavorite = !CharacterUtils.expectedCharacter.isFavorite)
+        )
 
         detailViewModel = DetailViewModel(
             characterDetailUseCase = characterDetailUseCase,
@@ -158,13 +152,5 @@ class DetailViewModelTest {
         val actual: CharacterDetailUI = detailViewModel.characterDetailState.first()
         assertEquals(characterDetail.character, actual.character)
         assertEquals(characterDetail.episodes, actual.episodes)
-    }
-
-    private fun characterDetailSuccess(character: com.jfmr.ac.test.domain.model.character.CharacterDetail) {
-        assertEquals(characterDetail.character, character.character?.toUI())
-    }
-
-    private fun error(domainError: DomainError) {
-        assertEquals(domainError.toDetailError(), CharacterDetailError.CharacterNotFound)
     }
 }

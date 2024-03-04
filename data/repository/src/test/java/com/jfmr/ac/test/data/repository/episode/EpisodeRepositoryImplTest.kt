@@ -1,13 +1,9 @@
 package com.jfmr.ac.test.data.repository.episode
 
-import arrow.core.Either
 import com.jfmr.ac.test.data.cache.dao.episode.EpisodeDao
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.data.repository.utils.LocalUtils.expectedLocalEpisodes
-import com.jfmr.ac.test.domain.model.episode.Episode
 import com.jfmr.ac.test.domain.model.episode.Episodes
-import com.jfmr.ac.test.domain.model.error.DomainError
-import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.tests.MainCoroutineRule
 import com.jfmr.ac.test.tests.data.Network.getResponseError
 import com.jfmr.ac.test.tests.episodes.EpisodeUtils.episodesResponse
@@ -21,7 +17,6 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -31,7 +26,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import retrofit2.Response
 import kotlin.test.assertEquals
 
 class EpisodeRepositoryImplTest {
@@ -76,7 +70,7 @@ class EpisodeRepositoryImplTest {
         } returns arrayListOf()
         coEvery {
             remoteEpisodesDataSource.retrieveEpisodes(emptyList())
-        } returns Response.success(episodesResponse.toList())
+        } returns Result.success(episodesResponse.toList())
 
         coEvery {
             episodeDao.episodes(emptyList())
@@ -85,9 +79,8 @@ class EpisodeRepositoryImplTest {
         val actual = episodeRepositoryImpl.episodes(emptyList()).first()
 
         actual.fold({
-
-        }, {
             assertEquals(expectedEpisodeList.toList(), it)
+        }, {
         })
 
     }
@@ -106,14 +99,14 @@ class EpisodeRepositoryImplTest {
             episodeDao.episodes(emptyList())
         } returns expectedLocalEpisodes.toList()
 
-        val actual: Flow<Either<DomainError, List<Episode>>> =
-            episodeRepositoryImpl.episodes(emptyList())
+        val actual = episodeRepositoryImpl.episodes(emptyList())
 
         actual.collectLatest { result ->
             result.fold(
-                {},
                 { list ->
                     assertEquals(expectedEpisodeList.toList(), list)
+                },
+                {
                 }
             )
         }
@@ -134,15 +127,14 @@ class EpisodeRepositoryImplTest {
             episodeDao.episodes(emptyList())
         } returns null
 
-        val actual: Flow<Either<DomainError, List<Episode>>> =
-            episodeRepositoryImpl.episodes(emptyList())
+        val actual = episodeRepositoryImpl.episodes(emptyList())
 
         actual.collectLatest { result ->
-            result.fold({ error ->
-                assertEquals(RemoteError.Connectivity, error)
-            }, {})
+            result.fold({
+            }, { error ->
+                assertEquals("401", error.message)
+            })
         }
-
     }
 
     @Test

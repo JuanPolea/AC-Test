@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -34,8 +33,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -83,8 +82,8 @@ internal fun CharacterDetailRoute(
     modifier: Modifier = Modifier,
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
-    val characterDetailState by detailViewModel.characterDetailState.collectAsStateWithLifecycle()
     detailViewModel.onEvent(CharacterDetailEvent.OnRetrieveCharacterDetail)
+    val characterDetailState by detailViewModel.characterDetailState.collectAsStateWithLifecycle()
     CharacterDetailScreen(
         onUpClick = onUpClick,
         characterDetailState = characterDetailState,
@@ -214,15 +213,6 @@ private fun CharacterContent(
         label = stringResource(R.string.transitionLabel)
     )
 
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = stringResource(R.string.background_transition_label)) {
-        if (expanded) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-        } else {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-        }
-    }
     val cardRoundedCorners by transition.animateDp(
         {
             tween(durationMillis = EXPAND_ANIMATION_DURATION, easing = FastOutSlowInEasing)
@@ -282,7 +272,7 @@ private fun CharacterContent(
                 })
             }
             if (expanded) {
-                Divider()
+                HorizontalDivider()
             }
             ExpandableContent(visible = expanded) {
                 CharacterDetailBodyCard(character)

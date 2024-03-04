@@ -13,13 +13,15 @@ import javax.inject.Singleton
 @Qualifier
 annotation class QEpisodesRepository
 
+@Module(includes = [EpisodeRepositoryModule.Declarations::class])
 @InstallIn(SingletonComponent::class)
-@Module
-interface EpisodeRepositoryModule {
-
-    @QEpisodesRepository
-    @Singleton
-    @Binds
-    fun bindEpisodesRepository(implementation: EpisodeRepositoryImpl): EpisodeRepository
-
+object EpisodeRepositoryModule {
+    @Module
+    @InstallIn(SingletonComponent::class)
+    interface Declarations {
+        @QEpisodesRepository
+        @Binds
+        @Singleton
+        fun bindEpisodeRepository(implementation: EpisodeRepositoryImpl): EpisodeRepository
+    }
 }

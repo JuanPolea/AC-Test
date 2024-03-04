@@ -1,21 +1,13 @@
 package com.jfmr.ac.test.presentation.ui.navigation
 
-import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.jfmr.ac.test.presentation.ui.R
 
 enum class NavItem(
-    val navCommand: NavCommand,
-    val icon: ImageVector,
-    @StringRes val title: Int
+    val navCommand: NavCommand
 ) {
-    CHARACTERS(NavCommand.ContentType(Feature.CHARACTERS), Icons.Default.Face, R.string.characters),
-    LOCATIONS(NavCommand.ContentType(Feature.LOCATIONS), Icons.Default.Place, R.string.locations)
+    CHARACTERS(NavCommand.ContentType(Feature.CHARACTERS)),
+    LOCATIONS(NavCommand.ContentType(Feature.LOCATIONS))
 }
 
 sealed class NavCommand(
@@ -47,5 +39,4 @@ enum class NavArg(
     val navType: NavType<*>
 ) {
     ItemId("characterId", NavType.IntType),
-    LocationId("locationId", NavType.IntType)
 }

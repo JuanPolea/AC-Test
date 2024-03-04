@@ -12,9 +12,12 @@ android {
 }
 
 dependencies {
-    api(libs.bundles.retrofit2)
     implementation(libs.kotlin.serialization)
     implementation(libs.bundles.hilt)
     kapt(libs.bundles.hiltkapt)
-    implementation(libs.kotlin.serialization)
+    implementation(libs.bundles.ktor)
+    implementation(libs.ktor.serialization.gson)
+    implementation(libs.ktor.client.serialization.kotlinx)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
 }

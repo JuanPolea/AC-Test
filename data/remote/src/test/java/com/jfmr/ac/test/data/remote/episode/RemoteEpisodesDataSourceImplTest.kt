@@ -1,10 +1,10 @@
 package com.jfmr.ac.test.data.remote.episode
 
 import com.jfmr.ac.test.data.api.rickandmorty.dto.episode.entity.EpisodeResponse
-import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyAPI
 import com.jfmr.ac.test.data.remote.episode.datasource.RemoteEpisodesDataSource
 import com.jfmr.ac.test.tests.data.Network.NETWORK_CODE_SERVER_ERROR
-import com.jfmr.ac.test.tests.data.Network.getResponseError
+import com.jfmr.ac.test.tests.data.Network.getRemoteError
 import com.jfmr.ac.test.tests.episodes.EpisodeUtils
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -14,13 +14,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Response
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class RemoteEpisodesDataSourceImplTest {
 
-    private val rickAndMortyApiService: RickAndMortyApiService = mockk()
-    private val remoteEpisodesDataSourceImpl: RemoteEpisodesDataSource = RemoteEpisodesDataSourceImpl(rickAndMortyApiService)
+    private val rickAndMortyApiService: RickAndMortyAPI = mockk()
+    private val remoteEpisodesDataSourceImpl: RemoteEpisodesDataSource =
+        RemoteEpisodesDataSourceImpl(rickAndMortyApiService)
 
     @Before
     fun setUp() {
@@ -38,12 +39,12 @@ class RemoteEpisodesDataSourceImplTest {
 
         coEvery {
             rickAndMortyApiService.episodes(any())
-        } returns Response.success(episodes.toList())
+        } returns Result.success(episodes.toList())
 
-        val actual: Response<List<EpisodeResponse?>?> =
+        val actual: Result<List<EpisodeResponse?>?> =
             remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
 
-        assertEquals(episodes.toList(), actual.body())
+        assertEquals(episodes.toList(), actual.getOrNull())
     }
 
     @Test
@@ -51,12 +52,12 @@ class RemoteEpisodesDataSourceImplTest {
 
         coEvery {
             rickAndMortyApiService.episodes(any())
-        } returns getResponseError(NETWORK_CODE_SERVER_ERROR)
+        } returns getRemoteError(NETWORK_CODE_SERVER_ERROR)
 
-        val actual: Response<List<EpisodeResponse?>?> =
+        val actual: Result<List<EpisodeResponse?>?> =
             remoteEpisodesDataSourceImpl.retrieveEpisodes(emptyList())
 
-        assertEquals(actual.code(), NETWORK_CODE_SERVER_ERROR)
+        assertTrue { actual.isFailure }
 
     }
 }

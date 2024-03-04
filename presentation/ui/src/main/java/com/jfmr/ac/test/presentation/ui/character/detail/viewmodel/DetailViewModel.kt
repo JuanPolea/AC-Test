@@ -3,6 +3,8 @@ package com.jfmr.ac.test.presentation.ui.character.detail.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jfmr.ac.test.data.remote.extensions.toError
+import com.jfmr.ac.test.domain.model.character.CharacterDetail
 import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailError
 import com.jfmr.ac.test.presentation.ui.character.detail.model.CharacterDetailEvent
@@ -43,7 +45,6 @@ class DetailViewModel @Inject constructor(
                 )
             }
 
-
             CharacterDetailEvent.CharacterNotFound -> characterDetailState.update {
                 it.copy(
                     isLoading = false,
@@ -74,7 +75,6 @@ class DetailViewModel @Inject constructor(
                                 )
                             }
                         }
-
                     }
             }
 
@@ -88,13 +88,20 @@ class DetailViewModel @Inject constructor(
 
             CharacterDetailEvent.OnRetrieveCharacterDetail -> viewModelScope.launch {
                 savedStateHandle.get<String>(NavArg.ItemId.key)?.toInt()?.let {
-                    characterDetailUseCase.invoke(it, ::success, ::error)
+                    characterDetailUseCase.invoke(it)
+                        .collectLatest { value: Result<CharacterDetail> ->
+                            value.onSuccess {
+                                success(it)
+                            }.onFailure {
+                                error(it.toError())
+                            }
+                        }
                 }
             }
         }
     }
 
-    private fun success(characterDetail: com.jfmr.ac.test.domain.model.character.CharacterDetail) {
+    private fun success(characterDetail: CharacterDetail) {
         onEvent(CharacterDetailEvent.CharacterFound(characterDetail.toUI()))
     }
 

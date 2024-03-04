@@ -5,8 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import arrow.core.left
-import arrow.core.right
 import com.jfmr.ac.test.data.cache.datasource.LocalCharacterDataSource
 import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExtensions.fromDomain
 import com.jfmr.ac.test.data.cache.entities.character.mapper.LocalCharacterExtensions.toDomain
@@ -14,9 +12,7 @@ import com.jfmr.ac.test.data.paging.RickAndMortyRemoteMediator
 import com.jfmr.ac.test.data.paging.mapper.CharacterExtensions.toEntity
 import com.jfmr.ac.test.data.remote.character.datasource.CharacterRemoteDataSource
 import com.jfmr.ac.test.data.remote.di.DispatcherIO
-import com.jfmr.ac.test.data.remote.extensions.tryCall
 import com.jfmr.ac.test.domain.model.character.Character
-import com.jfmr.ac.test.domain.model.error.RemoteError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -48,43 +44,28 @@ class CharacterRepositoryImpl
             }
         }
 
-    override suspend fun getCharacterById(id: Int) = flow {
-        tryCall {
-            characterRemoteDataSource
-                .retrieveCharacterById(id)
-        }.fold(
-            { error ->
-                emit(
-                    localCharacterDataSource
-                        .getCharacterById(id)
-                        ?.toDomain()
-                        ?.right()
-                        ?: error.left()
-                )
-            },
-            { response ->
-                if (response.isSuccessful) {
+    override suspend fun getCharacterById(id: Int): Flow<Result<Character>> = flow {
+        runCatching {
+            characterRemoteDataSource.retrieveCharacterById(id).fold(
+                { response ->
                     response
-                        .body()
                         .toEntity()
-                        .also {
-                            localCharacterDataSource
-                                .getCharacterById(id)
-                                ?.let { localCharacter ->
-                                    localCharacterDataSource
-                                        .updateCharacter(localCharacter.copy(isFavorite = localCharacter.isFavorite))
-                                } ?: localCharacterDataSource.insert(it)
+                        .apply {
+                            localCharacterDataSource.getCharacterById(id)?.let { localCharacter ->
+                                localCharacterDataSource.updateCharacter(
+                                    localCharacter.copy(
+                                        isFavorite = localCharacter.isFavorite
+                                    )
+                                )
+                            } ?: localCharacterDataSource.insert(this)
+                            emit(Result.success(toDomain()))
                         }
+                },
+                {
+                    emit(Result.failure(it))
                 }
-                emit(
-                    localCharacterDataSource
-                        .getCharacterById(id)
-                        ?.toDomain()
-                        ?.right()
-                        ?: RemoteError.Connectivity.left()
-                )
-            }
-        )
+            )
+        }
     }
 
     override fun updateCharacter(character: Character) = flow {
