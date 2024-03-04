@@ -2,13 +2,16 @@ package com.jfmr.ac.test.usecase.character.detail
 
 import com.jfmr.ac.test.data.repository.character.di.QCharacterRepository
 import com.jfmr.ac.test.data.repository.episode.di.QEpisodesRepository
+import com.jfmr.ac.test.domain.model.character.Character
 import com.jfmr.ac.test.domain.model.character.CharacterDetail
-import com.jfmr.ac.test.domain.model.error.DomainError
 import com.jfmr.ac.test.domain.repository.character.CharacterRepository
 import com.jfmr.ac.test.domain.repository.episode.EpisodeRepository
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 class CharacterDetailInteractor @Inject constructor(
@@ -16,37 +19,29 @@ class CharacterDetailInteractor @Inject constructor(
     @QEpisodesRepository private val episodeRepository: EpisodeRepository,
 ) : CharacterDetailUseCase {
 
-    override suspend fun invoke(
-        characterId: Int,
-        success: (CharacterDetail) -> Unit,
-        error: (DomainError) -> Unit,
-    ): Unit =
-        characterRepository.getCharacterById(characterId).map { result ->
-            with(CharacterDetail())
-            {
-                result.fold(
-                    ifLeft = {
-                        error(it)
-                    },
-                    ifRight = { character ->
-                        merge(episodeRepository.episodes(character.episode))
-                            .map {
-                                it.fold(
-                                    ifLeft = {
-                                        success(copy(character = character))
-                                    },
-                                    ifRight = { episodes ->
-                                        success(
-                                            copy(
-                                                character = character,
-                                                episodes = episodes
-                                            )
-                                        )
-                                    }
-                                )
-                            }.collect()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun invoke(characterId: Int): Flow<Result<CharacterDetail>> = flow {
+        characterRepository.getCharacterById(characterId)
+            .flatMapConcat { characterResult ->
+                characterResult.getOrNull()?.let { character: Character ->
+                    episodeRepository.episodes(character.episode).map { episodesResult ->
+                        episodesResult.fold(
+                            onSuccess = { episodes ->
+                                Result.success(CharacterDetail(character, episodes))
+                            },
+                            onFailure = {
+                                Result.success(CharacterDetail(character))
+                            }
+                        )
                     }
+                } ?: flowOf(
+                    Result.failure(
+                        characterResult.exceptionOrNull() ?: Exception("Character is null")
+                    )
                 )
             }
-        }.collect()
+            .collect { result ->
+                emit(result)
+            }
+    }
 }

@@ -61,10 +61,10 @@ dependencyResolutionManagement {
             //Kotlin
             version("kotlin-bom", "1.9.21")
             library("kotlin-bom", "org.jetbrains.kotlin", "kotlin-bom").versionRef("kotlin-bom")
-            library("kotlin-coroutines", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+            library("kotlin-coroutines", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
             library(
                 "kotlin-serialization",
-                "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+                "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
             )
             library(
                 "kotlin-stdlib",
@@ -81,14 +81,14 @@ dependencyResolutionManagement {
 
 
             //Hilt
-            version("hilt-android", "2.50")
+            version("hilt-android", "2.51")
             library("hilt-android", "com.google.dagger", "hilt-android").versionRef("hilt-android")
             library(
                 "hilt-compiler",
                 "com.google.dagger",
                 "hilt-compiler"
             ).versionRef("hilt-android")
-            library("hilt-compose", "androidx.hilt:hilt-navigation-compose:1.0.0")
+            library("hilt-compose", "androidx.hilt:hilt-navigation-compose:1.2.0")
             bundle("hilt", listOf("hilt-android", "hilt-compose"))
             bundle("hiltkapt", listOf("hilt-compiler"))
 
@@ -97,11 +97,12 @@ dependencyResolutionManagement {
             library("google-gson", "com.google.code.gson:gson:2.9.0")
 
             //Compose
-            version("androidxComposeBom", "2023.10.01")
+            version("androidxComposeBom", "2024.02.00")
             version("compose-navigation", "2.7.1")
             version("coil", "2.5.0")
 
             version("activity-compose", "1.8.2")
+            version("material3", "1.1.2")
 
             library(
                 "androidx-compose-bom",
@@ -128,7 +129,7 @@ dependencyResolutionManagement {
                 "androidx.compose.material3",
                 "androidx.compose.material3",
                 "material3"
-            ).versionRef("androidxComposeBom")
+            ).versionRef("material3")
             library(
                 "androidx-compose-ui-tooling-preview",
                 "androidx.ui",
@@ -183,24 +184,51 @@ dependencyResolutionManagement {
             library("room-compiler", "androidx.room", "room-compiler").versionRef("room")
             bundle("room", listOf("room-runtime", "room-ktx"))
 
-            //Retrofit
-            library("retrofit2", "com.squareup.retrofit2:retrofit:2.9.0")
+            //Ktor
+            version("ktor", "2.3.8")
+            library("ktor-client-core", "io.ktor", "ktor-client-core").versionRef("ktor")
+            library("ktor-client-json", "io.ktor", "ktor-client-json").versionRef("ktor")
             library(
-                "retrofit2-adapter",
-                "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
-            )
-            library("retrofit2-converter-gson", "com.squareup.retrofit2:converter-gson:2.9.0")
-            library("okhttp3-interceptor", "com.squareup.okhttp3:logging-interceptor:4.9.0")
+                "ktor-client-serialization",
+                "io.ktor",
+                "ktor-client-serialization"
+            ).versionRef("ktor")
+            library(
+                "ktor-client-serialization-kotlinx",
+                "io.ktor",
+                "ktor-serialization-kotlinx-json"
+            ).versionRef("ktor")
+            library("ktor-client-android", "io.ktor", "ktor-client-android").versionRef("ktor")
+            library("ktor-client-okhttp", "io.ktor", "ktor-client-okhttp").versionRef("ktor")
+            library(
+                "ktor-client-content",
+                "io.ktor",
+                "ktor-client-content-negotiation"
+            ).versionRef("ktor")
+            library(
+                "ktor-serialization-gson",
+                "io.ktor",
+                "ktor-serialization-gson"
+            ).versionRef("ktor")
+            version("square", "4.12.0")
+            library(
+                "squareup-logging-interceptor",
+                "com.squareup.okhttp3",
+                "logging-interceptor"
+            ).versionRef("square")
             bundle(
-                "retrofit2",
+                "ktor",
                 listOf(
-                    "retrofit2",
-                    "retrofit2-adapter",
-                    "retrofit2-converter-gson",
-                    "okhttp3-interceptor"
+                    "ktor-client-core",
+                    "ktor-client-json",
+                    "ktor-client-serialization",
+                    "ktor-serialization-gson",
+                    "ktor-client-serialization-kotlinx",
+                    "ktor-client-android",
+                    "ktor-client-okhttp",
+                    "ktor-client-content",
                 )
             )
-
             //Arrow
             library("arrow-core", "io.arrow-kt:arrow-core:0.11.0")
             library("arrow-syntax", "io.arrow-kt:arrow-syntax:0.11.0")
@@ -234,7 +262,7 @@ dependencyResolutionManagement {
                 "ui-test-manifest"
             ).versionRef("compose-test")
             library("mockk-main", "io.mockk:mockk:1.13.3")
-            library("test-kotlin-coroutines", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+            library("test-kotlin-coroutines", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
             library("test-kotlin", "org.jetbrains.kotlin:kotlin-test:1.8.0")
             library("test-junit-ktx", "androidx.test.ext:junit-ktx:1.1.5")
             library("test-mockk", "io.mockk:mockk:1.13.3")

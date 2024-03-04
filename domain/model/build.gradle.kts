@@ -13,6 +13,6 @@ dependencies {
     api(libs.bundles.arrow)
     kapt(libs.arrow.kapt)
     api(libs.bundles.room)
-    implementation(libs.retrofit2.converter.gson)
     api(libs.kotlin.serialization)
+    api(libs.ktor.serialization.gson)
 }

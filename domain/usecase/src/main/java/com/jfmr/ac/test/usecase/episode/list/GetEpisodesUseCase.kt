@@ -1,12 +1,10 @@
 package com.jfmr.ac.test.usecase.episode.list
 
 import com.jfmr.ac.test.domain.model.episode.Episode
-import com.jfmr.ac.test.domain.model.error.DomainError
+import kotlinx.coroutines.flow.Flow
 
 interface GetEpisodesUseCase {
     suspend operator fun invoke(
         episodesList: List<String>,
-        success: (List<Episode>?) -> Unit,
-        error: (DomainError) -> Unit,
-    )
+    ): Flow<Result<List<Episode>>>
 }

@@ -1,15 +1,17 @@
 package com.jfmr.ac.test.data.api.rickandmorty.network.di
 
-import com.jfmr.ac.test.data.api.BuildConfig
-import com.jfmr.ac.test.data.api.rickandmorty.network.RickAndMortyApiService
+import com.jfmr.ac.test.data.api.BuildConfig.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.serialization.gson.gson
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -38,18 +40,25 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideService(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .client(client)
-            .addConverterFactory(
-                GsonConverterFactory.create()
-            )
-            .build()
-    }
+    fun provideKtor(httpLoggingInterceptor: HttpLoggingInterceptor): HttpClient =
+        HttpClient(OkHttp) {
+            // default validation to throw exceptions for non-2xx responses
+            expectSuccess = true
 
-    @Provides
-    @Singleton
-    fun provideRetrofitService(retrofit: Retrofit): RickAndMortyApiService =
-        retrofit.create(RickAndMortyApiService::class.java)
+            engine {
+                // add logging interceptor
+                addInterceptor(httpLoggingInterceptor)
+            }
+
+            // set default request parameters
+            defaultRequest {
+                // add base url for all request
+                url(BASE_URL)
+            }
+
+            // use gson content negotiation for serialize or deserialize
+            install(ContentNegotiation) {
+                gson()
+            }
+        }
 }

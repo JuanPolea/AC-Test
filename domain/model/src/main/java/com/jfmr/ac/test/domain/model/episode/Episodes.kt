@@ -1,12 +1,13 @@
 package com.jfmr.ac.test.domain.model.episode
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 data class Episodes(
     val results: List<Episode> = emptyList(),
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class Episode(
     val id: Int,
     @SerializedName("air_date")
