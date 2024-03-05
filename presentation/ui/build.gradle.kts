@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     id("kotlin-android")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
@@ -14,7 +14,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_20
@@ -34,25 +34,24 @@ android {
 dependencies {
     implementation(project(":domain:usecase"))
     implementation(project(":test"))
-    implementation(libs.bundles.androidx)
     implementation(platform(libs.kotlin.bom))
     implementation(platform(libs.androidx.compose.bom))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material")
-    implementation(libs.coil.compose)
-    implementation(libs.androidx.compose.navigation)
-    api(libs.material)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.coil.kt.compose)
+    implementation(libs.androidx.navigation.compose)
     api(libs.timber)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
-    implementation(libs.paging.compose)
+    kapt(libs.hilt.compiler)
     implementation(libs.firebase.crashlitycs)
-    androidTestImplementation(libs.bundles.compose.instrumentationTest)
-    androidTestImplementation(libs.test.kotlin.coroutines)
-    debugImplementation(libs.test.compose.manifest)
+    androidTestImplementation(libs.bundles.androidx.compose.instrumentationTest)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.google.material)
 }
 
 kapt {

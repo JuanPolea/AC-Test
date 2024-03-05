@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     kotlin("android")
     kotlin("kapt")
     id("com.google.gms.google-services")
@@ -18,13 +18,11 @@ android {
 dependencies {
     api(project(":domain:model"))
     implementation(project(":test"))
-    implementation(libs.google.gson)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
-    implementation(libs.kotlin.coroutines)
+    kapt(libs.hilt.compiler)
+    implementation(libs.kotlinx.coroutines.core)
     api(libs.bundles.paging)
     implementation(libs.bundles.room)
-    kapt(libs.room.compiler)
+    kapt(libs.androidx.room.compiler)
     implementation(libs.firebase.crashlitycs)
-
 }
