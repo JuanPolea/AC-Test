@@ -1,7 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.android.library)
+    kotlin("android")
 }
 
 android {
@@ -12,12 +11,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlin.serialization)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
+    kapt(libs.hilt.compiler)
     implementation(libs.bundles.ktor)
-    implementation(libs.ktor.serialization.gson)
-    implementation(libs.ktor.client.serialization.kotlinx)
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
+    implementation(libs.squareup.logging.interceptor)
+    implementation(libs.google.gson)
 }

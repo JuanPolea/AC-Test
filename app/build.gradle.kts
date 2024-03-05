@@ -1,6 +1,6 @@
 plugins {
     kotlin("android")
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -18,5 +18,5 @@ android {
 dependencies {
     implementation(project(":presentation:ui"))
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
+    kapt(libs.hilt.compiler)
 }

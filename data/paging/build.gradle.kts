@@ -1,6 +1,6 @@
 plugins {
     kotlin("android")
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
@@ -13,13 +13,12 @@ dependencies {
     api(project(":data:cache"))
     api(project(":data:remote"))
     implementation(project(":test"))
-    implementation(libs.androidx.ktx)
-    kapt(libs.room.compiler)
-    api(libs.paging.room)
-    implementation(libs.google.gson)
+    implementation(libs.androidx.core.ktx)
+    kapt(libs.androidx.room.compiler)
+    api(libs.androidx.room.paging)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
-    api(libs.kotlin.coroutines)
-    api(libs.paging.common)
+    kapt(libs.hilt.compiler)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.androidx.paging.common)
     implementation(libs.firebase.crashlitycs)
 }

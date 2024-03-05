@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     kotlin("android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -13,13 +13,13 @@ android {
 dependencies {
     api(project(":data:paging"))
     api(project(":domain:repository"))
-    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.core.ktx)
     testImplementation(project(":test"))
 
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
+    kapt(libs.hilt.compiler)
 
-    implementation(libs.bundles.arrow)
-    kapt(libs.arrow.kapt)
+    
+    
     implementation(libs.firebase.crashlitycs)
 }

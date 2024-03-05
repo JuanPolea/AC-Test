@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     kotlin("kapt")
@@ -17,9 +17,6 @@ dependencies {
     api(project(":data:cache"))
     testImplementation(project(":test"))
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hiltkapt)
-
-    implementation(libs.bundles.arrow)
-    kapt(libs.arrow.kapt)
+    kapt(libs.hilt.compiler)
     implementation(libs.firebase.crashlitycs)
 }

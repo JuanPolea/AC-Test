@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     kotlin("plugin.serialization")
     kotlin("android")
     kotlin("kapt")
@@ -10,9 +10,7 @@ android {
 }
 
 dependencies {
-    api(libs.bundles.arrow)
-    kapt(libs.arrow.kapt)
     api(libs.bundles.room)
-    api(libs.kotlin.serialization)
-    api(libs.ktor.serialization.gson)
+    api(libs.ktor.serialization.kotlinx.json)
+    api(libs.google.gson)
 }

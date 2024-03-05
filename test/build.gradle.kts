@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     id("org.jetbrains.kotlin.android")
     id("java-test-fixtures")
 }
@@ -16,17 +16,14 @@ android {
 dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:api"))
-    implementation(libs.paging.common)
-    implementation(libs.androidx.ktx)
-    kapt(libs.arrow.kapt)
-    implementation(libs.bundles.arrow)
-    implementation(libs.test.junit)
-    implementation(libs.mockk.main)
-    implementation(libs.google.gson)
-    implementation(libs.kotlin.coroutines)
-    implementation(libs.test.kotlin.coroutines)
-    androidTestImplementation(libs.test.junit)
-    androidTestImplementation(libs.kotlin.coroutines)
+    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.junit)
+    implementation(libs.mockk)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.core)
     implementation(libs.bundles.ktor)
     implementation(libs.squareup.logging.interceptor)
 }
